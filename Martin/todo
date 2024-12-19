@@ -1,0 +1,29 @@
+Vad måste göras?
+
+Foton
+- sampla energi
+    - energifunktion -> diskretisera funktion, gör till halvtal
+    - vikta på något sätt så att det går att sampla
+- sampla startposition position (voxel)
+    - vilka voxlar ingår i njuren (matris)
+    - ta random tal i 3D matrisen
+- sampla riktning (klar)
+
+Transport
+- mean free path (från funktion)
+- detektera vilken voxel (avrudning av steg till närmaste heltal)
+
+Växelverkan
+- ta ut data för tvärsnitt
+- slumpa tal mellan 1 och 0
+-> vilken växelverkan typ: antingen deponering eller transport av foton
+    - för detta behövs attenueringsdata från excel
+    - för attenueringsdatan krävs det att man vet vilken voxel som motsvarar vilken vävnad
+
+
+Deponering
+- spara energideponering i ny matris
+- betrakta endast benmärg
+- plotta matris i 3D
+
+
