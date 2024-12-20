@@ -3,49 +3,37 @@ import random as rand
 rand.random() # ger slumptal mellan 0 till 1
 import numpy as np
 np.random.rand( )# ger slumptal mellan 0 till 1)
-import matplotlib.pyplot as plt
-from scipy.optimize import curve_fit
-#Ursprungsenergier från nuklider
-Lu177_energ=[208.3, 112.9, 321.3, 249.7, 71.6, 136.7] #keV
-Y90_energ=2278.7 #keV
-At211_energ=[5869, 5211.9,5140.3, 4993.4,4895.4] #keV
-#Intensitet i % för energierna
-Lu177_intens=[10.38, 6.2, 0.216, 0.2012, 0.1726, 0.047]
-At211_intens=[41.78, 0.0039, 0.0011, 0.0004, 0.00004]
+import math as ma
 
-#Gör om intensiteten till tal och tar totala sannolikheten för varje energi från en tom matris
-Lu177_sannolik=np.zeros(len(Lu177_intens))
-At211_sannolik=np.zeros(len(At211_intens))
-
-for i in range(len(Lu177_intens)):
-    Lu177_intens[i]=Lu177_intens[i]*10**-2
+#Ursprungsenergier från nukliden
+Y90_energ=2278.7 #keV men ska slumpa i spektrumet i en av filerna
 
 
-for i in range(len(Lu177_intens)):
-    if i==0:
-        Lu177_sannolik[i]=Lu177_intens[i]
 
-    else:
-        Lu177_sannolik[i]= Lu177_intens[i]+Lu177_intens[i-1]
+#Steglängden på fotonerna
 
-#Tar ett slumpmässigt värde och genererar antalet
-Foton_energi=[]
-Antal_iterationer=100
-for i in range(Antal_iterationer):
-    Slump_tal=np.random.rand()
-    if Slump_tal<=Lu177_sannolik[0]:
-        Foton_energi.append(Lu177_energ[0]) 
-    elif Slump_tal<=Lu177_sannolik[1]:
-        Foton_energi.append(Lu177_energ[1]) 
-    elif Slump_tal<=Lu177_sannolik[2]:
-        Foton_energi.append(Lu177_energ[2])
-    elif Slump_tal<=Lu177_sannolik[3]:
-        Foton_energi.append(Lu177_energ[3]) 
-    elif Slump_tal<=Lu177_sannolik[4]:
-        Foton_energi.append(Lu177_energ[4]) 
-    elif Slump_tal<=Lu177_sannolik[5]:
-        Foton_energi.append(Lu177_energ[5]) 
-    else:
-        continue
+#Ta reda på majortiteta attenuerigskoefficienten för varje matris/slice
+file_path_attenuering="C:\Users\Admin\Documents\GitHub\Monte Carlo Linnea\Attenueringsdata.xlsx"
+... #ta reda på my_m genom att ta max för allavoxlar attenueringskoefficient
+my_m=np.max()
 
-print(Foton_energi)
+#Steglängden på fotonerna
+steg=-ma.log(rand.random())/my_m
+
+
+#Hittar filen 
+#file_path_betasönderfall="C:\Users\Admin\Documents\GitHub\Monte Carlo Linnea\Y90_Spektrum.xlsx"
+
+#Läser en Excel fil
+import pandas as pd
+df=pd.read_excel(r"C:\Users\Admin\Documents\GitHub\Monte Carlo Linnea\Y90_Spektrum.xlsx" )
+print(df)
+#Lägg till sannolikheten för beta sönderfall? på något sätt hitta hur man gör det i en excel fil
+
+#Position på sfärens yta för lilla tumören
+radie_liten=300*10**-6
+Sfär_liten=4*radie_liten**2*ma.pi
+
+#position i sfärens volym för stora tumören
+radie_stor=200*10**-2
+Volym_stor=4*radie_liten**3*ma.pi/3
