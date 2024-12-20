@@ -4,6 +4,10 @@ import matplotlib.pyplot as plt
 from matplotlib.widgets import Slider
 from matplotlib.gridspec import GridSpec
 
+#   ----------------------------------------------------------------------
+#   READ IN DATA
+#   ----------------------------------------------------------------------
+
 # Load the .mat file
 mat_file = 'phantom_data.mat'  # Replace with your .mat file path
 data = scipy.io.loadmat(mat_file)
@@ -14,22 +18,30 @@ print("Keys in the .mat file:", data.keys())
 # Access the 3D array from the .mat file (replace 'your_matrix_key' with the actual key from the file)
 array_3d = data['array_3d']  # Replace 'phantom_matrix' with the actual key in your .mat file
 
+#   ----------------------------------------------------------------------
+#   CREATE SLICED ARRAYS
+#   ----------------------------------------------------------------------
 
-
-
-sliced_array_phantom = array_3d[30:230,40:210,570:900]
+sliced_array_phantom = array_3d[30:230, 40:210, 570:900]
 # sliced_array_phantom = array_3d[:,:,:]
 x, y, z = sliced_array_phantom.shape
 
-sliced_array_njure = np.zeros((x,y,z))
+sliced_array_njure = np.zeros((x, y, z))
 
 target_values = [17, 18, 19, 20, 21, 22, 23]
 mask = np.isin(sliced_array_phantom, target_values)
 sliced_array_njure[mask] = sliced_array_phantom[mask]
 
+#   ----------------------------------------------------------------------
+#   INPUT ARRAY FOR PLOTTING
+#   ----------------------------------------------------------------------
 
 # replace old array with new array, which will then be plotted
 array_3d = sliced_array_njure
+
+#   ----------------------------------------------------------------------
+#   PLOTTING
+#   ----------------------------------------------------------------------
 
 # Create a larger figure with a GridSpec layout
 fig = plt.figure(figsize=(18, 10))  # Increase figure size
@@ -82,6 +94,7 @@ print("X Slider bounds:", ax_slider_x.get_position().bounds)
 print("Y Slider bounds:", ax_slider_y.get_position().bounds)
 print("Z Slider bounds:", ax_slider_z.get_position().bounds)
 
+
 def update(val):
     slice_x_index = int(slider_x.val)
     slice_y_index = int(slider_y.val)
@@ -98,12 +111,17 @@ def update(val):
 
     fig.canvas.draw_idle()
 
+
 # Attach the update function to the sliders
 slider_x.on_changed(update)
 slider_y.on_changed(update)
 slider_z.on_changed(update)
 
 plt.show()
+
+#   ----------------------------------------------------------------------
+#   PRINTING
+#   ----------------------------------------------------------------------
 
 print(array_3d[slice_x_index, :, :])  # X slice
 print(array_3d[:, slice_y_index, :])  # Y slice

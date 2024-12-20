@@ -12,30 +12,36 @@ I matlab:
 save('phantom_data.mat', 'array_3d');
 """
 
+#   ----------------------------------------------------------------------
+#   READ IN DATA
+#   ----------------------------------------------------------------------
+
 # Load the .mat file
-mat_data = scipy.io.loadmat('phantom_data.mat')
+mat_file = 'phantom_data.mat'  # Replace with your .mat file path
+data = scipy.io.loadmat(mat_file)
 
-# Extract the 3D array from the loaded dictionary
-array_3d = mat_data['array_3d']
+# Check what keys are in the .mat file
+print("Keys in the .mat file:", data.keys())
 
-# Print the shape of the array
-print(array_3d.shape)
+# Access the 3D array from the .mat file (replace 'your_matrix_key' with the actual key from the file)
+array_3d = data['array_3d']  # Replace 'phantom_matrix' with the actual key in your .mat file
 
-# Define the shape of the array (replace with the correct dimensions)
-x, y, z = 256, 256, 1200
+# Ensure array_3d is in the shape (x, y, z)
+x, y, z = array_3d.shape
 
+
+#   ----------------------------------------------------------------------
+#   INPUT
+#   ----------------------------------------------------------------------
 
 # Choose a slice index along the z-axis (middle slice in this case)
 slice_idx = z // 2
 
-# Display a slice along the z-axis
-plt.imshow(array_3d[:, :, slice_idx], cmap='gray')
-plt.title(f'Slice {slice_idx}')
-plt.colorbar()
-# plt.show()
+array_3d = array_3d
 
-
-
+#   ----------------------------------------------------------------------
+#   PLOTTING 2D
+#   ----------------------------------------------------------------------
 
 # Create a figure and axis for plotting the 2D slice
 fig, ax = plt.subplots(figsize=(8, 8))
@@ -63,27 +69,18 @@ slider.on_changed(update)
 plt.show()
 
 
-print(array_3d[100:150,100:150,600])
 
-
-
-
-
-# Load the .mat file
-mat_file = 'phantom_data.mat'  # Replace with your .mat file path
-data = scipy.io.loadmat(mat_file)
-
-# Check what keys are in the .mat file
-print("Keys in the .mat file:", data.keys())
-
-# Access the 3D array from the .mat file (replace 'your_matrix_key' with the actual key from the file)
-array_3d = data['array_3d']  # Replace 'phantom_matrix' with the actual key in your .mat file
-
-# Ensure array_3d is in the shape (x, y, z)
-x, y, z = array_3d.shape
+#   ----------------------------------------------------------------------
+#   INPUT 3D
+#   ----------------------------------------------------------------------
 
 # from starting_position_photon import sliced_array_njure
 # array_3d = sliced_array_njure
+
+#   ----------------------------------------------------------------------
+#   PLOTTING 3D
+#   ----------------------------------------------------------------------
+
 
 # Create a larger figure with a GridSpec layout
 fig = plt.figure(figsize=(18, 10))  # Increase figure size
