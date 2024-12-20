@@ -86,12 +86,6 @@ slider_z = Slider(ax_slider_z, 'Z Slice', 0, z - 1, valinit=slice_z_index, valst
 # Explicitly reset Z-slider bounds again after creation to ensure correctness
 ax_slider_z.set_position([0.1, slider_z_ypos, slider_width, slider_height])
 
-# Debugging bounds (optional)
-print("X Slider bounds:", ax_slider_x.get_position().bounds)
-print("Y Slider bounds:", ax_slider_y.get_position().bounds)
-print("Z Slider bounds:", ax_slider_z.get_position().bounds)
-
-
 def update(val):
     slice_x_index = int(slider_x.val)
     slice_y_index = int(slider_y.val)
@@ -114,16 +108,12 @@ slider_x.on_changed(update)
 slider_y.on_changed(update)
 slider_z.on_changed(update)
 
-plt.show()
+# plt.show()
 
 #   ----------------------------------------------------------------------
 #   PRINTING
 #   ----------------------------------------------------------------------
 
-print(array_3d[slice_x_index, :, :])  # X slice
-print(array_3d[:, slice_y_index, :])  # Y slice
-print(array_3d[:, :, slice_z_index])  # Z slice
-
-print("X Slider bounds:", ax_slider_x.get_position().bounds)
-print("Y Slider bounds:", ax_slider_y.get_position().bounds)
-print("Z Slider bounds:", ax_slider_z.get_position().bounds)
+# print(array_3d[slice_x_index, :, :])  # X slice
+# print(array_3d[:, slice_y_index, :])  # Y slice
+# print(array_3d[:, :, slice_z_index])  # Z slice
