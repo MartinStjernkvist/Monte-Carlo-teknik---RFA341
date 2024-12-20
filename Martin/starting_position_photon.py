@@ -1,8 +1,4 @@
-import scipy.io
-import numpy as np
-import matplotlib.pyplot as plt
-from matplotlib.widgets import Slider
-from matplotlib.gridspec import GridSpec
+from imports_file import *
 
 #   ----------------------------------------------------------------------
 #   READ IN DATA
@@ -11,6 +7,7 @@ from matplotlib.gridspec import GridSpec
 # Load the .mat file
 mat_file = 'phantom_data.mat'  # Replace with your .mat file path
 data = scipy.io.loadmat(mat_file)
+
 
 # Check what keys are in the .mat file
 print("Keys in the .mat file:", data.keys())

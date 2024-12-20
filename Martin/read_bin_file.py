@@ -1,8 +1,4 @@
-import scipy.io
-import scipy.io
-import matplotlib.pyplot as plt
-from matplotlib.widgets import Slider
-from matplotlib.gridspec import GridSpec
+from imports_file import *
 
 
 """

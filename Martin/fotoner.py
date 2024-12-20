@@ -1,9 +1,4 @@
-import numpy as np
-from numpy import random
-import matplotlib.pyplot as plt
-import time
-import pandas as pd
-from scipy.interpolate import interp1d
+from imports_file import *
 
 start = time.time()
 
@@ -16,11 +11,11 @@ pi = np.pi
 #   PANDAS
 #   ----------------------------------------------------------------------
 
-# anatomidefinitioner_file = 'Anatomidefinitioner.xlsx'
-# df = pd.read_excel(anatomidefinitioner_file, index_col=[0])
-# print(df)
-# print(df.columns)
-# print(df.at[5, 'Unnamed: 1'])
+anatomidefinitioner_file = '..\given_data\Anatomidefinitioner.xlsx'
+df = pd.read_excel(anatomidefinitioner_file, index_col=[0])
+print(df)
+print(df.columns)
+print(df.at[5, 'Unnamed: 1'])
 
 
 #   ----------------------------------------------------------------------
