@@ -9,7 +9,6 @@ import math as ma
 Y90_energ=2278.7 #keV men ska slumpa i spektrumet i en av filerna
 
 
-
 #Steglängden på fotonerna
 
 #Ta reda på majortiteta attenuerigskoefficienten för varje matris/slice
@@ -21,6 +20,7 @@ my_m=np.max()
 steg=-ma.log(rand.random())/my_m
 
 
+
 #Hittar filen 
 #file_path_betasönderfall="C:\Users\Admin\Documents\GitHub\Monte Carlo Linnea\Y90_Spektrum.xlsx"
 
@@ -30,10 +30,15 @@ df=pd.read_excel(r"C:\Users\Admin\Documents\GitHub\Monte Carlo Linnea\Y90_Spektr
 print(df)
 #Lägg till sannolikheten för beta sönderfall? på något sätt hitta hur man gör det i en excel fil
 
-#Position på sfärens yta för lilla tumören
-radie_liten=300*10**-6
-Sfär_liten=4*radie_liten**2*ma.pi
 
-#position i sfärens volym för stora tumören
-radie_stor=200*10**-2
-Volym_stor=4*radie_liten**3*ma.pi/3
+
+
+#Slumpa startpositionen för alfa och beta
+#Position på sfärens yta för lilla tumören
+radie_liten=300*10**-6 # i meter
+Sfäryta_liten=4*radie_liten**2*ma.pi
+print()
+
+#Position i sfärens volym för stora tumören
+radie_stor=1*10**-3 # i meter
+Sfärvolym_stor=4*radie_liten**3*ma.pi/3
