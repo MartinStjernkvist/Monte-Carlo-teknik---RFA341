@@ -108,7 +108,7 @@ slider_x.on_changed(update)
 slider_y.on_changed(update)
 slider_z.on_changed(update)
 
-# plt.show()
+plt.show()
 
 #   ----------------------------------------------------------------------
 #   PRINTING
