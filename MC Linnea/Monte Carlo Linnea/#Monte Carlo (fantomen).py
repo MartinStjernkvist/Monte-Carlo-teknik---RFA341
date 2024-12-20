@@ -52,11 +52,34 @@ slider.on_changed(update)
 plt.show()
 
 
-print(array_3d[100:150,100:150,600])
-# Leta efter voxelvärde 19 i arrayen
-indices = np.where(array_3d == 19)
-print("Index för voxelvärde 19:")
-print(indices)
+# Voxelvärde som står för båda njurarna i arrayen 
+Njurar_index=[np.where(array_3d == 17), np.where(array_3d == 18) ,np.where(array_3d == 19),np.where(array_3d == 20),np.where(array_3d == 21) ,np.where(array_3d == 22)]
+
+#Skapar en annan array med bara njurarna och sätter in alla voxlar som har njurarna
+Array_njurar=np.full_like(array_3d,0)
+for i in range(len(Njurar_index)):
+    Array_njurar(i)==1
+
+#Skapar slice i z-axeln för njurarna
+initial_slice_index = z // 2  # Start at the middle slice
+img = ax.imshow(Array_njurar[:, :, initial_slice_index], cmap='gray')
+ax.set_title(f'Slice i z={initial_slice_index}')
+plt.colorbar(img, ax=ax)
+
+# Add a slider for navigating through slices
+ax_slider = plt.axes([0.25, 0.01, 0.65, 0.03], facecolor='lightgoldenrodyellow')
+slider = Slider(ax_slider, 'Slice Index', 0, z-1, valinit=initial_slice_index, valstep=1)
+
+# Update function for the slider
+def update(val):
+    slice_index = int(slider.val)
+    img.set_data(Array_njurar[:, :, slice_index])
+    ax.set_title(f'Slice {slice_index}')
+    fig.canvas.draw_idle()
+
+slider.on_changed(update)
+
+plt.show()
 # Create a larger figure with a GridSpec layout
 fig = plt.figure(figsize=(18, 10))  # Increase figure size
 gs = GridSpec(1, 3, width_ratios=[3, 3, 1], height_ratios=[2])  # Adjust ratios to make plots fill space
@@ -114,8 +137,5 @@ slider_x.on_changed(update)
 slider_y.on_changed(update)
 slider_z.on_changed(update)
 
-# Show the plot
 plt.show()
-# Visualisera voxlar med värde 19
-voxel_19_mask = array_3d == 19
 
