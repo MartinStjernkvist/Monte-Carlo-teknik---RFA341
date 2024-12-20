@@ -1,6 +1,8 @@
 import scipy.io
+import scipy.io
 import matplotlib.pyplot as plt
 from matplotlib.widgets import Slider
+from matplotlib.gridspec import GridSpec
 
 
 """
@@ -30,7 +32,7 @@ slice_idx = z // 2
 plt.imshow(array_3d[:, :, slice_idx], cmap='gray')
 plt.title(f'Slice {slice_idx}')
 plt.colorbar()
-plt.show()
+# plt.show()
 
 
 
@@ -66,62 +68,6 @@ print(array_3d[100:150,100:150,600])
 
 
 
-"""
-TESTING
-"""
-
-# import numpy as np
-# import plotly.graph_objects as go
-#
-# # Load the 3D data from the binary file
-# x, y, z = 256, 256, 1200
-# array_3d = np.fromfile('phantom_data.raw', dtype=np.float32).reshape((x, y, z))
-#
-# # Create a meshgrid of coordinates for the 3D data
-# X, Y, Z = np.meshgrid(np.arange(x), np.arange(y), np.arange(z))
-#
-# # Flatten the 3D coordinates and values for scatter plot
-# X_flat = X.flatten()
-# Y_flat = Y.flatten()
-# Z_flat = Z.flatten()
-# values_flat = array_3d.flatten()
-#
-# # Create the 3D scatter plot for visualizing the voxel data
-# fig = go.Figure(data=go.Scatter3d(
-#     x=X_flat, y=Y_flat, z=Z_flat,
-#     mode='markers',
-#     marker=dict(size=2, color=values_flat, colorscale='Viridis', opacity=0.5)
-# ))
-#
-# # Create a slider to navigate through the slices along the z-axis
-# fig.update_layout(
-#     sliders=[dict(
-#         steps=[dict(
-#             label=str(i),
-#             method='relayout',
-#             args=[{'scene.camera': dict(eye=dict(x=1, y=1, z=i))}]
-#         ) for i in range(z)],
-#     )],
-# )
-#
-# fig.update_layout(
-#     scene=dict(
-#         xaxis_title='X',
-#         yaxis_title='Y',
-#         zaxis_title='Z'
-#     ),
-#     title="3D Phantom Visualization with Slider"
-# )
-#
-# # Show the plot
-# fig.show()
-
-
-import scipy.io
-import numpy as np
-import matplotlib.pyplot as plt
-from matplotlib.widgets import Slider
-from matplotlib.gridspec import GridSpec
 
 # Load the .mat file
 mat_file = 'phantom_data.mat'  # Replace with your .mat file path
@@ -136,9 +82,12 @@ array_3d = data['array_3d']  # Replace 'phantom_matrix' with the actual key in y
 # Ensure array_3d is in the shape (x, y, z)
 x, y, z = array_3d.shape
 
+# from starting_position_photon import sliced_array_njure
+# array_3d = sliced_array_njure
+
 # Create a larger figure with a GridSpec layout
 fig = plt.figure(figsize=(18, 10))  # Increase figure size
-gs = GridSpec(1, 3, width_ratios=[3, 3, 1], height_ratios=[2])  # Adjust ratios to make plots fill space
+gs = GridSpec(1, 3, width_ratios=[1, 1, 1], height_ratios=[1])  # Adjust ratios to make plots fill space
 
 # Create subplots with custom sizing
 ax1 = plt.subplot(gs[0])  # First larger plot
