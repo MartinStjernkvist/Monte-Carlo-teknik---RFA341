@@ -16,9 +16,9 @@ print(Sfäryta_liten)
 Antal_iterationer=100
 Startpos_yta=[]
 for i in range(Antal_iterationer):
-    x=np.random.rand()
-    y=np.random.rand()
-    z=np.random.rand()
+    x=np.random.uniform(-0.5,0.5)#Slumpmässig koordinat mellan 1 m i koordinatsystemet
+    y=np.random.uniform(-0.5,0.5)
+    z=np.random.uniform(-0.5,0.5)
     if radie_liten**2==y**2+z**2+x**2:
         Startpos_yta.append([x,y,z])
     else:
@@ -31,10 +31,10 @@ print(Sfärvolym_stor)
 Antal_iterationer=100
 Startpos_volym=[]
 for i in range(Antal_iterationer):
-    x=np.random.rand()
-    y=np.random.rand()
-    z=np.random.rand()
+    x=np.random.uniform(-0.5,0.5) #Slumpmässig koordinat mellan 1 m i koordinatsystemet
+    y=np.random.uniform(-0.5,0.5)
+    z=np.random.uniform(-0.5,0.5)
     if radie_stor**2>=y**2+z**2+x**2:
-        Startpos_yta.append([x,y,z])
+        Startpos_volym.append([x,y,z])
     else:
         continue
