@@ -1,5 +1,9 @@
 from imports_file import *
 
+"""
+Inprincip samma grej som när vi gör matrisen med endast njurarna, skillnaden är att vi byter target_values till värden med benmärg
+"""
+
 #   ----------------------------------------------------------------------
 #   READ IN DATA
 #   ----------------------------------------------------------------------
@@ -7,24 +11,25 @@ from imports_file import *
 # Load the .mat file
 mat_file = 'phantom_data.mat'  # Replace with your .mat file path
 data = scipy.io.loadmat(mat_file)
+array_3d = data['array_3d']
 
 
 # sliced_array_phantom = array_3d[30:230, 40:210, 570:900]
 sliced_array_phantom = array_3d[:,:,:]
 x, y, z = sliced_array_phantom.shape
 
-sliced_array_njure = np.zeros((x, y, z))
+sliced_array_benmärg = np.zeros((x, y, z))
 
-target_values = [17, 18, 19, 20, 21, 22, 23]
+target_values = [19] # värdet för benmärg i "Anatomidefinitioner.xlsx"
 mask = np.isin(sliced_array_phantom, target_values)
-sliced_array_njure[mask] = sliced_array_phantom[mask]
+sliced_array_benmärg[mask] = sliced_array_phantom[mask]
 
 #   ----------------------------------------------------------------------
 #   INPUT ARRAY FOR PLOTTING
 #   ----------------------------------------------------------------------
 
 # replace old array with new array, which will then be plotted
-array_3d = sliced_array_njure
+array_3d = sliced_array_benmärg
 
 #   ----------------------------------------------------------------------
 #   PLOTTING
@@ -99,11 +104,3 @@ slider_y.on_changed(update)
 slider_z.on_changed(update)
 
 plt.show()
-
-#   ----------------------------------------------------------------------
-#   PRINTING
-#   ----------------------------------------------------------------------
-
-# print(array_3d[slice_x_index, :, :])  # X slice
-# print(array_3d[:, slice_y_index, :])  # Y slice
-# print(array_3d[:, :, slice_z_index])  # Z slice

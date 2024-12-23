@@ -11,9 +11,7 @@ data = scipy.io.loadmat(mat_file)
 
 # Check what keys are in the .mat file
 print("Keys in the .mat file:", data.keys())
-
-# Access the 3D array from the .mat file (replace 'your_matrix_key' with the actual key from the file)
-array_3d = data['array_3d']  # Replace 'phantom_matrix' with the actual key in your .mat file
+array_3d = data['array_3d']
 
 #   ----------------------------------------------------------------------
 #   CREATE SLICED ARRAYS
@@ -25,7 +23,7 @@ x, y, z = sliced_array_phantom.shape
 
 sliced_array_njure = np.zeros((x, y, z))
 
-target_values = [17, 18, 19, 20, 21, 22, 23]
+target_values = [17, 18, 19, 20, 21, 22, 23] # värden för njure i "Anatomidefinitioner.xlsx"
 mask = np.isin(sliced_array_phantom, target_values)
 sliced_array_njure[mask] = sliced_array_phantom[mask]
 
