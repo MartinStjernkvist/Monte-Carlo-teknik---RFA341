@@ -16,10 +16,19 @@ Sfäryta_liten=4*radie_liten**2*ma.pi
 Antal_iterationer=1000
 Startpos_yta=[]
 for i in range(Antal_iterationer):
-    x=np.random.uniform(-0.5*10**-6,0.5*10**-6)#Slumpmässig koordinat mellan 1 mm i koordinatsystemet
+    x=np.random.uniform(-0.5*10**-6,0.5*10**-6)#Slumpmässig koordinat mellan 1 um i koordinatsystemet
     y=np.random.uniform(-0.5*10**-6,0.5*10**-6)
     z=np.random.uniform(-0.5*10**-6,0.5*10**-6)
     if radie_liten**2==y**2+z**2+x**2:
+        Startpos_yta.append([x,y,z])
+    else:
+        continue
+
+for i in range(Antal_iterationer):
+    x=np.random.uniform(-0.5*10**-3,0.5*10**-3)#Slumpmässig koordinat mellan 1 mm i koordinatsystemet, värden i meter
+    y=np.random.uniform(-0.5*10**-3,0.5*10**-3)
+    z=np.random.uniform(-0.5*10**-3,0.5*10**-3)
+    if radie_liten**2>=y**2+z**2+x**2 and y**2+z**2+x**2> (299*10**-6)**2 :
         Startpos_yta.append([x,y,z])
     else:
         continue
@@ -39,4 +48,4 @@ for i in range(Antal_iterationer):
         Startpos_volym.append([x,y,z])
     else:
         continue
-#print(Startpos_volym)
+print(Startpos_volym)
