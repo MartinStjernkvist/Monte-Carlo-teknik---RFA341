@@ -29,28 +29,28 @@ Y90_energ=2278.7 #keV men ska slumpa i spektrumet i en av filerna
 import pandas as pd
 df=pd.read_excel(r"C:\Users\Admin\Documents\GitHub\Monte Carlo Linnea\Y90_Spektrum.xlsx" )
 print(df)
-#Lägg till sannolikheten för beta sönderfall? på något sätt hitta hur man gör det i en excel fil
-#eller hitta funktionen som man sen kan göra invers transform
-
+#Plottar ut punkterna i excelfilen och gör en kurvanpassning
 
 
 #Sfärisk koordinat för riktningnen som fotoner kan färdas i
 import matplotlib.pyplot as plt
 from mpl_toolkits import mplot3d
 steg=1 #Test steglängd
-Antal_iterationer=100
+Antal_iterationer=500
 Punkter=[]
 fig = plt.figure()
 ax = plt.axes(projection='3d')
+
 for i in range(Antal_iterationer):     
     #Slumpar vinklarna på teata och si
-    theata=np.random.uniform(0,ma.pi) #fixa detta 
+    #theata=np.random.uniform(0,ma.pi) #fixa detta 
+    theata=rand.gauss(ma.pi/2,1) #Fortfarande många vid toppen och botten när många iterationer görs
     si=np.random.uniform(0,2*ma.pi)
     #Koordinaterna för vinklarna
     x=steg*ma.sin(theata)*ma.cos(si)
     y=steg*ma.sin(theata)*ma.sin(si)
     z=steg*ma.cos(theata)
-    ax.scatter(x,y,z)#Plottar ut punkter
+    ax.scatter(x,y,z,color='blue',s=2)#Plottar ut punkter
     #Punkter.append([x,y,z])
 
 
