@@ -1,4 +1,4 @@
-from imports_file import *
+from imports import *
 
 # Ursprungsenergier från nukliden
 Lu177_energ = [208.3, 112.9, 321.3, 249.7, 71.6, 136.7]  # keV
@@ -38,3 +38,22 @@ plt.plot([1, 2, 3, 4, 5, 6], Lu177_sannolik)
 plt.show()
 
 print(np.sum(Lu177_sannolik))
+
+
+
+def sampla_foton_energi():
+    Slump_tal = np.random.rand()
+    if Slump_tal <= Lu177_sannolik[0]:
+        foton_energi = Lu177_energ[0]
+    elif Slump_tal <= Lu177_sannolik[1]:
+        foton_energi = Lu177_energ[1]
+    elif Slump_tal <= Lu177_sannolik[2]:
+        foton_energi = Lu177_energ[2]
+    elif Slump_tal <= Lu177_sannolik[3]:
+        foton_energi = Lu177_energ[3]
+    elif Slump_tal <= Lu177_sannolik[4]:
+        foton_energi = Lu177_energ[4]
+    else:
+        foton_energi = Lu177_energ[5]
+    return foton_energi
+

@@ -1,4 +1,4 @@
-from imports_file import *
+from imports import *
 
 # 1
 random_radvektor = np.random.rand(10)

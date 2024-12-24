@@ -1,11 +1,11 @@
-from imports_file import *
+from imports import *
 
 """
-Inprincip samma grej som när vi gör matrisen med endast njurarna, skillnaden är att vi byter target_values till värden med benmärg
+Samma grej som när vi gör matrisen med endast njurarna, skillnaden är att vi byter target_values till värden med benmärg
 """
 
 #   ----------------------------------------------------------------------
-#   READ IN DATA
+#   LÄS IN DATA
 #   ----------------------------------------------------------------------
 
 # Load the .mat file
@@ -25,7 +25,7 @@ mask = np.isin(sliced_array_phantom, target_values)
 sliced_array_benmärg[mask] = sliced_array_phantom[mask]
 
 #   ----------------------------------------------------------------------
-#   INPUT ARRAY FOR PLOTTING
+#   INPUT ARRAY FÖR PLOTTING
 #   ----------------------------------------------------------------------
 
 # replace old array with new array, which will then be plotted
