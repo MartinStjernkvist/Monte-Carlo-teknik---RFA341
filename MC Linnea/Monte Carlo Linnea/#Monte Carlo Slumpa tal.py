@@ -9,19 +9,20 @@ import math as ma
 Y90_energ=2278.7 #keV men ska slumpa i spektrumet i en av filerna
 
 
-#Steglängden på fotonerna
+#Steglängden på fotonerna, Wendy ska göra detta
 
 #Ta reda på majortiteta attenuerigskoefficienten för varje matris/slice
-file_path_attenuering="C:\Users\Admin\Documents\GitHub\Monte Carlo Linnea\Attenueringsdata.xlsx"
+#file_path_attenuering="C:\Users\Admin\Documents\GitHub\Monte Carlo Linnea\Attenueringsdata.xlsx"
 ... #ta reda på my_m genom att ta max för allavoxlar attenueringskoefficient
-my_m=np.max()
+#my_m=np.max()
 
 #Steglängden på fotonerna
-steg=-ma.log(rand.random())/my_m
+#steg=-ma.log(rand.random())/my_m
 
 
 
-#Hittar filen 
+
+#Hittar filen och ta info från excelfilen
 #file_path_betasönderfall="C:\Users\Admin\Documents\GitHub\Monte Carlo Linnea\Y90_Spektrum.xlsx"
 
 #Läser en Excel fil
@@ -34,9 +35,24 @@ print(df)
 
 
 #Sfärisk koordinat för riktningnen som fotoner kan färdas i
+import matplotlib.pyplot as plt
+from mpl_toolkits import mplot3d
 steg=1 #Test steglängd
-theata=np.random.uniform(0,ma.pi)
-si=np.random.uniform(0,2*ma.pi)
-x=steg*ma.sin(theata)*ma.cos(si)
-y=steg*ma.sin(theata)*ma.sin(si)
-z=steg*ma.cos(theata)
+Antal_iterationer=100
+Punkter=[]
+fig = plt.figure()
+ax = plt.axes(projection='3d')
+for i in range(Antal_iterationer):     
+    #Slumpar vinklarna på teata och si
+    theata=np.random.uniform(0,ma.pi) #fixa detta 
+    si=np.random.uniform(0,2*ma.pi)
+    #Koordinaterna för vinklarna
+    x=steg*ma.sin(theata)*ma.cos(si)
+    y=steg*ma.sin(theata)*ma.sin(si)
+    z=steg*ma.cos(theata)
+    ax.scatter(x,y,z)#Plottar ut punkter
+    #Punkter.append([x,y,z])
+
+
+#Plotta figur    
+plt.show()
