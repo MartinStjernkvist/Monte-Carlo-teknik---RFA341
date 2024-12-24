@@ -32,7 +32,9 @@ print(df)
 #eller hitta funktionen som man sen kan göra invers transform
 
 
+
 #Sfärisk koordinat för riktningnen som fotoner kan färdas i
+steg=1 #Test steglängd
 theata=np.random.uniform(0,ma.pi)
 si=np.random.uniform(0,2*ma.pi)
 x=steg*ma.sin(theata)*ma.cos(si)
