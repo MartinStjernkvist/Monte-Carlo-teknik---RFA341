@@ -35,6 +35,7 @@ slice_idx = z // 2
 
 array_3d = array_3d
 
+
 #   ----------------------------------------------------------------------
 #   PLOTTING 2D
 #   ----------------------------------------------------------------------
@@ -62,7 +63,7 @@ def update(val):
 
 slider.on_changed(update)
 
-plt.show()
+# plt.show()
 
 
 
@@ -72,6 +73,11 @@ plt.show()
 
 # from starting_position_photon import sliced_array_njure
 # array_3d = sliced_array_njure
+
+# array_3d = array_3d[50:-50,50:200,600:1100]
+# array_3d = array_3d[:,25:215,:] # denna matris inkluderar kroppen, försöker skära bort luft runtomkring
+array_3d = array_3d[:, 25:215, 500:1150] # försöker skära en rimlig matris där växelverkan kan ske och fortfarande leda till energideponering i benmärgen i ryggen
+x, y, z = array_3d.shape
 
 #   ----------------------------------------------------------------------
 #   PLOTTING 3D

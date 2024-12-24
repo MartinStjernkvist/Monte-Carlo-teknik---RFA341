@@ -17,7 +17,8 @@ Transport
 
 Växelverkan
     1:a
-    - slumpa tal mellan 1 och 0
+    - slumpa tal mellan 0 och 1
+    - om tal inom visst intervall -> växelverkan typ
 
     resten
     - ta ut data för tvärsnitt
