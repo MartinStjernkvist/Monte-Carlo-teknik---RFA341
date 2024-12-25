@@ -21,12 +21,13 @@ from steg_start import steg
 def run_MC(iterationer, mu):
 
     foton_energi = sampla_foton_energi()
-    position_start = position_start()
+    x,y,z = position_start()
     theta, phi = riktning_start()
 
     medelvägslängd = medelvägslängd(mu)
-    steg = steg(theta, phi, medelvägslängd, position_start)
+    steg_till_ny_position = steg(theta, phi, medelvägslängd, position_start)
 
+    r = np.sqrt(x ** 2 + y ** 2 + z ** 2)
 
 
     return print('WORK IN PROGRESS')
