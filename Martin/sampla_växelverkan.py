@@ -1,9 +1,66 @@
 from imports import *
 
-tvärsnitt_file = '..\given_data\Tvärsnittstabeller_Fotoner.xlsx'
-df = pd.read_excel(tvärsnitt_file, index_col=[0])
-print(df)
+tvärsnitt_file = '../given_data/Tvärsnittstabeller_Fotoner.xlsx'
+df = pd.read_excel(tvärsnitt_file, index_col=None)
+# print(df)
 print(df.columns)
+# print(df.at[5, 'Unnamed: 1'])
+# print(df['Rayleigh (cm^2)'])
+
+# first_column = df.iloc[:, 0]
+# print(first_column)
+energi_list = df['Energy (eV)'].to_list()
+# print(energi_list)
+
+compton_list = df['Compton (cm^2)'].to_list()
+# print(compton_list)
+
+foto_list = df['Photoelectric  (cm^2)'].to_list()
+# print(foto_list)
+
+initial_guess = [-1, 0]
+
+
+def func(x, k, m):
+    return k * x + m
+
+
+def find_foto_tvärsnitt(energi_list, foto_list, energi):
+    energi_list = np.array(energi_list)
+    foto_list = np.array(foto_list)
+
+    diff = np.abs(energi_list - energi)
+    closest_indices = np.argsort(diff)[:3]
+    foto_close = foto_list[closest_indices]
+    energi_close = energi_list[closest_indices]
+    # print('energi close: ', energi_close)
+    print('foto close: ', foto_close)
+
+    # linjär anpassning
+    popt, _ = curve_fit(func, energi_close, foto_close)
+
+    k, m = popt
+    print('k, m: ',k, m)
+    foto_target = func(energi, k, m)
+    print(foto_target)
+    return foto_target
+
+energi = 10**5
+foto_target = find_foto_tvärsnitt(energi_list, foto_list, energi)
+
+x_data = [energi_list, energi]
+y_data = [foto_list, foto_target]
+scatter = [2, 1]
+label_data = 'foto tvärsnitt'
+marker = ['o', 'X']
+color = ['blue', 'red']
+
+fig = plot_stuff(x_data, y_data, scatter, label_data,
+                 marker, color, x_label='energi (eV)', y_label='tvärsnitt (cm^2)', title='1',
+                 fig_size=(10, 10), symbol_size=100, font_size=30, alpha=1, line_width=2, x_lim=(0, 0), y_lim=(0, 0),
+                 grid=False, x_scale='log', y_scale='log')
+
+fig.savefig('foto tvärsnitt', bbox_inches='tight')
 
 """
 # INSÅG INTE ATT VI HADE EN EXCELFIL MED TVÄRSNITT
@@ -101,7 +158,6 @@ if __name__ == "__main__":
 
     print(len(bingo))
 """
-
 
 # def växelverkan(energi):
 #

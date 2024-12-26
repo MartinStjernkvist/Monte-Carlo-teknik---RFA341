@@ -6,7 +6,7 @@ start = time.time()
 #   PANDAS
 #   ----------------------------------------------------------------------
 
-anatomidefinitioner_file = '..\given_data\Anatomidefinitioner.xlsx'
+anatomidefinitioner_file = '../given_data/Anatomidefinitioner.xlsx'
 df = pd.read_excel(anatomidefinitioner_file, index_col=[0])
 print(df)
 print(df.columns)
