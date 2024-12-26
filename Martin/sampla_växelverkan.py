@@ -27,8 +27,8 @@ class växelverkan:
         self.foto_list = df['Photoelectric  (cm^2)'].to_list()
         self.compton_list = df['Compton (cm^2)'].to_list()
 
-    def func(self, x, k, m):
-        return k * x + m
+    # def func(self, x, k, m):
+    #     return k * x + m
 
     def find_foto_tvärsnitt(self):
         energi_list = np.array(self.energi_list)
@@ -42,12 +42,17 @@ class växelverkan:
         # print('foto close: ', foto_close)
 
         # linjär anpassning
-        popt, _ = curve_fit(self.func, energi_close, foto_close)
+        # popt, _ = curve_fit(self.func, energi_close, foto_close)
+        #
+        # k, m = popt
+        # # print('k, m: ', k, m)
+        # foto_target = self.func(self.energi, k, m)
 
-        k, m = popt
-        # print('k, m: ', k, m)
-        foto_target = self.func(self.energi, k, m)
+        # linjär interpolering funktion
+        foto_target = foto_close[0] + (energi - energi_close[0]) * (foto_close[1] - foto_close[0]) / (energi_close[1] - energi_close[0])
+
         # print(foto_target)
+        # print(foto_target_2)
         return foto_target
 
     def find_compton_tvärsnitt(self):
@@ -61,13 +66,17 @@ class växelverkan:
 
         # print('compton close: ', compton_close)
 
-        # linjär anpassning
-        popt, _ = curve_fit(self.func, energi_close, compton_close)
+        # # linjär anpassning
+        # popt, _ = curve_fit(self.func, energi_close, compton_close)
+        #
+        # k, m = popt
+        # # print('k, m: ', k, m)
+        # compton_target = self.func(self.energi, k, m)
+        # # print(compton_target)
 
-        k, m = popt
-        # print('k, m: ', k, m)
-        compton_target = self.func(self.energi, k, m)
-        # print(compton_target)
+        compton_target = compton_close[0] + (energi - energi_close[0]) * (compton_close[1] - compton_close[0]) / (
+                    energi_close[1] - energi_close[0])
+
         return compton_target
 
     def bestäm_växelverkan(self):
@@ -140,6 +149,8 @@ fig.savefig('compton tvärsnitt', bbox_inches='tight')
 
 
 if __name__ == "__main__":
+    start = time.time()
+
     energi = 1.5 * 10 ** 4
 
     instans = växelverkan(energi, tvärsnitt_file)
@@ -170,6 +181,13 @@ if __name__ == "__main__":
         if instans.bestäm_växelverkan() == 'foto':
             bingo +=1
     print(bingo)
+
+    end = time.time()
+    runtime = round((end - start), 1)
+    if runtime < 60:
+        print(f'Runtime: {runtime} seconds')
+    else:
+        print('Runtime: ' + str(round((runtime / 60), 1)) + ' minutes')
 
 """
 # INSÅG INTE ATT VI HADE EN EXCELFIL MED TVÄRSNITT
