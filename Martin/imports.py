@@ -9,24 +9,24 @@ import pandas as pd
 from scipy.interpolate import interp1d
 from numpy import random
 
-
 #   ----------------------------------------------------------------------
 #   KONSTANTER
 #   ----------------------------------------------------------------------
 
 pi = np.pi
-E_e = 0.511 * 10**6 # eV
-r_e = np.sqrt(0.07941) # sqrt(b): re2 = e4/Ee2 ≈ 0.07941 b, https://en.wikipedia.org/wiki/Gamma_ray_cross_section
-a_0 = 5.29177210903 * 10**(-11) * 10**(14) # sqrt(b), bohr radius of hydrogen
-c = 3 * 10**8
+E_e = 0.511 * 10 ** 6  # eV
+r_e = np.sqrt(0.07941)  # sqrt(b): re2 = e4/Ee2 ≈ 0.07941 b, https://en.wikipedia.org/wiki/Gamma_ray_cross_section
+a_0 = 5.29177210903 * 10 ** (-11) * 10 ** (14)  # sqrt(b), bohr radius of hydrogen
+c = 3 * 10 ** 8
 
-
+#   ----------------------------------------------------------------------
+#   FUNKTIONER
+#   ----------------------------------------------------------------------
 
 def plot_stuff(x_data, y_data, scatter, label_data,
                marker='o', color='blue', x_label='x-label', y_label='y-label', title='1',
                fig_size=(10, 10), symbol_size=100, font_size=30, alpha=1, line_width=10, x_lim=(0, 0), y_lim=(0, 0),
                grid=False, x_scale='linear', y_scale='linear'):
-
     fig = plt.figure(figsize=fig_size)
 
     if x_lim != (0, 0) and y_lim != (0, 0):

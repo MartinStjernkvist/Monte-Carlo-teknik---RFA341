@@ -127,6 +127,11 @@ slider_z.on_changed(update)
 plt.show()
 """
 
+
+#   ----------------------------------------------------------------------
+#   PLOTTING 3D
+#   ----------------------------------------------------------------------
+
 class visualisera_matris:
     def __init__(self, array_3d):
         self.array_3d = array_3d
