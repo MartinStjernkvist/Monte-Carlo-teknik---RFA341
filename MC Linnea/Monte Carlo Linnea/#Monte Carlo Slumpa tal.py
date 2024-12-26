@@ -28,7 +28,8 @@ Y90_energ=2278.7 #keV men ska slumpa i spektrumet i en av filerna
 #Läser en Excel fil
 import pandas as pd
 df=pd.read_excel(r"C:\Users\Admin\Documents\GitHub\Monte Carlo Linnea\Y90_Spektrum.xlsx" )
-print(df)
+#print(df)
+
 #Plottar ut punkterna i excelfilen och gör en kurvanpassning
 
 
@@ -37,18 +38,27 @@ import matplotlib.pyplot as plt
 from mpl_toolkits import mplot3d
 steg=1 #Test steglängd
 Antal_iterationer=500
-Punkter=[]
+Punkter=[] 
 fig = plt.figure()
 ax = plt.axes(projection='3d')
+
+
+#Testa från samplingskoden
+
+def riktning_start(steglängd): # Hitta ett sätt att sampla i alla riktningar för theata och lika fördelad
+    theta = np.arcsin(-1 + 2 * rand.random())
+    phi = 2 * ma.pi * rand.random()
+    return theta, phi
 
 for i in range(Antal_iterationer):     
     #Slumpar vinklarna på teata och si
     #theata=np.random.uniform(0,ma.pi) #fixa detta 
-    theata=rand.gauss(ma.pi/2,1) #Fortfarande många vid toppen och botten när många iterationer görs
-    si=np.random.uniform(0,2*ma.pi)
+    #theata=rand.gauss(ma.pi/2,1) #Fortfarande många vid toppen och botten när många iterationer görs
+    #phi=np.random.uniform(0,2*ma.pi)
     #Koordinaterna för vinklarna
-    x=steg*ma.sin(theata)*ma.cos(si)
-    y=steg*ma.sin(theata)*ma.sin(si)
+    theata,phi=riktning_start(1)
+    x=steg*ma.sin(theata)*ma.cos(phi)
+    y=steg*ma.sin(theata)*ma.sin(phi)
     z=steg*ma.cos(theata)
     ax.scatter(x,y,z,color='blue',s=2)#Plottar ut punkter
     #Punkter.append([x,y,z])
