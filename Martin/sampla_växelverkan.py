@@ -1,5 +1,12 @@
 from imports import *
 
+tvärsnitt_file = '..\given_data\Tvärsnittstabeller_Fotoner.xlsx'
+df = pd.read_excel(tvärsnitt_file, index_col=[0])
+print(df)
+print(df.columns)
+
+"""
+# INSÅG INTE ATT VI HADE EN EXCELFIL MED TVÄRSNITT
 
 class växelverkan:
 
@@ -93,3 +100,8 @@ if __name__ == "__main__":
             bingo.append(1)
 
     print(len(bingo))
+"""
+
+
+# def växelverkan(energi):
+#
