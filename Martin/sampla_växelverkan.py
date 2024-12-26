@@ -54,42 +54,42 @@ class växelverkan:
         # print(text)
         return text
 
+if __name__ == "__main__":
+    start = 10_000
+    stop = 500_000
 
-start = 10_000
-stop = 500_000
-
-# x_data = np.linspace(start, stop)
-# y_data = växelverkan().sigma_foto(x_data)
-# scatter = 2
-# label_data = 'tvärsnitt foto'
-#
-# fig = plot_stuff(x_data, y_data, scatter, label_data,
-#                  marker='o', color='green', x_label='energi (eV)', y_label='sigma (barn)', title='tvärsnitt foto',
-#                  fig_size=(10, 10), symbol_size=50, font_size=30, alpha=1, line_width=5, x_lim=(0, 0), y_lim=(0, 0),
-#                  grid=True, x_scale='log', y_scale='log')
-#
-# fig.savefig('foto.png', bbox_inches='tight')
+    # x_data = np.linspace(start, stop)
+    # y_data = växelverkan().sigma_foto(x_data)
+    # scatter = 2
+    # label_data = 'tvärsnitt foto'
+    #
+    # fig = plot_stuff(x_data, y_data, scatter, label_data,
+    #                  marker='o', color='green', x_label='energi (eV)', y_label='sigma (barn)', title='tvärsnitt foto',
+    #                  fig_size=(10, 10), symbol_size=50, font_size=30, alpha=1, line_width=5, x_lim=(0, 0), y_lim=(0, 0),
+    #                  grid=True, x_scale='log', y_scale='log')
+    #
+    # fig.savefig('foto.png', bbox_inches='tight')
 
 
-x_data = [np.linspace(start, stop), np.linspace(start, stop)]
-y_data = [list(map(växelverkan().sigma_foto, x_data[0])), list(map(växelverkan().sigma_compton, x_data[1]))]
-scatter = [2, 2]
-label_data = ['foto', 'compton']
-color = ['blue', 'red']
+    x_data = [np.linspace(start, stop), np.linspace(start, stop)]
+    y_data = [list(map(växelverkan().sigma_foto, x_data[0])), list(map(växelverkan().sigma_compton, x_data[1]))]
+    scatter = [2, 2]
+    label_data = ['foto', 'compton']
+    color = ['blue', 'red']
 
-fig = plot_stuff(x_data, y_data, scatter, label_data,
-                 marker='o', color=color, x_label='energi (eV)', y_label='sigma (barn)', title='tvärsnitt foto',
-                 fig_size=(10, 10), symbol_size=50, font_size=30, alpha=1, line_width=5, x_lim=(start, stop),
-                 y_lim=(10 ** (-1), 10 ** 5),
-                 grid=True, x_scale='log', y_scale='log')
+    fig = plot_stuff(x_data, y_data, scatter, label_data,
+                     marker='o', color=color, x_label='energi (eV)', y_label='sigma (barn)', title='tvärsnitt foto',
+                     fig_size=(10, 10), symbol_size=50, font_size=30, alpha=1, line_width=5, x_lim=(start, stop),
+                     y_lim=(10 ** (-1), 10 ** 5),
+                     grid=True, x_scale='log', y_scale='log')
 
-fig.savefig('foto & compton.png', bbox_inches='tight')
+    fig.savefig('foto & compton.png', bbox_inches='tight')
 
-iterationer = 1000
-bingo = []
-for i in range(iterationer):
-    instance = växelverkan().bestäm_växelverkan(100_000)
-    if instance == 'foto':
-        bingo.append(1)
+    iterationer = 1000
+    bingo = []
+    for i in range(iterationer):
+        instance = växelverkan().bestäm_växelverkan(100_000)
+        if instance == 'foto':
+            bingo.append(1)
 
-print(len(bingo))
+    print(len(bingo))

@@ -1,5 +1,5 @@
 from imports import *
-from njure_matris import sliced_array_njure
+from matris_njure import sliced_array_njure
 
 def position_start():
     x_size, y_size, z_size = sliced_array_njure.shape
