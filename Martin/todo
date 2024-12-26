@@ -33,17 +33,22 @@ Växelverkan
 
     Vilken typ av växelverkan?
 
-        [KLART-ish, lite följdfrågor]
-        1:a
+        [KLART]
         - slumpa tal mellan 0 och 1
-        - om tal inom visst intervall -> växelverkan typ
-
-        resten
         - ta ut data för tvärsnitt
-        - slumpa tal mellan 1 och 0 - enkelt
+        - om tal inom visst intervall -> växelverkan
 
-        comtpon lär vara svårt? transformering
-        parbildning
+    [ENKELT]
+    Foto
+        - antag lokalt deponerad energi från elektroner
+        - vid foto kommer alltså all energi att deponeras i voxeln (se även länk i sampla_compton_vinkel från Linköping
+
+    Compton
+        - cdf finns i litteratur om man letar
+        - invertera cfd, eller använda någon root-finding kod
+        - transfromera rummet (Lorentztransform?) för att räkna med vinklar
+        - [?] samplad energi (hos utgående fotonen) -> vinkel
+        - följa efter fotonen
 
     Deponering eller transport?
         - för detta behövs attenueringsdata från excel

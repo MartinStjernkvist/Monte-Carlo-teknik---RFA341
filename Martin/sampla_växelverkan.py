@@ -10,6 +10,7 @@ class växelverkan:
         self.energi_list = df['Energy (eV)'].to_list()
         self.foto_list = df['Photoelectric  (cm^2)'].to_list()
         self.compton_list = df['Compton (cm^2)'].to_list()
+        self.rayleigh_list = df['Rayleigh (cm^2)'].to_list()
 
     def find_foto_tvärsnitt(self):
         energi_list = np.array(self.energi_list)
@@ -39,18 +40,36 @@ class växelverkan:
 
         return compton_target
 
+
+    def find_rayleigh_tvärsnitt(self):
+        energi_list = np.array(self.energi_list)
+        rayleigh_list = np.array(self.rayleigh_list)
+
+        diff = np.abs(energi_list - self.energi)
+        closest_indices = np.argsort(diff)[:2]
+        rayleigh_close = rayleigh_list[closest_indices]
+        energi_close = energi_list[closest_indices]
+
+        rayleigh_target = rayleigh_close[0] + (energi - energi_close[0]) * (rayleigh_close[1] - rayleigh_close[0]) / (
+                energi_close[1] - energi_close[0])
+        return rayleigh_target
+
     def bestäm_växelverkan(self):
         foto_target = self.find_foto_tvärsnitt()
         compton_target = self.find_compton_tvärsnitt()
+        rayleigh_target = self.find_rayleigh_tvärsnitt()
 
-        tvärsnitt_lista = [foto_target, compton_target]  # cm^2
+        tvärsnitt_lista = [foto_target, compton_target, rayleigh_target]  # cm^2
 
         tvärsnitt_lista_norm = np.cumsum(tvärsnitt_lista) / np.sum(tvärsnitt_lista)
 
-        if np.random.rand() <= tvärsnitt_lista_norm[0]:
+        slump_tal = np.random.rand()
+        if slump_tal <= tvärsnitt_lista_norm[0]:
             text = 'foto'
-        else:
+        elif slump_tal <= tvärsnitt_lista_norm[1]:
             text = 'compton'
+        else:
+            text = 'rayleigh'
         return text
 
 
@@ -73,26 +92,29 @@ if __name__ == "__main__":
     energi_list = df['Energy (eV)'].to_list()
     compton_list = df['Compton (cm^2)'].to_list()
     foto_list = df['Photoelectric  (cm^2)'].to_list()
+    rayleigh_list = df['Rayleigh (cm^2)'].to_list()
 
     #   ----------------------------------------------------------------------
     #   INPUT ENERGI
     #   ----------------------------------------------------------------------
-    energi = 1.5 * 10 ** 4
+    energi = 10 ** 3
 
     #   ----------------------------------------------------------------------
     #   LÅT STÅ
     #   ----------------------------------------------------------------------
 
     instans = växelverkan(energi, tvärsnitt_file)
+
     foto_target = instans.find_foto_tvärsnitt()
     compton_target = instans.find_compton_tvärsnitt()
+    rayleigh_target = instans.find_rayleigh_tvärsnitt()
 
-    x_data = [energi_list, energi, energi_list, energi]
-    y_data = [foto_list, foto_target, compton_list, compton_target]
-    scatter = [2, 1, 2, 1]
-    label_data = 'compton tvärsnitt'
-    marker = ['o', 'X', 'o', 'X']
-    color = ['blue', 'red', 'green', 'red']
+    x_data = [energi_list, energi, energi_list, energi, energi_list, energi]
+    y_data = [foto_list, foto_target, compton_list, compton_target, rayleigh_list, rayleigh_target]
+    scatter = [2, 1, 2, 1, 2, 1]
+    label_data = ['foto', 'foto', 'compton', 'compton', 'rayleigh', 'rayleigh']
+    marker = ['o', 'X', 'o', 'X', 'o', 'X']
+    color = ['blue', 'red', 'green', 'red', 'magenta', 'red']
 
     fig = plot_stuff(x_data, y_data, scatter, label_data,
                      marker, color, x_label='energi (eV)', y_label='tvärsnitt (cm^2)', title='foto och compton',
@@ -100,22 +122,19 @@ if __name__ == "__main__":
                      y_lim=(0, 0),
                      grid=True, x_scale='log', y_scale='log')
 
-    fig.savefig('foto och compton tvärsnitt', bbox_inches='tight')
+    fig.savefig('tvärsnitt', bbox_inches='tight')
 
     print(instans.bestäm_växelverkan())
 
-    iterationer = 1000
-    bingo = 0
-    for i in range(iterationer):
-        instans = växelverkan(energi, tvärsnitt_file)
-        if instans.bestäm_växelverkan() == 'foto':
-            bingo += 1
-    print(bingo)
+    # iterationer = 1000
+    # bingo = 0
+    # for i in range(iterationer):
+    #     instans = växelverkan(energi, tvärsnitt_file)
+    #     if instans.bestäm_växelverkan() == 'foto':
+    #         bingo += 1
+    # print(bingo)
 
     end_time(start)
-
-
-
 
 """
 # INSÅG INTE ATT VI HADE EN EXCELFIL MED TVÄRSNITT
