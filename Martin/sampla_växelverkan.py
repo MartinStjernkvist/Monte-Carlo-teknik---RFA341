@@ -4,11 +4,19 @@ from imports import *
 class växelverkan:
 
     def sigma_compton(self, energi):
-        # klein nishina
+        # klein nishina, podgorsak
         epsilon = energi / E_e
-        sigma_compton = 2 * pi * r_e ** 2 * ((1 + epsilon) / epsilon ** 3 * (
-            (2 * epsilon * (1 + epsilon) / (1 + 2 * epsilon) - np.log(1 + 2 * epsilon))) + np.log(1 + 2 * epsilon) / (
-                                                     2 * epsilon) - (1 + 3 * epsilon) / (1 + 2 * epsilon) ** 2)
+        Z = 10
+        if energi < 100_000:
+            sigma_compton = Z * (8 / 3) * pi * r_e ** 2 * 1 / (1 + 2 * epsilon) ** 2 * (
+                        1 + 2 * epsilon + (6 / 5) * epsilon ** 2 - (1 / 2) * epsilon ** 3 + (2 / 7) * epsilon ** 4 - (
+                            6 / 35) * epsilon ** 5 + (8 / 105) * epsilon ** 6 + (4 / 105) * epsilon ** 7)
+        else:
+            sigma_compton = Z * 2 * pi * r_e ** 2 * ((1 + epsilon) / epsilon ** 2 * (
+                2 * (1 + epsilon) / (1 + 2 * epsilon) - np.log(1 + 2 * epsilon)/epsilon) + np.log(
+                1 + 2 * epsilon) / (2 * epsilon) - (1 + 3 * epsilon) / (1 + 2 * epsilon) ** 2)
+
+
         return sigma_compton
 
     def sigma_foto(self, energi):
@@ -28,7 +36,7 @@ class växelverkan:
         sigma_compton = växelverkan.sigma_compton(self, energi)
 
         tvärsnitt_lista = [sigma_foto, sigma_compton]  # keV
-        print(tvärsnitt_lista)
+        # print(tvärsnitt_lista)
 
         tvärsnitt_lista_norm = np.zeros(len(tvärsnitt_lista))
         for i in range(len(tvärsnitt_lista)):
@@ -37,7 +45,7 @@ class växelverkan:
             else:
                 tvärsnitt_lista_norm[i] = tvärsnitt_lista[i] / np.sum(tvärsnitt_lista) + tvärsnitt_lista_norm[i - 1]
 
-        print(tvärsnitt_lista_norm)
+        # print(tvärsnitt_lista_norm)
 
         # OBS, kanske måste räkna med rayleigh spridning
         if np.random.rand() <= tvärsnitt_lista[0]:
@@ -49,20 +57,8 @@ class växelverkan:
         return text
 
 
-iterationer = 5
-for i in range(iterationer):
-    instance = växelverkan().bestäm_växelverkan(1_000_000)
-    if instance == 'foto':
-        print('BINGO')
-
-# def plot_stuff(x_data, y_data, scatter, label_data,
-#                marker='o', color='blue', x_label='x-label', y_label='y-label', title='1',
-#                fig_size=(10, 10), symbol_size=100, font_size=30, alpha=1, line_width=10, x_lim=(0, 0), y_lim=(0, 0),
-#                grid=False):
-
 start = 10_000
 stop = 500_000
-
 
 # x_data = np.linspace(start, stop)
 # y_data = växelverkan().sigma_foto(x_data)
@@ -77,19 +73,24 @@ stop = 500_000
 # fig.savefig('foto.png', bbox_inches='tight')
 
 
-
-
 x_data = [np.linspace(start, stop), np.linspace(start, stop)]
-y_data = [växelverkan().sigma_foto(x_data[0]), växelverkan().sigma_compton(x_data[1])]
-scatter = [2,2]
+y_data = [list(map(växelverkan().sigma_foto, x_data[0])), list(map(växelverkan().sigma_compton, x_data[1]))]
+scatter = [2, 2]
 label_data = ['foto', 'compton']
 color = ['blue', 'red']
 
 fig = plot_stuff(x_data, y_data, scatter, label_data,
                  marker='o', color=color, x_label='energi (eV)', y_label='sigma (barn)', title='tvärsnitt foto',
-                 fig_size=(10, 10), symbol_size=50, font_size=30, alpha=1, line_width=5, x_lim=(0, 0), y_lim=(0, 0),
+                 fig_size=(10, 10), symbol_size=50, font_size=30, alpha=1, line_width=5, x_lim=(start, stop), y_lim=(10**(-1), 10**5),
                  grid=True, x_scale='log', y_scale='log')
 
 fig.savefig('foto & compton.png', bbox_inches='tight')
 
+iterationer = 1000
+bingo = []
+for i in range(iterationer):
+    instance = växelverkan().bestäm_växelverkan(100_000)
+    if instance == 'foto':
+        bingo.append(1)
 
+print(len(bingo))
