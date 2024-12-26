@@ -68,6 +68,13 @@ def plot_stuff(x_data, y_data, scatter, label_data,
 
     return fig
 
+def end_time(start):
+    end = time.time()
+    runtime = round((end - start), 1)
+    if runtime < 60:
+        print(f'Runtime: {runtime} seconds')
+    else:
+        print('Runtime: ' + str(round((runtime / 60), 1)) + ' minutes')
 
 """
 def scatter_3d(array,

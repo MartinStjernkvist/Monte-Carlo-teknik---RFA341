@@ -13,11 +13,10 @@ save('phantom_data.mat', 'array_3d');
 
 mat_file = 'phantom_data.mat'
 data = scipy.io.loadmat(mat_file)
+array_phantom = data['array_3d']
 
 if __name__ == "__main__":
     print("Keys in the .mat file:", data.keys())
-
-array_phantom = data['array_3d']
 
 """
 #   ----------------------------------------------------------------------
@@ -148,14 +147,6 @@ class visualisera_matris:
         self.ax1 = plt.subplot(self.gs[0])
         self.ax2 = plt.subplot(self.gs[1])
         self.ax3 = plt.subplot(self.gs[2])
-
-        # Display the initial slices
-        # self.img1 = self.ax1.imshow(self.array_3d[self.slice_x_index, :, :], cmap='gray')
-        # self.ax1.set_title(f'X Slice: {self.slice_x_index}')
-        # self.img2 = self.ax2.imshow(self.array_3d[:, self.slice_y_index, :], cmap='gray')
-        # self.ax2.set_title(f'Y Slice: {self.slice_y_index}')
-        # self.img3 = self.ax3.imshow(self.array_3d[:, :, self.slice_z_index], cmap='gray')
-        # self.ax3.set_title(f'Z Slice: {self.slice_z_index}')
 
         self.vmin, self.vmax = 0, np.max(array_3d)
         self.img1 = self.ax1.imshow(array_3d[self.slice_x_index, :, :], cmap='gray', vmin=self.vmin,
