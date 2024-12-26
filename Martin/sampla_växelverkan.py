@@ -2,13 +2,9 @@ from imports import *
 
 tvärsnitt_file = '../given_data/Tvärsnittstabeller_Fotoner.xlsx'
 df = pd.read_excel(tvärsnitt_file, index_col=None)
-# print(df)
 print(df.columns)
-# print(df.at[5, 'Unnamed: 1'])
-# print(df['Rayleigh (cm^2)'])
 
-# first_column = df.iloc[:, 0]
-# print(first_column)
+
 energi_list = df['Energy (eV)'].to_list()
 # print(energi_list)
 
@@ -18,34 +14,90 @@ compton_list = df['Compton (cm^2)'].to_list()
 foto_list = df['Photoelectric  (cm^2)'].to_list()
 # print(foto_list)
 
-initial_guess = [-1, 0]
+
+# initial_guess = [1, 1]
+
+class växelverkan:
+
+    def __init__(self, energi, energi_list, foto_list, compton_list):
+        self.energi = energi
+        self.energi_list = energi_list
+        self.foto_list = foto_list
+        self.compton_list = compton_list
+
+    def func(self, x, k, m):
+        return k * x + m
+
+    def find_foto_tvärsnitt(self):
+        energi_list = np.array(self.energi_list)
+        foto_list = np.array(self.foto_list)
+
+        diff = np.abs(energi_list - self.energi)
+        closest_indices = np.argsort(diff)[:2]
+        foto_close = foto_list[closest_indices]
+        energi_close = energi_list[closest_indices]
+        # print('energi close: ', energi_close)
+        print('foto close: ', foto_close)
+
+        # linjär anpassning
+        popt, _ = curve_fit(self.func, energi_close, foto_close)
+
+        k, m = popt
+        # print('k, m: ', k, m)
+        foto_target = self.func(self.energi, k, m)
+        # print(foto_target)
+        return foto_target
+
+    def find_compton_tvärsnitt(self):
+        energi_list = np.array(self.energi_list)
+        compton_list = np.array(self.compton_list)
+
+        diff = np.abs(energi_list - self.energi)
+        closest_indices = np.argsort(diff)[:2]
+        compton_close = compton_list[closest_indices]
+        energi_close = energi_list[closest_indices]
+
+        # print('compton close: ', compton_close)
+
+        # linjär anpassning
+        popt, _ = curve_fit(self.func, energi_close, compton_close)
+
+        k, m = popt
+        print('k, m: ', k, m)
+        compton_target = self.func(self.energi, k, m)
+        print(compton_target)
+        return compton_target
+
+    def bestäm_växelverkan(self):
+        foto_target = self.find_foto_tvärsnitt()
+        compton_target = self.find_compton_tvärsnitt()
+        print('tvärsnitt: foto, compton: ', foto_target, compton_target)
+
+        tvärsnitt_lista = [foto_target, compton_target]  # cm^2
+        print('tvärsnitt_lista: ', tvärsnitt_lista)
+
+        tvärsnitt_lista_norm = np.zeros(len(tvärsnitt_lista))
+
+        tvärsnitt_lista_norm = np.cumsum(tvärsnitt_lista) / np.sum(tvärsnitt_lista)
+        # for i in range(len(tvärsnitt_lista)):
+        #     if i == 0:
+        #         tvärsnitt_lista_norm[i] = tvärsnitt_lista[i] / np.sum(tvärsnitt_lista)
+        #     else:
+        #         tvärsnitt_lista_norm[i] = tvärsnitt_lista[i] / np.sum(tvärsnitt_lista) + tvärsnitt_lista_norm[i - 1]
+        # print('tvärsnitt_lista_norm: ', tvärsnitt_lista_norm)
+
+        # OBS, kanske måste räkna med rayleigh spridning
+        if np.random.rand() <= tvärsnitt_lista_norm[0]:
+            text = 'foto'
+        else:
+            text = 'compton'
+        return text
 
 
-def func(x, k, m):
-    return k * x + m
+"""
+energi = 10 ** 5 + 5
 
 
-def find_foto_tvärsnitt(energi_list, foto_list, energi):
-    energi_list = np.array(energi_list)
-    foto_list = np.array(foto_list)
-
-    diff = np.abs(energi_list - energi)
-    closest_indices = np.argsort(diff)[:3]
-    foto_close = foto_list[closest_indices]
-    energi_close = energi_list[closest_indices]
-    # print('energi close: ', energi_close)
-    print('foto close: ', foto_close)
-
-    # linjär anpassning
-    popt, _ = curve_fit(func, energi_close, foto_close)
-
-    k, m = popt
-    print('k, m: ',k, m)
-    foto_target = func(energi, k, m)
-    print(foto_target)
-    return foto_target
-
-energi = 10**5
 foto_target = find_foto_tvärsnitt(energi_list, foto_list, energi)
 
 x_data = [energi_list, energi]
@@ -61,6 +113,53 @@ fig = plot_stuff(x_data, y_data, scatter, label_data,
                  grid=False, x_scale='log', y_scale='log')
 
 fig.savefig('foto tvärsnitt', bbox_inches='tight')
+
+
+compton_target = find_compton_tvärsnitt(energi_list, compton_list, energi)
+
+x_data = [energi_list, energi]
+y_data = [compton_list, compton_target]
+scatter = [2, 1]
+label_data = 'compton tvärsnitt'
+marker = ['o', 'X']
+color = ['green', 'red']
+
+fig = plot_stuff(x_data, y_data, scatter, label_data,
+                 marker, color, x_label='energi (eV)', y_label='tvärsnitt (cm^2)', title='1',
+                 fig_size=(10, 10), symbol_size=100, font_size=30, alpha=1, line_width=2, x_lim=(0, 0), y_lim=(0, 0),
+                 grid=False, x_scale='log', y_scale='log')
+
+fig.savefig('compton tvärsnitt', bbox_inches='tight')
+
+"""
+#   ----------------------------------------------------------------------
+#   FOTO OCH COMPTON
+#   ----------------------------------------------------------------------
+
+
+if __name__ == "__main__":
+    energi = 1.5 * 10 ** 4
+
+    instans = växelverkan(energi, energi_list, foto_list, compton_list)
+    foto_target = instans.find_foto_tvärsnitt()
+    compton_target = instans.find_compton_tvärsnitt()
+
+    x_data = [energi_list, energi, energi_list, energi]
+    y_data = [foto_list, foto_target, compton_list, compton_target]
+    scatter = [2, 1, 2, 1]
+    label_data = 'compton tvärsnitt'
+    marker = ['o', 'X', 'o', 'X']
+    color = ['blue', 'red', 'green', 'red']
+
+    fig = plot_stuff(x_data, y_data, scatter, label_data,
+                     marker, color, x_label='energi (eV)', y_label='tvärsnitt (cm^2)', title='foto och compton',
+                     fig_size=(10, 10), symbol_size=100, font_size=30, alpha=1, line_width=2, x_lim=(0, 0),
+                     y_lim=(0, 0),
+                     grid=True, x_scale='log', y_scale='log')
+
+    fig.savefig('foto och compton tvärsnitt', bbox_inches='tight')
+
+    print(instans.bestäm_växelverkan())
 
 """
 # INSÅG INTE ATT VI HADE EN EXCELFIL MED TVÄRSNITT
