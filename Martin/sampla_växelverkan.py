@@ -118,8 +118,8 @@ if __name__ == "__main__":
 
     fig = plot_stuff(x_data, y_data, scatter, label_data,
                      marker, color, x_label='energi (eV)', y_label='tvärsnitt (cm^2)', title='foto och compton',
-                     fig_size=(10, 10), symbol_size=100, font_size=30, alpha=1, line_width=2, x_lim=(0, 0),
-                     y_lim=(0, 0),
+                     fig_size=(10, 10), symbol_size=100, font_size=30, alpha=1, line_width=2, x_lim=(10, 10**6),
+                     y_lim=(10**(-30), 10**(-17)),
                      grid=True, x_scale='log', y_scale='log')
 
     fig.savefig('tvärsnitt', bbox_inches='tight')
