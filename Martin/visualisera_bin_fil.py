@@ -15,7 +15,8 @@ save('phantom_data.mat', 'array_3d');
 mat_file = 'phantom_data.mat'
 data = scipy.io.loadmat(mat_file)
 
-print("Keys in the .mat file:", data.keys())
+if __name__ == "__main__":
+    print("Keys in the .mat file:", data.keys())
 
 array_phantom = data['array_3d']
 

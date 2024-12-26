@@ -17,5 +17,6 @@ target_values = [17, 18, 19, 20, 21, 22, 23]  # värden för njure i "Anatomidef
 mask = np.isin(sliced_array_phantom, target_values)
 sliced_array_njure[mask] = sliced_array_phantom[mask]
 
-visualisera = visualisera_matris(sliced_array_njure)
-visualisera.show()
+if __name__ == "__main__":
+    visualisera = visualisera_matris(sliced_array_njure)
+    visualisera.show()

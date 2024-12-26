@@ -21,5 +21,6 @@ target_values = [29] # värdet för benmärg i "Anatomidefinitioner.xlsx"
 mask = np.isin(sliced_array_phantom, target_values)
 sliced_array_benmärg[mask] = sliced_array_phantom[mask]
 
-visualisera = visualisera_matris(sliced_array_benmärg)
-visualisera.show()
+if __name__ == "__main__":
+    visualisera = visualisera_matris(sliced_array_benmärg)
+    visualisera.show()

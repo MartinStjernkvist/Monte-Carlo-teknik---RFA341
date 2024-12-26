@@ -3,7 +3,7 @@ from imports import *
 
 
 # FOTON ENERGI START
-from sampla_energi_start import sampla_foton_energi
+from sampla_energi_start import energi_start
 
 # MATRIS NJURE, POSITION START
 from njure_matris import sliced_array_njure
@@ -20,7 +20,7 @@ from steg_start import steg
 
 def run_MC(iterationer, mu):
 
-    foton_energi = sampla_foton_energi()
+    foton_energi = energi_start()
     x,y,z = position_start()
     theta, phi = riktning_start()
 

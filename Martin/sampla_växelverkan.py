@@ -21,7 +21,6 @@ class växelverkan:
 
     def sigma_foto(self, energi):
         # https://en.wikipedia.org/wiki/Gamma_ray_cross_section
-        # https: // bohr.physics.berkeley.edu / classes / 221 / 1112 / notes / photelec.pdf
         Z = 10  # räknar inte med Z-beroende, BYT TILL MEDELVÄRDE AV Z FÖR MÄNNISKOKROPP
         alpha = 1 / 137
         k = energi / E_e
@@ -32,6 +31,7 @@ class växelverkan:
     def bestäm_växelverkan(self, energi):
         # energierna på gamma från sönderfallen är för låga för att ge parbildning
         # -> antingen compton eller foto
+        # möjligtvis även rayleigh
         sigma_foto = växelverkan.sigma_foto(self, energi)
         sigma_compton = växelverkan.sigma_compton(self, energi)
 
@@ -44,7 +44,6 @@ class växelverkan:
                 tvärsnitt_lista_norm[i] = tvärsnitt_lista[i] / np.sum(tvärsnitt_lista)
             else:
                 tvärsnitt_lista_norm[i] = tvärsnitt_lista[i] / np.sum(tvärsnitt_lista) + tvärsnitt_lista_norm[i - 1]
-
         # print(tvärsnitt_lista_norm)
 
         # OBS, kanske måste räkna med rayleigh spridning

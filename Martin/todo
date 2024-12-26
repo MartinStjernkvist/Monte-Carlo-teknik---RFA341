@@ -6,32 +6,43 @@ Fantom
 
 Foton
     - sampla energi - klart
-    - sampla startposition position (voxel) - klart
-        - vilka voxlar ingår i njuren (matris) - klart
-        - ta random tal i 3D matrisen - klart
+
+    [KLART]
+    - sampla startposition position (voxel)
+        - vilka voxlar ingår i njuren (matris)
+        - ta random tal i 3D matrisen
+
+    [KLART]
     - sampla riktning - typ klart
 
 Transport
-    - mean free path (från funktion) - borde vara lätt
-    - detektera vilken voxel (avrudning av steg till närmaste heltal) - borde inte va supersvårt
+    [KLART]
+    - mean free path (från funktion)
+
+    [WIP]
+    - detektera vilken voxel (avrundning av steg till närmaste heltal) - borde inte va supersvårt
 
 Växelverkan
-    1:a
-    - slumpa tal mellan 0 och 1
-    - om tal inom visst intervall -> växelverkan typ
+    Vilken typ av växelverkan?
+        [KLART-ish, lite följdfrågor]
+        1:a
+        - slumpa tal mellan 0 och 1
+        - om tal inom visst intervall -> växelverkan typ
 
-    resten
-    - ta ut data för tvärsnitt
-    - slumpa tal mellan 1 och 0 - enkelt
+        resten
+        - ta ut data för tvärsnitt
+        - slumpa tal mellan 1 och 0 - enkelt
 
-    comtpon lär vara svårt? transformering
-    parbildning
+        comtpon lär vara svårt? transformering
+        parbildning
 
-    -> vilken växelverkan typ: antingen deponering eller transport av foton
+
+    Deponering eller transport?
         - för detta behövs attenueringsdata från excel
         - för attenueringsdatan krävs det att man vet vilken voxel som motsvarar vilken vävnad
 
 Deponering
+
     - spara energideponering i ny matris
         - target matris - klar
         - identifiera om foton innanför matris - enkelt
@@ -43,4 +54,5 @@ FRÅGOR
 
 Vid bestämning av vilken sorts växelverkan som sker:
     - var sätter vi den undre gränsen för energi, varvid fotoelektrisk effekt inte längre sker?
+    - Ska vi ta hänsyn till Rayleigh spridning?
 
