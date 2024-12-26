@@ -20,8 +20,7 @@ sigma_t = sigma_a + sigma_s
 
 lambda_t = 1 / sigma_t
 
-
-n_particles = 10**3
+n_particles = 10 ** 3
 x = np.zeros(n_particles)
 y = np.zeros(n_particles)
 z = np.zeros(n_particles)
@@ -63,7 +62,7 @@ for j in range(n_particles):
             is_absorbed = 1
 
     # distance traveled
-    r[j] = np.sqrt(x[j]**2 + y[j]**2 + z[j]**2)
+    r[j] = np.sqrt(x[j] ** 2 + y[j] ** 2 + z[j] ** 2)
 
 r_avg = np.mean(r)
 print(r_avg)
@@ -78,7 +77,7 @@ small_font_size = big_font_size * 0.75
 fig = plt.figure(figsize=(10, 10))
 ax = plt.axes(projection='3d')
 ax.scatter(x, y, z, color='red')
-#ax.scatter(x, y, z, rstride=1, cstride=1, cmap='binary', edgecolor='none', label='no correction')
+# ax.scatter(x, y, z, rstride=1, cstride=1, cmap='binary', edgecolor='none', label='no correction')
 # ax.contour3D(V, AR, L_D_no_corr, 100, cmap='viridis')
 # ax.plot_surface(V, AR, L_D_no_corr, rstride=1, cstride=1, cmap='viridis', edgecolor='none', label='corrected with RE')
 
@@ -93,13 +92,10 @@ plt.yticks(fontsize=small_font_size)
 plt.legend(fontsize=small_font_size)
 plt.show()
 
-
-
-
 end = time.time()
 
 runtime = round((end - start), 1)
 if runtime < 60:
     print(f'Runtime: {runtime} seconds')
 else:
-    print('Runtime: ' + str(round((runtime/60), 1)) + ' minutes')
+    print('Runtime: ' + str(round((runtime / 60), 1)) + ' minutes')

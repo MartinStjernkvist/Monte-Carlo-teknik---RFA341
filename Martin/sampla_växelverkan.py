@@ -9,13 +9,12 @@ class växelverkan:
         Z = 10
         if energi < 100_000:
             sigma_compton = Z * (8 / 3) * pi * r_e ** 2 * 1 / (1 + 2 * epsilon) ** 2 * (
-                        1 + 2 * epsilon + (6 / 5) * epsilon ** 2 - (1 / 2) * epsilon ** 3 + (2 / 7) * epsilon ** 4 - (
-                            6 / 35) * epsilon ** 5 + (8 / 105) * epsilon ** 6 + (4 / 105) * epsilon ** 7)
+                    1 + 2 * epsilon + (6 / 5) * epsilon ** 2 - (1 / 2) * epsilon ** 3 + (2 / 7) * epsilon ** 4 - (
+                    6 / 35) * epsilon ** 5 + (8 / 105) * epsilon ** 6 + (4 / 105) * epsilon ** 7)
         else:
             sigma_compton = Z * 2 * pi * r_e ** 2 * ((1 + epsilon) / epsilon ** 2 * (
-                2 * (1 + epsilon) / (1 + 2 * epsilon) - np.log(1 + 2 * epsilon)/epsilon) + np.log(
+                    2 * (1 + epsilon) / (1 + 2 * epsilon) - np.log(1 + 2 * epsilon) / epsilon) + np.log(
                 1 + 2 * epsilon) / (2 * epsilon) - (1 + 3 * epsilon) / (1 + 2 * epsilon) ** 2)
-
 
         return sigma_compton
 
@@ -80,7 +79,8 @@ color = ['blue', 'red']
 
 fig = plot_stuff(x_data, y_data, scatter, label_data,
                  marker='o', color=color, x_label='energi (eV)', y_label='sigma (barn)', title='tvärsnitt foto',
-                 fig_size=(10, 10), symbol_size=50, font_size=30, alpha=1, line_width=5, x_lim=(start, stop), y_lim=(10**(-1), 10**5),
+                 fig_size=(10, 10), symbol_size=50, font_size=30, alpha=1, line_width=5, x_lim=(start, stop),
+                 y_lim=(10 ** (-1), 10 ** 5),
                  grid=True, x_scale='log', y_scale='log')
 
 fig.savefig('foto & compton.png', bbox_inches='tight')

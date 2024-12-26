@@ -1,6 +1,5 @@
 from imports import *
 
-
 """
 I matlab:
 
@@ -59,8 +58,6 @@ slider.on_changed(update)
 
 # plt.show()
 """
-
-
 
 """
 #   ----------------------------------------------------------------------
@@ -161,11 +158,14 @@ class visualisera_matris:
         # self.ax3.set_title(f'Z Slice: {self.slice_z_index}')
 
         self.vmin, self.vmax = 0, np.max(array_3d)
-        self.img1 = self.ax1.imshow(array_3d[self.slice_x_index, :, :], cmap='gray', vmin=self.vmin, vmax=self.vmax)  # x-slice
+        self.img1 = self.ax1.imshow(array_3d[self.slice_x_index, :, :], cmap='gray', vmin=self.vmin,
+                                    vmax=self.vmax)  # x-slice
         self.ax1.set_title(f'X Slice: {self.slice_x_index}')
-        self.img2 = self.ax2.imshow(array_3d[:, self.slice_y_index, :], cmap='gray', vmin=self.vmin, vmax=self.vmax)  # y-slice
+        self.img2 = self.ax2.imshow(array_3d[:, self.slice_y_index, :], cmap='gray', vmin=self.vmin,
+                                    vmax=self.vmax)  # y-slice
         self.ax2.set_title(f'Y Slice: {self.slice_y_index}')
-        self.img3 = self.ax3.imshow(array_3d[:, :, self.slice_z_index], cmap='gray', vmin=self.vmin, vmax=self.vmax)  # z-slice
+        self.img3 = self.ax3.imshow(array_3d[:, :, self.slice_z_index], cmap='gray', vmin=self.vmin,
+                                    vmax=self.vmax)  # z-slice
         self.ax3.set_title(f'Z Slice: {self.slice_z_index}')
 
         # Create sliders
@@ -208,12 +208,12 @@ class visualisera_matris:
     def show(self):
         plt.show()
 
+
 #   ----------------------------------------------------------------------
 #   INPUT 3D
 #   ----------------------------------------------------------------------
 
 if __name__ == "__main__":
-
     # from starting_position_photon import sliced_array_njure
     # array_3d = sliced_array_njure
 
@@ -221,7 +221,7 @@ if __name__ == "__main__":
     # array_3d = array_3d[:,25:215,:] # denna matris inkluderar kroppen, försöker skära bort luft runtomkring
 
     # försöker skära en rimlig matris där växelverkan kan ske och fortfarande leda till energideponering i benmärgen i ryggen
-    array_3d = array_phantom[:,25:215, 500:1150]
+    array_3d = array_phantom[:, 25:215, 500:1150]
 
     viewer = visualisera_matris(array_3d)
     viewer.show()

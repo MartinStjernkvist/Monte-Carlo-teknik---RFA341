@@ -1,11 +1,17 @@
-Vad måste göras? - upg 1
+
+UPPGIFT 1
 
 Fantom
-    - läsa in fantommatris i python - klar
+
+    [KLART]
+    - läsa in fantommatris i python
+
+    [FRÅGA]
     - skapa ett snitt av matrisen (intervall för 3D matris) -  inte svårt, snart
 
 Foton
-    - sampla energi - klart
+    [KLART]
+    - sampla energi
 
     [KLART]
     - sampla startposition position (voxel)
@@ -13,9 +19,10 @@ Foton
         - ta random tal i 3D matrisen
 
     [KLART]
-    - sampla riktning - typ klart
+    - sampla riktning
 
 Transport
+
     [KLART]
     - mean free path (från funktion)
 
@@ -23,7 +30,9 @@ Transport
     - detektera vilken voxel (avrundning av steg till närmaste heltal) - borde inte va supersvårt
 
 Växelverkan
+
     Vilken typ av växelverkan?
+
         [KLART-ish, lite följdfrågor]
         1:a
         - slumpa tal mellan 0 och 1
@@ -36,17 +45,19 @@ Växelverkan
         comtpon lär vara svårt? transformering
         parbildning
 
-
     Deponering eller transport?
         - för detta behövs attenueringsdata från excel
         - för attenueringsdatan krävs det att man vet vilken voxel som motsvarar vilken vävnad
 
 Deponering
 
+    [KLART]
     - spara energideponering i ny matris
-        - target matris - klar
-        - identifiera om foton innanför matris - enkelt
-    - plotta matris i 3D - lätt
+        - target matris (benmärg i ryggkotan)
+        - identifiera om foton innanför matris
+
+    [VÄLDIGT ENKELT]
+    - visualisera energideponering matris enligt samma visualiseringsmetod som för fantomen
 
 
 
@@ -55,4 +66,7 @@ FRÅGOR
 Vid bestämning av vilken sorts växelverkan som sker:
     - var sätter vi den undre gränsen för energi, varvid fotoelektrisk effekt inte längre sker?
     - Ska vi ta hänsyn till Rayleigh spridning?
+
+Hur ska vi göra snittet?
+    - vi kan testa att endast inkludera z-intervallet för ryggkotan, sedan jämföra med en matris som har hela kroppen
 

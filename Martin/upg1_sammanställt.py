@@ -1,7 +1,5 @@
 from imports import *
 
-
-
 # FOTON ENERGI START
 from sampla_energi_start import energi_start
 
@@ -16,12 +14,12 @@ from sampla_riktning_start import riktning_start
 from sampla_steglängd import medelvägslängd
 
 # STEG TILL NY POSITION
-from steg_start import steg
+from sampla_steg_start import steg
+
 
 def run_MC(iterationer, mu):
-
     foton_energi = energi_start()
-    x,y,z = position_start()
+    x, y, z = position_start()
     theta, phi = riktning_start()
 
     medelvägslängd = medelvägslängd(mu)
@@ -29,7 +27,4 @@ def run_MC(iterationer, mu):
 
     r = np.sqrt(x ** 2 + y ** 2 + z ** 2)
 
-
     return print('WORK IN PROGRESS')
-
-
