@@ -2,7 +2,7 @@ from imports import *
 
 tvärsnitt_file = '../given_data/Tvärsnittstabeller_Fotoner.xlsx'
 df = pd.read_excel(tvärsnitt_file, index_col=None)
-print(df.columns)
+# print(df.columns)
 
 
 energi_list = df['Energy (eV)'].to_list()
@@ -19,11 +19,13 @@ foto_list = df['Photoelectric  (cm^2)'].to_list()
 
 class växelverkan:
 
-    def __init__(self, energi, energi_list, foto_list, compton_list):
+    def __init__(self, energi, tvärsnitt_file):
+        self.df = pd.read_excel(tvärsnitt_file, index_col=None)
+
         self.energi = energi
-        self.energi_list = energi_list
-        self.foto_list = foto_list
-        self.compton_list = compton_list
+        self.energi_list = df['Energy (eV)'].to_list()
+        self.foto_list = df['Photoelectric  (cm^2)'].to_list()
+        self.compton_list = df['Compton (cm^2)'].to_list()
 
     def func(self, x, k, m):
         return k * x + m
@@ -37,7 +39,7 @@ class växelverkan:
         foto_close = foto_list[closest_indices]
         energi_close = energi_list[closest_indices]
         # print('energi close: ', energi_close)
-        print('foto close: ', foto_close)
+        # print('foto close: ', foto_close)
 
         # linjär anpassning
         popt, _ = curve_fit(self.func, energi_close, foto_close)
@@ -63,18 +65,18 @@ class växelverkan:
         popt, _ = curve_fit(self.func, energi_close, compton_close)
 
         k, m = popt
-        print('k, m: ', k, m)
+        # print('k, m: ', k, m)
         compton_target = self.func(self.energi, k, m)
-        print(compton_target)
+        # print(compton_target)
         return compton_target
 
     def bestäm_växelverkan(self):
         foto_target = self.find_foto_tvärsnitt()
         compton_target = self.find_compton_tvärsnitt()
-        print('tvärsnitt: foto, compton: ', foto_target, compton_target)
+        # print('tvärsnitt: foto, compton: ', foto_target, compton_target)
 
         tvärsnitt_lista = [foto_target, compton_target]  # cm^2
-        print('tvärsnitt_lista: ', tvärsnitt_lista)
+        # print('tvärsnitt_lista: ', tvärsnitt_lista)
 
         tvärsnitt_lista_norm = np.zeros(len(tvärsnitt_lista))
 
@@ -140,7 +142,7 @@ fig.savefig('compton tvärsnitt', bbox_inches='tight')
 if __name__ == "__main__":
     energi = 1.5 * 10 ** 4
 
-    instans = växelverkan(energi, energi_list, foto_list, compton_list)
+    instans = växelverkan(energi, tvärsnitt_file)
     foto_target = instans.find_foto_tvärsnitt()
     compton_target = instans.find_compton_tvärsnitt()
 
@@ -160,6 +162,14 @@ if __name__ == "__main__":
     fig.savefig('foto och compton tvärsnitt', bbox_inches='tight')
 
     print(instans.bestäm_växelverkan())
+
+    iterationer = 1000
+    bingo = 0
+    for i in range(iterationer):
+        instans = växelverkan(energi, tvärsnitt_file)
+        if instans.bestäm_växelverkan() == 'foto':
+            bingo +=1
+    print(bingo)
 
 """
 # INSÅG INTE ATT VI HADE EN EXCELFIL MED TVÄRSNITT
