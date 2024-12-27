@@ -1,35 +1,32 @@
 from imports import *
 
-
-
-# FOTON ENERGI START
-from sampla_energi_start import sampla_foton_energi
-
-# MATRIS NJURE, POSITION START
-from njure_matris import sliced_array_njure
+from sampla_energi_start import energi_start
+from matris_njure import sliced_array_njure
 from sampla_position_start import position_start
-
-# RIKTNING
 from sampla_riktning_start import riktning_start
-
-# MEDELVÄGSLÄNGD
 from sampla_steglängd import medelvägslängd
+from sampla_steg_start import steg
+from sampla_växelverkan import växelverkan
 
-# STEG TILL NY POSITION
-from steg_start import steg
 
 def run_MC(iterationer, mu):
-
-    foton_energi = sampla_foton_energi()
-    x,y,z = position_start()
+    # start: sampla position, riktning och energi
+    foton_energi = energi_start()
+    x, y, z = position_start()
     theta, phi = riktning_start()
 
-    medelvägslängd = medelvägslängd(mu)
-    steg_till_ny_position = steg(theta, phi, medelvägslängd, position_start)
+    while attenuerad == 0:
+        # steglängd: sampla medelvägslängden från inverstransformerad attenueringsfunktion
+        medelvägslängd = medelvägslängd(mu)
+
+        #steg: gå steget till ny position i startriktning
+        steg_till_ny_position = steg(theta, phi, medelvägslängd, position_start)
+
+        växelverkan = växelverkan().bestäm_växelverkan(foton_energi)
 
     r = np.sqrt(x ** 2 + y ** 2 + z ** 2)
-
 
     return print('WORK IN PROGRESS')
 
 
+print(växelverkan().bestäm_växelverkan(1000000))

@@ -1,6 +1,5 @@
 from imports import *
 
-
 """
 I matlab:
 
@@ -12,29 +11,22 @@ save('phantom_data.mat', 'array_3d');
 #   READ IN DATA
 #   ----------------------------------------------------------------------
 
-# Load the .mat file
-mat_file = 'phantom_data.mat'  # Replace with your .mat file path
+mat_file = 'phantom_data.mat'
 data = scipy.io.loadmat(mat_file)
+array_phantom = data['array_3d']
 
-# Check what keys are in the .mat file
-print("Keys in the .mat file:", data.keys())
+if __name__ == "__main__":
+    print("Keys in the .mat file:", data.keys())
 
-# Access the 3D array from the .mat file (replace 'your_matrix_key' with the actual key from the file)
-array_3d = data['array_3d']  # Replace 'phantom_matrix' with the actual key in your .mat file
-
-# Ensure array_3d is in the shape (x, y, z)
-x, y, z = array_3d.shape
-
-
+"""
 #   ----------------------------------------------------------------------
-#   INPUT
+#   INPUT 2D
 #   ----------------------------------------------------------------------
 
 # Choose a slice index along the z-axis (middle slice in this case)
 slice_idx = z // 2
 
-array_3d = array_3d
-
+array_phantom = array_phantom
 
 #   ----------------------------------------------------------------------
 #   PLOTTING 2D
@@ -64,25 +56,12 @@ def update(val):
 slider.on_changed(update)
 
 # plt.show()
+"""
 
-
-
-#   ----------------------------------------------------------------------
-#   INPUT 3D
-#   ----------------------------------------------------------------------
-
-# from starting_position_photon import sliced_array_njure
-# array_3d = sliced_array_njure
-
-# array_3d = array_3d[50:-50,50:200,600:1100]
-# array_3d = array_3d[:,25:215,:] # denna matris inkluderar kroppen, försöker skära bort luft runtomkring
-array_3d = array_3d[:, 25:215, 500:1150] # försöker skära en rimlig matris där växelverkan kan ske och fortfarande leda till energideponering i benmärgen i ryggen
-x, y, z = array_3d.shape
-
+"""
 #   ----------------------------------------------------------------------
 #   PLOTTING 3D
 #   ----------------------------------------------------------------------
-
 
 # Create a larger figure with a GridSpec layout
 fig = plt.figure(figsize=(18, 10))  # Increase figure size
@@ -143,3 +122,97 @@ slider_z.on_changed(update)
 
 # Show the plot
 plt.show()
+"""
+
+
+#   ----------------------------------------------------------------------
+#   PLOTTING 3D
+#   ----------------------------------------------------------------------
+
+class visualisera_matris:
+    def __init__(self, array_3d):
+        self.array_3d = array_3d
+        self.x, self.y, self.z = array_3d.shape
+
+        # Initialize slice indices for each axis
+        self.slice_x_index = self.x // 2
+        self.slice_y_index = self.y // 2
+        self.slice_z_index = self.z // 2
+
+        # Create the figure and layout
+        self.fig = plt.figure(figsize=(15, 7.5))
+        self.gs = GridSpec(1, 3, width_ratios=[1, 1, 1], height_ratios=[1])
+
+        # Create subplots
+        self.ax1 = plt.subplot(self.gs[0])
+        self.ax2 = plt.subplot(self.gs[1])
+        self.ax3 = plt.subplot(self.gs[2])
+
+        self.vmin, self.vmax = 0, np.max(array_3d)
+        self.img1 = self.ax1.imshow(array_3d[self.slice_x_index, :, :], cmap='gray', vmin=self.vmin,
+                                    vmax=self.vmax)  # x-slice
+        self.ax1.set_title(f'X Slice: {self.slice_x_index}')
+        self.img2 = self.ax2.imshow(array_3d[:, self.slice_y_index, :], cmap='gray', vmin=self.vmin,
+                                    vmax=self.vmax)  # y-slice
+        self.ax2.set_title(f'Y Slice: {self.slice_y_index}')
+        self.img3 = self.ax3.imshow(array_3d[:, :, self.slice_z_index], cmap='gray', vmin=self.vmin,
+                                    vmax=self.vmax)  # z-slice
+        self.ax3.set_title(f'Z Slice: {self.slice_z_index}')
+
+        # Create sliders
+        self.create_sliders()
+
+        # Attach update function to sliders
+        self.slider_x.on_changed(self.update)
+        self.slider_y.on_changed(self.update)
+        self.slider_z.on_changed(self.update)
+
+    def create_sliders(self):
+        ax_slider_x = plt.axes([0.1, 0.01, 0.75, 0.03], facecolor='lightgoldenrodyellow')
+        self.slider_x = Slider(ax_slider_x, 'X Slice', 0, self.x - 1, valinit=self.slice_x_index, valstep=1)
+
+        ax_slider_y = plt.axes([0.1, 0.06, 0.75, 0.03], facecolor='lightgoldenrodyellow')
+        self.slider_y = Slider(ax_slider_y, 'Y Slice', 0, self.y - 1, valinit=self.slice_y_index, valstep=1)
+
+        ax_slider_z = plt.axes([0.1, 0.11, 0.75, 0.03], facecolor='lightgoldenrodyellow')
+        self.slider_z = Slider(ax_slider_z, 'Z Slice', 0, self.z - 1, valinit=self.slice_z_index, valstep=1)
+
+    def update(self, val):
+        # Update slice indices
+        self.slice_x_index = int(self.slider_x.val)
+        self.slice_y_index = int(self.slider_y.val)
+        self.slice_z_index = int(self.slider_z.val)
+
+        # Update the images
+        self.img1.set_data(self.array_3d[self.slice_x_index, :, :])
+        self.ax1.set_title(f'X Slice: {self.slice_x_index}')
+
+        self.img2.set_data(self.array_3d[:, self.slice_y_index, :])
+        self.ax2.set_title(f'Y Slice: {self.slice_y_index}')
+
+        self.img3.set_data(self.array_3d[:, :, self.slice_z_index])
+        self.ax3.set_title(f'Z Slice: {self.slice_z_index}')
+
+        # Redraw the canvas
+        self.fig.canvas.draw_idle()
+
+    def show(self):
+        plt.show()
+
+
+#   ----------------------------------------------------------------------
+#   INPUT 3D
+#   ----------------------------------------------------------------------
+
+if __name__ == "__main__":
+    # from starting_position_photon import sliced_array_njure
+    # array_3d = sliced_array_njure
+
+    # array_3d = array_3d[50:-50,50:200,600:1100]
+    # array_3d = array_3d[:,25:215,:] # denna matris inkluderar kroppen, försöker skära bort luft runtomkring
+
+    # försöker skära en rimlig matris där växelverkan kan ske och fortfarande leda till energideponering i benmärgen i ryggen
+    array_3d = array_phantom[:, 25:215, 500:1150]
+
+    viewer = visualisera_matris(array_3d)
+    viewer.show()
