@@ -38,7 +38,7 @@ import matplotlib.pyplot as plt
 from mpl_toolkits import mplot3d
 steg=1 #Test steglängd
 Antal_iterationer=500
-Punkter=[] 
+
 fig = plt.figure()
 ax = plt.axes(projection='3d')
 
@@ -50,6 +50,7 @@ def riktning_start(steglängd):
     phi = 2 * ma.pi * rand.random()
     return theta, phi
 """
+
 for i in range(Antal_iterationer):     
     #Slumpar vinklarna på teata och si
     
@@ -63,7 +64,6 @@ for i in range(Antal_iterationer):
     #Testar för att se hur punkerna är fördelade
     ax.scatter(x,y,z,color='blue',s=2)#Plottar ut punkter
    
-
 
 #Plotta figur    
 plt.show()
