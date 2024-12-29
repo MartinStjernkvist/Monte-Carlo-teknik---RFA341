@@ -42,26 +42,27 @@ Punkter=[]
 fig = plt.figure()
 ax = plt.axes(projection='3d')
 
-
+"""
 #Testa från samplingskoden
 
-def riktning_start(steglängd): # Hitta ett sätt att sampla i alla riktningar för theata och lika fördelad
-    theta = np.arcsin(-1 + 2 * rand.random())
+def riktning_start(steglängd): 
+    theta = np.arcsin(-1 + 2 * rand.random())# Hitta ett sätt att sampla i alla riktningar för theata och lika fördelad, blir en parabol
     phi = 2 * ma.pi * rand.random()
     return theta, phi
-
+"""
 for i in range(Antal_iterationer):     
     #Slumpar vinklarna på teata och si
-    #theata=np.random.uniform(0,ma.pi) #fixa detta 
-    #theata=rand.gauss(ma.pi/2,1) #Fortfarande många vid toppen och botten när många iterationer görs
-    #phi=np.random.uniform(0,2*ma.pi)
+    
+    theata=rand.gauss(ma.pi/2,1) #Fortfarande många vid toppen och botten när många iterationer görs, men är bättre än uniform
+    phi=np.random.uniform(0,2*ma.pi) #Slumpar uniform phi
     #Koordinaterna för vinklarna
-    theata,phi=riktning_start(1)
+
     x=steg*ma.sin(theata)*ma.cos(phi)
     y=steg*ma.sin(theata)*ma.sin(phi)
     z=steg*ma.cos(theata)
+    #Testar för att se hur punkerna är fördelade
     ax.scatter(x,y,z,color='blue',s=2)#Plottar ut punkter
-    #Punkter.append([x,y,z])
+   
 
 
 #Plotta figur    
