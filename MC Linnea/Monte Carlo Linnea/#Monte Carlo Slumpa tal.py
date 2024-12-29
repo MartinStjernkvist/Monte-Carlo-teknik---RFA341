@@ -27,11 +27,28 @@ Y90_energ=2278.7 #keV men ska slumpa i spektrumet i en av filerna
 
 #Läser en Excel fil
 import pandas as pd
-df=pd.read_excel(r"C:\Users\Admin\Documents\GitHub\Monte Carlo Linnea\Y90_Spektrum.xlsx" )
-#print(df)
+import matplotlib.pyplot as plt
+from scipy.optimize import curve_fit
+#Hittar Excel filen i datorn
+file=pd.read_excel(r"C:\Users\Admin\Documents\GitHub\Monte Carlo Linnea\Y90_Spektrum.xlsx" )
+#För att se att tabellen stämmer:
+# print(file)
 
+#Ta ut värderna på energin och intensiteten
+Energi= file['Energy (MeV)']
+Intensitet=file['#/nt']
+#Plottar ut värdena
+plt.figure(1)
+plt.scatter(Energi, Intensitet)
+#Visa figuren
+plt.show()
 #Plottar ut punkterna i excelfilen och gör en kurvanpassning
 
+def polynom_funktion(x,a,b,c):
+    return a*x**2+b*x+c
+params, cv= curve_fit (polynom_funktion,Energi, Intensitet)
+
+olika_energier=np.linspace(np.min(Energi), np.max(Energi))
 
 #Sfärisk koordinat för riktningnen som fotoner kan färdas i
 import matplotlib.pyplot as plt
@@ -49,7 +66,7 @@ def riktning_start(steglängd):
     theta = np.arcsin(-1 + 2 * rand.random())# Hitta ett sätt att sampla i alla riktningar för theata och lika fördelad, blir en parabol
     phi = 2 * ma.pi * rand.random()
     return theta, phi
-"""
+
 
 for i in range(Antal_iterationer):     
     #Slumpar vinklarna på teata och si
@@ -67,3 +84,4 @@ for i in range(Antal_iterationer):
 
 #Plotta figur    
 plt.show()
+"""

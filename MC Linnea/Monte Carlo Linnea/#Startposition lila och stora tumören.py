@@ -27,7 +27,7 @@ for i in range(Antal_iterationer):
     z=np.random.uniform(-0.5*10**-3,0.5*10**-3)
     if radie_liten**2>=y**2+z**2+x**2 and y**2+z**2+x**2> (299*10**-6)**2 :
         Startpos_yta.append([x,y,z])
-        ax.scatter(x,y,z,color='green', s=3)
+        #ax.scatter(x,y,z,color='green', s=3)
         continue
     else:
         continue
@@ -38,7 +38,7 @@ for i in range(Antal_iterationer):
 radie_stor=1*10**-3 # i meter
 Sfärvolym_stor=4*radie_stor**3*ma.pi/3
 
-Antal_iterationer=1000
+Antal_iterationer=100
 Startpos_volym=[]
 for i in range(Antal_iterationer):
     x=np.random.uniform(-1*10**-3,1*10**-3) #Slumpmässig koordinat mellan 2 mm i koordinatsystemet
@@ -46,7 +46,7 @@ for i in range(Antal_iterationer):
     z=np.random.uniform(-1*10**-3,1*10**-3)
     if radie_stor**2>=y**2+z**2+x**2:
         Startpos_volym.append([x,y,z])
-        #ax.scatter(x,y,z,color='blue', s=3) 
+        ax.scatter(x,y,z,color='blue', s=3) 
         continue
     else:
         continue
