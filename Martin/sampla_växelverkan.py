@@ -54,6 +54,7 @@ class växelverkan:
                 energi_close[1] - energi_close[0])
         return rayleigh_target
 
+    # @timer
     def bestäm_växelverkan(self):
         foto_target = self.find_foto_tvärsnitt()
         compton_target = self.find_compton_tvärsnitt()

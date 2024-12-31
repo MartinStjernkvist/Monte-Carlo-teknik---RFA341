@@ -23,6 +23,9 @@ def run_MC(iterationer, mu):
         steg_till_ny_position = steg(theta, phi, medelvägslängd, position_start)
 
         växelverkan = växelverkan().bestäm_växelverkan(foton_energi)
+        if växelverkan == 'foto':
+            attenuerad = 1
+
 
     r = np.sqrt(x ** 2 + y ** 2 + z ** 2)
 

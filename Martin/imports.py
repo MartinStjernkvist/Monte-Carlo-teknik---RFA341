@@ -76,6 +76,12 @@ def end_time(start):
     else:
         print('Runtime: ' + str(round((runtime / 60), 1)) + ' minutes')
 
+def timer(func):
+    def wrapper():
+        before = time.time()
+        func()
+        print(f'Function took: {time.time() - before} seconds')
+
 """
 def scatter_3d(array,
                color='blue', x_label='x-label', y_label='y-label', z_label='z-label', title='1',
