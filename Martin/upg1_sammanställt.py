@@ -1,13 +1,14 @@
 from imports import *
 
 from sampla_energi_start import energi_start
-from matriser import sliced_array_phantom, sliced_array_njure, sliced_array_benmärg
+from matriser import sliced_array_phantom, slicad_njure_matris, slicad_benmärg_matris
 from sampla_position_start import position_start
 from sampla_riktning_start import riktning_start
 from sampla_steglängd import medelvägslängd
 from sampla_steg_start import första_steg
 from sampla_växelverkan import växelverkan
 from transformation_3d import transformera_koordinatsystem
+from energideponering import benmärg_matris_deponerad_energi, energideponering_benmärg
 
 
 def run_MC(iterationer, mu):
@@ -18,39 +19,54 @@ def run_MC(iterationer, mu):
     x_start, y_start, z_start = position_start()
     theta, phi = riktning_start()
 
-
     while attenuerad == 0:
         # steglängd: sampla medelvägslängden från inverstransformerad attenueringsfunktion
-        medelvägslängd = medelvägslängd(mu)
+        steglängd = medelvägslängd(mu)
 
-        #steg: gå steget till ny position i startriktning
-        x,y,z = första_steg(theta, phi, medelvägslängd, x_start, y_start, z_start)
+        # steg: gå steget till ny position i startriktning
+        x, y, z = första_steg(theta, phi, steglängd, x_start, y_start, z_start)
 
-        if x>= x_size or y >= y_size or z >= z_size or sliced_array_phantom[x,y,z] == 0:
+        if x >= x_size or y >= y_size or z >= z_size or sliced_array_phantom[x, y, z] == 0:
             attenuerad = 1
 
-        if sliced_array_benmärg[x,y,z] == 0:
+        if slicad_benmärg_matris[x, y, z] == 0:
             continue
 
         växelverkan = växelverkan().bestäm_växelverkan(foton_energi)
 
         if växelverkan == 'foto':
             attenuerad = 1
-
+            energideponering_benmärg(x,y,z, foton_energi)
 
         if växelverkan == 'compton':
             # sampla energideponering, vinkel
-            theta = 1
-            phi = 1
-            x_start = x
+            # theta_compton = sampla_theta_compton
+            # mu_nytt energiberoende?
+            theta_compton = 1
+            phi_compton = 2 * pi * random.rand()
+            mu_ny = 1
+            steglängd_compton = medelvägslängd(mu_ny)
+            vektor_compton, _ = transformera_koordinatsystem(steglängd, phi, theta, steglängd_compton, phi_compton,
+                                                             theta_compton)
+            x_A_C = vektor_compton[0]
+            tot_x = x_start + x_A_C
+
+            y_A_C = vektor_compton[1]
+            tot_y = y_start + y_A_C
+
+            z_A_C = vektor_compton[2]
+            tot_z = z_start + z_A_C
+
+            x_start = x 
             y_start = y
             z_start = z
 
 
 
+
     r = np.sqrt(x ** 2 + y ** 2 + z ** 2)
 
-    return print('WORK IN PROGRESS')
+    return benmärg_matris_deponerad_energi
 
 
 print(växelverkan().bestäm_växelverkan(1000000))

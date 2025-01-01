@@ -6,6 +6,7 @@ def invers_funktion(x, mu):
 
 def medelvägslängd(mu):
     medelvägslängd = invers_funktion(np.random.rand(), mu)
+    return medelvägslängd
 
 # FELAKTIGT:
 # def medelvägslängd_lista(iterationer, mu):

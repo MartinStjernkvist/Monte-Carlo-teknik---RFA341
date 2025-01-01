@@ -1,9 +1,9 @@
 from imports import *
-from matriser import sliced_array_njure, sliced_array_benmärg
+from matriser import slicad_njure_matris, slicad_benmärg_matris
 
-x_size, y_size, z_size = sliced_array_njure.shape
+x_size, y_size, z_size = slicad_njure_matris.shape
 
-deposited_energy = np.zeros((x_size, y_size, z_size))
+benmärg_matris_deponerad_energi = np.zeros((x_size, y_size, z_size))
 
 
 def energideponering_benmärg(x_pos, y_pos, z_pos, energi):
@@ -13,5 +13,19 @@ def energideponering_benmärg(x_pos, y_pos, z_pos, energi):
     y_round = round(y_pos)
     z_round = round(z_pos)
 
-    if sliced_array_njure[x_round, y_round, z_round] != 0:
-        return deposited_energy[x_round, y_round, z_round].append(energi)
+    if slicad_benmärg_matris[x_round, y_round, z_round] != 0:
+        benmärg_matris_deponerad_energi[x_round, y_round, z_round] += energi
+    return benmärg_matris_deponerad_energi
+
+
+if __name__ == "__main__":
+    start = time.time()
+
+    test_matris = np.zeros((5, 5))
+    print(test_matris)
+    test_matris[0,0] += 1
+    print(test_matris)
+    test_matris[0,0] += 1
+    print(test_matris)
+
+    end_time(start)

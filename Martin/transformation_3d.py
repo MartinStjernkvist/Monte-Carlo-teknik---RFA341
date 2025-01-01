@@ -131,7 +131,6 @@ def transformera_koordinatsystem(steg_A_B, phi_A, theta_A, steg_B_C, phi_B, thet
 
 
 if __name__ == "__main__":
-    start = time.time()
 
     #   ----------------------------------------------------------------------
     #   INPUT
@@ -195,7 +194,7 @@ if __name__ == "__main__":
     print(f'dot product y ({enhets_vektorer_B[0:3, 1]}), z ({enhets_vektorer_B[0:3, 2]}): {np.dot(enhets_vektorer_B[0:3, 1], enhets_vektorer_B[0:3, 2])}')
     print(f'dot product x ({enhets_vektorer_B[0:3, 0]}), z ({enhets_vektorer_B[0:3, 2]}): {np.dot(enhets_vektorer_B[0:3, 0], enhets_vektorer_B[0:3, 2])}')
 
-    end_time(start)
+
 
     #   ----------------------------------------------------------------------
     #   PLOTTNING

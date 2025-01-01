@@ -85,7 +85,7 @@ save('phantom_data.mat', 'array_3d');
 
 mat_file = 'phantom_data.mat'
 data = scipy.io.loadmat(mat_file)
-array_phantom = data['array_3d']
+fantom_matris = data['array_3d']
 
 if __name__ == "__main__":
     print("Keys in the .mat file:", data.keys())
@@ -103,7 +103,7 @@ if __name__ == "__main__":
     '''
     försöker skära en rimlig matris där växelverkan kan ske och fortfarande leda till energideponering i benmärgen i ryggen
     '''
-    array_3d = array_phantom[:, 25:215, 500:1150]
+    array_3d = fantom_matris[:, 25:215, 500:1150]
 
     viewer = visualisera_matris(array_3d)
     viewer.show()

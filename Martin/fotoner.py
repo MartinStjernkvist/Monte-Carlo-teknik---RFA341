@@ -73,7 +73,7 @@ for j in range(n_particles):
         s = - lambda_t * np.log(random.rand())  # sample
 
         # angles
-        theta = np.arcsin(-1 + 2 * random.rand())
+        theta = np.arccos(-1 + 2 * random.rand())
         phi = 2 * pi * random.rand()
 
         # movement
