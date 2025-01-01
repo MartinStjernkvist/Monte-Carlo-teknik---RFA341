@@ -1,7 +1,6 @@
 from imports import *
-from matriser import slicad_njure_matris
 
-def position_start():
+def position_start(slicad_njure_matris):
     x_size, y_size, z_size = slicad_njure_matris.shape
     # Step 1: Randomly select coordinates until a non-zero value is found
     while True:

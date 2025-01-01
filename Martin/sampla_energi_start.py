@@ -1,19 +1,36 @@
 from imports import *
 
+def energi_start():
+    slump_tal = np.random.rand()
+    if slump_tal <= Lu177_sannolik[0]:
+        foton_energi = Lu177_energ[0]
+    elif slump_tal <= Lu177_sannolik[1]:
+        foton_energi = Lu177_energ[1]
+    elif slump_tal <= Lu177_sannolik[2]:
+        foton_energi = Lu177_energ[2]
+    elif slump_tal <= Lu177_sannolik[3]:
+        foton_energi = Lu177_energ[3]
+    elif slump_tal <= Lu177_sannolik[4]:
+        foton_energi = Lu177_energ[4]
+    else:
+        foton_energi = Lu177_energ[5]
+    return foton_energi
+
+
+Lu177_energ = [208_366, 112_950, 321_316, 249_674, 71_642, 136_725]  # keV
+
+# Intensitet i % för energierna
+Lu177_intens = [10.38, 6.2, 0.216, 0.2012, 0.1726, 0.047]
+
+Lu177_sannolik = np.zeros(len(Lu177_intens))
+for i in range(len(Lu177_intens)):
+    if i == 0:
+        Lu177_sannolik[i] = Lu177_intens[i] / np.sum(Lu177_intens)
+    else:
+        Lu177_sannolik[i] = Lu177_intens[i] / np.sum(Lu177_intens) + Lu177_sannolik[i - 1]
+
+
 if __name__ == "__main__":
-    # Ursprungsenergier från nukliden
-    Lu177_energ = [208.3, 112.9, 321.3, 249.7, 71.6, 136.7]  # keV
-
-    # Intensitet i % för energierna
-    Lu177_intens = [10.38, 6.2, 0.216, 0.2012, 0.1726, 0.047]
-
-    Lu177_sannolik = np.zeros(len(Lu177_intens))
-    for i in range(len(Lu177_intens)):
-        if i == 0:
-            Lu177_sannolik[i] = Lu177_intens[i] / np.sum(Lu177_intens)
-        else:
-            Lu177_sannolik[i] = Lu177_intens[i] / np.sum(Lu177_intens) + Lu177_sannolik[i - 1]
-
     Antal_iterationer = 100
 
     Foton_energi = []
@@ -38,20 +55,3 @@ if __name__ == "__main__":
     plt.show()
 
     print(np.sum(Lu177_sannolik))
-
-
-def energi_start():
-    slump_tal = np.random.rand()
-    if slump_tal <= Lu177_sannolik[0]:
-        foton_energi = Lu177_energ[0]
-    elif slump_tal <= Lu177_sannolik[1]:
-        foton_energi = Lu177_energ[1]
-    elif slump_tal <= Lu177_sannolik[2]:
-        foton_energi = Lu177_energ[2]
-    elif slump_tal <= Lu177_sannolik[3]:
-        foton_energi = Lu177_energ[3]
-    elif slump_tal <= Lu177_sannolik[4]:
-        foton_energi = Lu177_energ[4]
-    else:
-        foton_energi = Lu177_energ[5]
-    return foton_energi

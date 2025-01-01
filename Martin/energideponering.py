@@ -6,7 +6,7 @@ x_size, y_size, z_size = slicad_njure_matris.shape
 benmärg_matris_deponerad_energi = np.zeros((x_size, y_size, z_size))
 
 
-def energideponering_benmärg(x_pos, y_pos, z_pos, energi):
+def energideponering_benmärg(x_pos, y_pos, z_pos, energi, slicad_benmärg_matris):
     # antag att positionerna ges i term av voxelstorlek, alltså inte cm eller mm
     # -> vid stegberäkning måste stegen omvandlas till voxelstorlek innan de tas
     x_round = round(x_pos)
