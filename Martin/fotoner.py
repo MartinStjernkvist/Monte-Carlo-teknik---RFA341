@@ -77,9 +77,9 @@ for j in range(n_particles):
         phi = 2 * pi * random.rand()
 
         # movement
-        dx = s * np.cos(theta) * np.cos(phi)
-        dy = s * np.cos(theta) * np.sin(phi)
-        dz = s * np.sin(theta)
+        dx = s * np.sin(theta) * np.cos(phi)
+        dy = s * np.sin(theta) * np.sin(phi)
+        dz = s * np.cos(theta)
 
         # new position
         x[j] = x[j] + dx

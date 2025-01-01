@@ -1,7 +1,7 @@
 from imports import *
 
 
-def transform(steg_A_B, phi_A, theta_A, steg_B_C, phi_B, theta_B):
+def transformera_koordinatsystem(steg_A_B, phi_A, theta_A, steg_B_C, phi_B, theta_B):
     """
     - Börjar på x,y,z - kalla detta koordinatsystem A.
     - Tar ett steg med steglängd s, riktning (phi, theta), enligt koordinatsystemet i A.
@@ -16,10 +16,12 @@ def transform(steg_A_B, phi_A, theta_A, steg_B_C, phi_B, theta_B):
     :param steg_A_B: magnitud på steg från A till B
     :param phi_A: vinkel för steget mellan A och B
     :param theta_A: vinkel för steget mellan A och B
+
     :param steg_B_C: magnitud på steg från B till C
     :param phi_B: vinkel för steget mellan B och C
     :param theta_B: vinkel för steget mellan B och C
-    :return: 1) resultatvektor, vars första 3 värden är positionen för punkt C enligt A's koord-syst
+
+    :return: 1) vektor vars första 3 värden är positionen för punkt C enligt A's koord-syst
             2) matris med enhetsvektorerna som B's koord-syst består av
     """
 
@@ -44,14 +46,13 @@ def transform(steg_A_B, phi_A, theta_A, steg_B_C, phi_B, theta_B):
     # :param theta_A: vinkel sfärisk
     # """
 
-    d_x_A_B = steg_A_B * np.sin(theta_A) * np.cos(phi_A)
-    d_y_A_B = steg_A_B * np.sin(theta_A) * np.sin(phi_A)
-    d_z_A_B = steg_A_B * np.cos(theta_A)
+    dx_A_B = steg_A_B * np.sin(theta_A) * np.cos(phi_A)
+    dy_A_B = steg_A_B * np.sin(theta_A) * np.sin(phi_A)
+    dz_A_B = steg_A_B * np.cos(theta_A)
 
-    d_x_B_C = steg_B_C * np.sin(theta_B) * np.cos(phi_B)
-    d_y_B_C = steg_B_C * np.sin(theta_B) * np.sin(phi_B)
-    d_z_B_C = steg_B_C * np.cos(theta_B)
-
+    dx_B_C = steg_B_C * np.sin(theta_B) * np.cos(phi_B)
+    dy_B_C = steg_B_C * np.sin(theta_B) * np.sin(phi_B)
+    dz_B_C = steg_B_C * np.cos(theta_B)
 
     enhets_vektorer_A = np.array(
         [
@@ -110,62 +111,70 @@ def transform(steg_A_B, phi_A, theta_A, steg_B_C, phi_B, theta_B):
 
     Homogenous_matrix = np.array(
         [
-            [R[0, 0], R[0, 1], R[0, 2], d_x_A_B],
-            [R[1, 0], R[1, 1], R[1, 2], d_y_A_B],
-            [R[2, 0], R[2, 1], R[2, 2], d_z_A_B],
+            [R[0, 0], R[0, 1], R[0, 2], dx_A_B],
+            [R[1, 0], R[1, 1], R[1, 2], dy_A_B],
+            [R[2, 0], R[2, 1], R[2, 2], dz_A_B],
             [0, 0, 0, 1]
         ])
 
-    result = Homogenous_matrix @ np.array(
+    vektor_A_C = Homogenous_matrix @ np.array(
         [
-            [d_x_B_C],
-            [d_y_B_C],
-            [d_z_B_C],
+            [dx_B_C],
+            [dy_B_C],
+            [dz_B_C],
             [1]
         ])
 
     enhets_vektorer_B = Homogenous_matrix @ enhets_vektorer_A
-    return result, enhets_vektorer_B
+
+    return vektor_A_C, enhets_vektorer_B
 
 
 if __name__ == "__main__":
     start = time.time()
 
+    #   ----------------------------------------------------------------------
+    #   INPUT
+    #   ---------------------------------------------------------------------
+
     # steg 1: från A till B
     theta_A = 3 * pi / 8
-    phi_A = 3 * pi / 8
+    phi_A = 1 * pi / 8
     steg_A_B = 3
-    # d_x = steg * np.sin(theta) * np.cos(phi)
-    # d_y = steg * np.sin(theta) * np.sin(phi)
-    # d_z = steg * np.cos(theta)
-
+    dx_A_B = steg_A_B * np.sin(theta_A) * np.cos(phi_A)
+    dy_A_B = steg_A_B * np.sin(theta_A) * np.sin(phi_A)
+    dz_A_B = steg_A_B * np.cos(theta_A)
 
     # steg 2: Från B till C, enligt koordinatsystemet för B
-    theta_B = pi / 4
-    phi_B = pi / 4
-    steg_B_C = 1
-    # x_B = 1
-    # y_B = 1
-    # z_B = 1
+    theta_B = pi / 3
+    phi_B = pi / 3
+    steg_B_C = 2
 
-    d_x_A_B = steg_A_B * np.sin(theta_A) * np.cos(phi_A)
-    d_y_A_B = steg_A_B * np.sin(theta_A) * np.sin(phi_A)
-    d_z_A_B = steg_A_B * np.cos(theta_A)
+    dx_B_C = steg_B_C * np.sin(theta_B) * np.cos(phi_B)
+    dy_B_C = steg_B_C * np.sin(theta_B) * np.sin(phi_B)
+    dz_B_C = steg_B_C * np.cos(theta_B)
 
-    d_x_B_C = steg_B_C * np.sin(theta_B) * np.cos(phi_B)
-    d_y_B_C = steg_B_C * np.sin(theta_B) * np.sin(phi_B)
-    d_z_B_C = steg_B_C * np.cos(theta_B)
+    vektor_A_C, enhets_vektorer_B = transformera_koordinatsystem(steg_A_B, phi_A, theta_A, steg_B_C, phi_B, theta_B)
 
-    result, enhets_vektorer_B = transform(steg_A_B, phi_A, theta_A, steg_B_C, phi_B, theta_B)
-    x_A = result[0]
-    y_A = result[1]
-    z_A = result[2]
+    x_A_C = vektor_A_C[0]
+    y_A_C = vektor_A_C[1]
+    z_A_C = vektor_A_C[2]
 
-    print(f'\nresult: \n{result}\nenhets_vektorer_B: \n{enhets_vektorer_B}')
+    #   ----------------------------------------------------------------------
+    #   FELSÖKNING
+    #   ---------------------------------------------------------------------
+
+    print(f'\nresult: \n{vektor_A_C}\nenhets_vektorer_B: \n{enhets_vektorer_B}')
 
     print(f'\ndot product x ({enhets_vektorer_B[0:3, 0]}), y ({enhets_vektorer_B[0:3, 1]}): {np.dot(enhets_vektorer_B[0:3, 0], enhets_vektorer_B[0:3, 1])}')
     print(f'dot product y ({enhets_vektorer_B[0:3, 1]}), z ({enhets_vektorer_B[0:3, 2]}): {np.dot(enhets_vektorer_B[0:3, 1], enhets_vektorer_B[0:3, 2])}')
     print(f'dot product x ({enhets_vektorer_B[0:3, 0]}), z ({enhets_vektorer_B[0:3, 2]}): {np.dot(enhets_vektorer_B[0:3, 0], enhets_vektorer_B[0:3, 2])}')
+
+    end_time(start)
+
+    #   ----------------------------------------------------------------------
+    #   PLOTTNING
+    #   ---------------------------------------------------------------------
 
     fig = plt.figure(figsize=(10, 10))
     ax = plt.axes(projection='3d')
@@ -174,20 +183,24 @@ if __name__ == "__main__":
     ax.set_zlim([0, 4])
 
     ax.scatter(0, 0, 0, label='A', color='black', s=100)
-    ax.scatter(d_x_A_B, d_y_A_B, d_z_A_B, label='B', color='grey', s=100)
-    ax.scatter(x_A, y_A, z_A, label='C', color='purple', s=100)
+    ax.scatter(dx_A_B, dy_A_B, dz_A_B, label='B', color='grey', s=100)
+    ax.scatter(x_A_C, y_A_C, z_A_C, label='C', color='purple', s=100)
 
     ax.quiver(0, 0, 0, 1, 0, 0, color='orange')
     ax.quiver(0, 0, 0, 0, 1, 0, color='brown')
     ax.quiver(0, 0, 0, 0, 0, 1, color='green')
 
-    ax.quiver(d_x_A_B, d_y_A_B, d_z_A_B, enhets_vektorer_B[0, 0], enhets_vektorer_B[1, 0], enhets_vektorer_B[2, 0], color='orange')
-    ax.quiver(d_x_A_B, d_y_A_B, d_z_A_B, enhets_vektorer_B[0, 1], enhets_vektorer_B[1, 1], enhets_vektorer_B[2, 1], color='brown')
-    ax.quiver(d_x_A_B, d_y_A_B, d_z_A_B, enhets_vektorer_B[0, 2], enhets_vektorer_B[1, 2], enhets_vektorer_B[2, 2], color='green')
+    ax.quiver(dx_A_B, dy_A_B, dz_A_B, enhets_vektorer_B[0, 0], enhets_vektorer_B[1, 0], enhets_vektorer_B[2, 0],
+              color='orange')
+    ax.quiver(dx_A_B, dy_A_B, dz_A_B, enhets_vektorer_B[0, 1], enhets_vektorer_B[1, 1], enhets_vektorer_B[2, 1],
+              color='brown')
+    ax.quiver(dx_A_B, dy_A_B, dz_A_B, enhets_vektorer_B[0, 2], enhets_vektorer_B[1, 2], enhets_vektorer_B[2, 2],
+              color='green')
 
-    ax.quiver(0, 0, 0, x_A, y_A, z_A, color='red')
-    ax.quiver(0, 0, 0, d_x_A_B, d_y_A_B, d_z_A_B, color='blue')
-    ax.quiver(d_x_A_B, d_y_A_B, d_z_A_B, (x_A - d_x_A_B), (y_A - d_y_A_B), (z_A - d_z_A_B), color='magenta')
+    ax.quiver(0, 0, 0, dx_A_B, dy_A_B, dz_A_B, color='blue', label='första steget, A-> B')
+    ax.quiver(dx_A_B, dy_A_B, dz_A_B, (x_A_C - dx_A_B), (y_A_C - dy_A_B), (z_A_C - dz_A_B), color='magenta',
+              label='andra steget, B->C')
+    ax.quiver(0, 0, 0, x_A_C, y_A_C, z_A_C, color='red')
 
     ax.set_xlabel('x')
     ax.set_ylabel('y')
@@ -195,5 +208,3 @@ if __name__ == "__main__":
 
     ax.legend()
     plt.show()
-
-    end_time(start)
