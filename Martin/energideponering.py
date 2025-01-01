@@ -1,6 +1,5 @@
 from imports import *
-from matris_njure import sliced_array_njure
-from matris_benmärg import sliced_array_benmärg
+from matriser import sliced_array_njure, sliced_array_benmärg
 
 x_size, y_size, z_size = sliced_array_njure.shape
 
