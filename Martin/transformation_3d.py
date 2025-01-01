@@ -137,18 +137,36 @@ if __name__ == "__main__":
     #   INPUT
     #   ---------------------------------------------------------------------
 
+    # startpunkt A
+    start_x = 1
+    start_y = 1
+    start_z = 1
+
+    x_A = start_x
+    y_A = start_y
+    z_A = start_z
+
+    start_x = x_A
+    start_y = y_A
+    start_z = z_A
+
     # steg 1: från A till B
     theta_A = 3 * pi / 8
     phi_A = 1 * pi / 8
     steg_A_B = 3
-    dx_A_B = steg_A_B * np.sin(theta_A) * np.cos(phi_A)
-    dy_A_B = steg_A_B * np.sin(theta_A) * np.sin(phi_A)
-    dz_A_B = steg_A_B * np.cos(theta_A)
 
     # steg 2: Från B till C, enligt koordinatsystemet för B
     theta_B = pi / 3
     phi_B = pi / 3
     steg_B_C = 2
+
+    #   ----------------------------------------------------------------------
+    #   BERÄKNING
+    #   ---------------------------------------------------------------------
+
+    dx_A_B = steg_A_B * np.sin(theta_A) * np.cos(phi_A)
+    dy_A_B = steg_A_B * np.sin(theta_A) * np.sin(phi_A)
+    dz_A_B = steg_A_B * np.cos(theta_A)
 
     dx_B_C = steg_B_C * np.sin(theta_B) * np.cos(phi_B)
     dy_B_C = steg_B_C * np.sin(theta_B) * np.sin(phi_B)
@@ -157,12 +175,19 @@ if __name__ == "__main__":
     vektor_A_C, enhets_vektorer_B = transformera_koordinatsystem(steg_A_B, phi_A, theta_A, steg_B_C, phi_B, theta_B)
 
     x_A_C = vektor_A_C[0]
+    tot_x = start_x + x_A_C
+
     y_A_C = vektor_A_C[1]
+    tot_y = start_y + y_A_C
+
     z_A_C = vektor_A_C[2]
+    tot_z = start_z + z_A_C
 
     #   ----------------------------------------------------------------------
     #   FELSÖKNING
     #   ---------------------------------------------------------------------
+
+    print(f'tot: {np.array([[tot_x], [tot_y], [tot_z]])}')
 
     print(f'\nresult: \n{vektor_A_C}\nenhets_vektorer_B: \n{enhets_vektorer_B}')
 
@@ -178,29 +203,133 @@ if __name__ == "__main__":
 
     fig = plt.figure(figsize=(10, 10))
     ax = plt.axes(projection='3d')
-    ax.set_xlim([0, 4])
-    ax.set_ylim([0, 4])
-    ax.set_zlim([0, 4])
+    ax.set_xlim([0, 6])
+    ax.set_ylim([0, 6])
+    ax.set_zlim([0, 6])
 
-    ax.scatter(0, 0, 0, label='A', color='black', s=100)
-    ax.scatter(dx_A_B, dy_A_B, dz_A_B, label='B', color='grey', s=100)
-    ax.scatter(x_A_C, y_A_C, z_A_C, label='C', color='purple', s=100)
+    ax.scatter(start_x, y_A, z_A, label='A', color='black', s=100)
+    ax.scatter(start_x + dx_A_B, y_A + dy_A_B, z_A + dz_A_B, label='B', color='grey', s=100)
+    ax.scatter(x_A +x_A_C, y_A +y_A_C, z_A +z_A_C, label='C', color='purple', s=100)
 
-    ax.quiver(0, 0, 0, 1, 0, 0, color='orange')
-    ax.quiver(0, 0, 0, 0, 1, 0, color='brown')
-    ax.quiver(0, 0, 0, 0, 0, 1, color='green')
+    ax.quiver(x_A, y_A, z_A, 1, 0, 0, color='orange')
+    ax.quiver(x_A, y_A, z_A, 0, 1, 0, color='brown')
+    ax.quiver(x_A, y_A, z_A, 0, 0, 1, color='green')
 
-    ax.quiver(dx_A_B, dy_A_B, dz_A_B, enhets_vektorer_B[0, 0], enhets_vektorer_B[1, 0], enhets_vektorer_B[2, 0],
+    ax.quiver(x_A +dx_A_B, y_A +dy_A_B, z_A +dz_A_B, enhets_vektorer_B[0, 0], enhets_vektorer_B[1, 0], enhets_vektorer_B[2, 0],
               color='orange')
-    ax.quiver(dx_A_B, dy_A_B, dz_A_B, enhets_vektorer_B[0, 1], enhets_vektorer_B[1, 1], enhets_vektorer_B[2, 1],
+    ax.quiver(x_A +dx_A_B, y_A +dy_A_B, z_A +dz_A_B, enhets_vektorer_B[0, 1], enhets_vektorer_B[1, 1], enhets_vektorer_B[2, 1],
               color='brown')
-    ax.quiver(dx_A_B, dy_A_B, dz_A_B, enhets_vektorer_B[0, 2], enhets_vektorer_B[1, 2], enhets_vektorer_B[2, 2],
+    ax.quiver(x_A +dx_A_B, y_A +dy_A_B, z_A +dz_A_B, enhets_vektorer_B[0, 2], enhets_vektorer_B[1, 2], enhets_vektorer_B[2, 2],
               color='green')
 
-    ax.quiver(0, 0, 0, dx_A_B, dy_A_B, dz_A_B, color='blue', label='första steget, A-> B')
-    ax.quiver(dx_A_B, dy_A_B, dz_A_B, (x_A_C - dx_A_B), (y_A_C - dy_A_B), (z_A_C - dz_A_B), color='magenta',
+
+    ax.quiver(x_A, y_A, z_A, dx_A_B, dy_A_B, dz_A_B, color='blue', label='första steget, A-> B')
+    ax.quiver(x_A + dx_A_B, y_A +dy_A_B, z_A +dz_A_B, (x_A_C - dx_A_B), (y_A_C - dy_A_B), (z_A_C - dz_A_B), color='magenta',
               label='andra steget, B->C')
-    ax.quiver(0, 0, 0, x_A_C, y_A_C, z_A_C, color='red')
+    ax.quiver(x_A, y_A, z_A, x_A_C, y_A_C, z_A_C, color='red')
+
+    ax.set_xlabel('x')
+    ax.set_ylabel('y')
+    ax.set_zlabel('z')
+
+    ax.legend()
+    plt.show()
+
+
+    #   ----------------------------------------------------------------------
+    #   INPUT - iteration 2
+    #   ---------------------------------------------------------------------
+
+    # startpunkt
+    start_x = x_A + dx_A_B
+    start_y = y_A + dy_A_B
+    start_z = z_A + dz_A_B
+
+    x_A = start_x
+    y_A = start_y
+    z_A = start_z
+
+    # steg 2
+    steg_A_B = steg_B_C
+    phi_A = phi_B
+    theta_A = theta_B
+
+    # steg 3
+    steg_B_C = 2
+    theta_B = pi / 4
+    phi_B = pi / 4
+
+    #   ----------------------------------------------------------------------
+    #   BERÄKNING
+    #   ---------------------------------------------------------------------
+
+    dx_A_B = steg_A_B * np.sin(theta_A) * np.cos(phi_A)
+    dy_A_B = steg_A_B * np.sin(theta_A) * np.sin(phi_A)
+    dz_A_B = steg_A_B * np.cos(theta_A)
+
+    dx_B_C = steg_B_C * np.sin(theta_B) * np.cos(phi_B)
+    dy_B_C = steg_B_C * np.sin(theta_B) * np.sin(phi_B)
+    dz_B_C = steg_B_C * np.cos(theta_B)
+
+    vektor_A_C, enhets_vektorer_B = transformera_koordinatsystem(steg_A_B, phi_A, theta_A, steg_B_C, phi_B, theta_B)
+
+    x_A_C = vektor_A_C[0]
+    tot_x = start_x + x_A_C
+
+    y_A_C = vektor_A_C[1]
+    tot_y = start_y + y_A_C
+
+    z_A_C = vektor_A_C[2]
+    tot_z = start_z + z_A_C
+
+    #   ----------------------------------------------------------------------
+    #   FELSÖKNING
+    #   ---------------------------------------------------------------------
+
+    print(f'tot: {np.array([[tot_x], [tot_y], [tot_z]])}')
+
+    print(f'\nresult: \n{vektor_A_C}\nenhets_vektorer_B: \n{enhets_vektorer_B}')
+
+    print(
+        f'\ndot product x ({enhets_vektorer_B[0:3, 0]}), y ({enhets_vektorer_B[0:3, 1]}): {np.dot(enhets_vektorer_B[0:3, 0], enhets_vektorer_B[0:3, 1])}')
+    print(
+        f'dot product y ({enhets_vektorer_B[0:3, 1]}), z ({enhets_vektorer_B[0:3, 2]}): {np.dot(enhets_vektorer_B[0:3, 1], enhets_vektorer_B[0:3, 2])}')
+    print(
+        f'dot product x ({enhets_vektorer_B[0:3, 0]}), z ({enhets_vektorer_B[0:3, 2]}): {np.dot(enhets_vektorer_B[0:3, 0], enhets_vektorer_B[0:3, 2])}')
+
+    #   ----------------------------------------------------------------------
+    #   PLOTTNING
+    #   ---------------------------------------------------------------------
+
+    fig = plt.figure(figsize=(10, 10))
+    ax = plt.axes(projection='3d')
+    ax.set_xlim([0, 6])
+    ax.set_ylim([0, 6])
+    ax.set_zlim([0, 6])
+
+    ax.scatter(x_A, y_A, z_A, label='A', color='black', s=100)
+    ax.scatter(x_A + dx_A_B, y_A + dy_A_B, z_A + dz_A_B, label='B', color='grey', s=100)
+    ax.scatter(x_A + x_A_C, y_A + y_A_C, z_A + z_A_C, label='C', color='purple', s=100)
+
+    # ax.quiver(x_A, y_A, z_A, 1, 0, 0, color='orange')
+    # ax.quiver(x_A, y_A, z_A, 0, 1, 0, color='brown')
+    # ax.quiver(x_A, y_A, z_A, 0, 0, 1, color='green')
+
+    ax.quiver(x_A + dx_A_B, y_A + dy_A_B, z_A + dz_A_B, enhets_vektorer_B[0, 0], enhets_vektorer_B[1, 0],
+              enhets_vektorer_B[2, 0],
+              color='orange')
+    ax.quiver(x_A + dx_A_B, y_A + dy_A_B, z_A + dz_A_B, enhets_vektorer_B[0, 1], enhets_vektorer_B[1, 1],
+              enhets_vektorer_B[2, 1],
+              color='brown')
+    ax.quiver(x_A + dx_A_B, y_A + dy_A_B, z_A + dz_A_B, enhets_vektorer_B[0, 2], enhets_vektorer_B[1, 2],
+              enhets_vektorer_B[2, 2],
+              color='green')
+
+    ax.quiver(x_A, y_A, z_A, dx_A_B, dy_A_B, dz_A_B, color='blue', label='första steget, A-> B')
+    ax.quiver(x_A + dx_A_B, y_A + dy_A_B, z_A + dz_A_B, (x_A_C - dx_A_B), (y_A_C - dy_A_B), (z_A_C - dz_A_B),
+              color='magenta',
+              label='andra steget, B->C')
+    ax.quiver(x_A, y_A, z_A, x_A_C, y_A_C, z_A_C, color='red')
 
     ax.set_xlabel('x')
     ax.set_ylabel('y')
