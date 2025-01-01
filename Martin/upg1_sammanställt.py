@@ -10,6 +10,7 @@ from sampla_växelverkan import växelverkan
 from transformation_3d import transformera_koordinatsystem
 from energideponering import benmärg_matris_deponerad_energi, energideponering_benmärg
 
+iterationer = 100
 
 def run_MC(iterationer, mu):
     x_size, y_size, z_size = sliced_array_phantom.shape
@@ -49,23 +50,25 @@ def run_MC(iterationer, mu):
             theta_compton = 1
             phi_compton = 2 * pi * random.rand()
             mu_ny = 1
-            energideponering_compton = 1
+            energideponering_compton = foton_energi * 0.5 # placeholder
 
             energideponering_benmärg(x, y, z, energideponering_compton)
 
             steglängd_compton = medelvägslängd(mu_ny)
-            vektor_compton, _ = transformera_koordinatsystem(steglängd, phi, theta, steglängd_compton, phi_compton,
-                                                             theta_compton)
+            vektor_compton, _, dx_compton, dy_compton, dz_compton = transformera_koordinatsystem(steglängd, phi, theta,
+                                                                                                 steglängd_compton,
+                                                                                                 phi_compton,
+                                                                                                 theta_compton)
 
             tot_x += vektor_compton[0]
             tot_y += vektor_compton[1]
             tot_z += vektor_compton[2]
 
-            x_start = x + vektor_compton[0]
-            y_start = y + vektor_compton[1]
-            z_start = z + vektor_compton[2]
+            x_start = x + dx_compton
+            y_start = y + dy_compton
+            z_start = z + dz_compton
 
-    r = np.sqrt(x ** 2 + y ** 2 + z ** 2)
+    # r = np.sqrt(x ** 2 + y ** 2 + z ** 2)
 
     return benmärg_matris_deponerad_energi
 

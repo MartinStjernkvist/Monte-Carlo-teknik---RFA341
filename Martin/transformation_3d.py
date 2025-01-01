@@ -107,7 +107,7 @@ def transformera_koordinatsystem(steg_A_B, phi_A, theta_A, steg_B_C, phi_B, thet
 
     enhets_vektorer_B = Homogenous_matrix @ enhets_vektorer_A
 
-    return vektor_A_C, enhets_vektorer_B
+    return vektor_A_C, enhets_vektorer_B, dx_B_C, dy_B_C, dz_B_C
 
 
 if __name__ == "__main__":
@@ -143,11 +143,11 @@ if __name__ == "__main__":
     dy_A_B = steg_A_B * np.sin(theta_A) * np.sin(phi_A)
     dz_A_B = steg_A_B * np.cos(theta_A)
 
-    dx_B_C = steg_B_C * np.sin(theta_B) * np.cos(phi_B)
-    dy_B_C = steg_B_C * np.sin(theta_B) * np.sin(phi_B)
-    dz_B_C = steg_B_C * np.cos(theta_B)
+    # dx_B_C = steg_B_C * np.sin(theta_B) * np.cos(phi_B)
+    # dy_B_C = steg_B_C * np.sin(theta_B) * np.sin(phi_B)
+    # dz_B_C = steg_B_C * np.cos(theta_B)
 
-    vektor_A_C, enhets_vektorer_B = transformera_koordinatsystem(steg_A_B, phi_A, theta_A, steg_B_C, phi_B, theta_B)
+    vektor_A_C, enhets_vektorer_B, dx_B_C, dy_B_C, dz_B_C = transformera_koordinatsystem(steg_A_B, phi_A, theta_A, steg_B_C, phi_B, theta_B)
 
     x_A_C = vektor_A_C[0]
     x_tot = x_A + x_A_C
@@ -238,11 +238,11 @@ if __name__ == "__main__":
     dy_A_B = steg_A_B * np.sin(theta_A) * np.sin(phi_A)
     dz_A_B = steg_A_B * np.cos(theta_A)
 
-    dx_B_C = steg_B_C * np.sin(theta_B) * np.cos(phi_B)
-    dy_B_C = steg_B_C * np.sin(theta_B) * np.sin(phi_B)
-    dz_B_C = steg_B_C * np.cos(theta_B)
+    # dx_B_C = steg_B_C * np.sin(theta_B) * np.cos(phi_B)
+    # dy_B_C = steg_B_C * np.sin(theta_B) * np.sin(phi_B)
+    # dz_B_C = steg_B_C * np.cos(theta_B)
 
-    vektor_A_C, enhets_vektorer_B = transformera_koordinatsystem(steg_A_B, phi_A, theta_A, steg_B_C, phi_B, theta_B)
+    vektor_A_C, enhets_vektorer_B, dx_B_C, dy_B_C, dz_B_C = transformera_koordinatsystem(steg_A_B, phi_A, theta_A, steg_B_C, phi_B, theta_B)
 
     x_A_C = vektor_A_C[0]
     x_tot = x_A + x_A_C
