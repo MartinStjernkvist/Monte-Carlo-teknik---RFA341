@@ -3,16 +3,17 @@ from imports import *
 
 def transformera_koordinatsystem(steg_A_B, phi_A, theta_A, steg_B_C, phi_B, theta_B):
     """
-    - Börjar på x,y,z - kalla detta koordinatsystem A.
-    - Tar ett steg med steglängd s, riktning (phi, theta), enligt koordinatsystemet i A.
-            (exempelvis kommer phi att vara relativt enhetsvektorn i x-led för koord-syst A)
-    - Tar ett steg till ny punkt - kalla denna punkt B
+    - Börjar på position A[x,y,z]- kalla detta koordinatsystem A.
+    - Tar ett steg med steglängd steg_A_B, riktning (phi_A, theta_A), enligt koordinatsystemet i A.
+            (exempelvis kommer phi_A att vara relativt enhetsvektorn i x-led för koord-syst A)
+    - Tar ett steg till ny punkt - kalla denna punkt B.
     - Transformerar koordinatsystemet så att riktningsvektorn sammandfaller med
-    nya koordinatsystemet
+    nya koordinatsystemet.
             (nya enhetsvektorn i x-led, i B's koord-syst, ska ha samma riktning som fotonen
             hade när den tog steget)
     - Detta görs för att kunna sampla en ny riktning i nästa växelverkanprocess,
-    då behövs nämligen ett koordinatsystem i B som
+    då behövs nämligen ett koordinatsystem i B.
+
     :param steg_A_B: magnitud på steg från A till B
     :param phi_A: vinkel för steget mellan A och B
     :param theta_A: vinkel för steget mellan A och B
@@ -24,27 +25,6 @@ def transformera_koordinatsystem(steg_A_B, phi_A, theta_A, steg_B_C, phi_B, thet
     :return: 1) vektor vars första 3 värden är positionen för punkt C enligt A's koord-syst
             2) matris med enhetsvektorerna som B's koord-syst består av
     """
-
-    # """
-    # - Börjar på x,y,z - kalla detta koordinatsystem A.
-    # - Tar ett steg med steglängd s, riktning (phi, theta), enligt koordinatsystemet i A.
-    #         (exempelvis kommer phi att vara relativt enhetsvektorn i x-led för koord-syst A)
-    # - Tar ett steg till ny punkt - kalla denna punkt B
-    # - Transformerar koordinatsystemet så att riktningsvektorn sammandfaller med
-    # nya koordinatsystemet
-    #         (nya enhetsvektorn i x-led, i B's koord-syst, ska ha samma riktning som fotonen
-    #         hade när den tog steget)
-    # - Detta görs för att kunna sampla en ny riktning i nästa växelverkanprocess,
-    # då behövs nämligen ett koordinatsystem i B som
-    # :param x_B: x-komponent av ny riktningsvektor (steg) i B's koordinatsystem
-    # :param y_B: y-komponent --''--
-    # :param z_B: z-komponent --''--
-    # :param d_x: x-komp av steg från A till B
-    # :param d_y: y-komp --''--
-    # :param d_z: z-komp --''--
-    # :param phi_A: vinkel sfärisk
-    # :param theta_A: vinkel sfärisk
-    # """
 
     dx_A_B = steg_A_B * np.sin(theta_A) * np.cos(phi_A)
     dy_A_B = steg_A_B * np.sin(theta_A) * np.sin(phi_A)
@@ -170,13 +150,13 @@ if __name__ == "__main__":
     vektor_A_C, enhets_vektorer_B = transformera_koordinatsystem(steg_A_B, phi_A, theta_A, steg_B_C, phi_B, theta_B)
 
     x_A_C = vektor_A_C[0]
-    x_tot = x_start + x_A_C
+    x_tot = x_A + x_A_C
 
     y_A_C = vektor_A_C[1]
-    y_tot = y_start + y_A_C
+    y_tot = y_A + y_A_C
 
     z_A_C = vektor_A_C[2]
-    z_tot = z_start + z_A_C
+    z_tot = z_A + z_A_C
 
     #   ----------------------------------------------------------------------
     #   FELSÖKNING
