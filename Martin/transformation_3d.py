@@ -137,17 +137,13 @@ if __name__ == "__main__":
     #   ---------------------------------------------------------------------
 
     # startpunkt A
-    start_x = 1
-    start_y = 1
-    start_z = 1
+    x_start = 1
+    y_start = 1
+    z_start = 1
 
-    x_A = start_x
-    y_A = start_y
-    z_A = start_z
-
-    start_x = x_A
-    start_y = y_A
-    start_z = z_A
+    x_A = x_start
+    y_A = y_start
+    z_A = z_start
 
     # steg 1: från A till B
     theta_A = 3 * pi / 8
@@ -174,19 +170,19 @@ if __name__ == "__main__":
     vektor_A_C, enhets_vektorer_B = transformera_koordinatsystem(steg_A_B, phi_A, theta_A, steg_B_C, phi_B, theta_B)
 
     x_A_C = vektor_A_C[0]
-    tot_x = start_x + x_A_C
+    x_tot = x_start + x_A_C
 
     y_A_C = vektor_A_C[1]
-    tot_y = start_y + y_A_C
+    y_tot = y_start + y_A_C
 
     z_A_C = vektor_A_C[2]
-    tot_z = start_z + z_A_C
+    z_tot = z_start + z_A_C
 
     #   ----------------------------------------------------------------------
     #   FELSÖKNING
     #   ---------------------------------------------------------------------
 
-    print(f'tot: {np.array([[tot_x], [tot_y], [tot_z]])}')
+    print(f'tot: {np.array([[x_tot], [y_tot], [z_tot]])}')
 
     print(f'\nresult: \n{vektor_A_C}\nenhets_vektorer_B: \n{enhets_vektorer_B}')
 
@@ -206,8 +202,8 @@ if __name__ == "__main__":
     ax.set_ylim([0, 6])
     ax.set_zlim([0, 6])
 
-    ax.scatter(start_x, y_A, z_A, label='A', color='black', s=100)
-    ax.scatter(start_x + dx_A_B, y_A + dy_A_B, z_A + dz_A_B, label='B', color='grey', s=100)
+    ax.scatter(x_start, y_A, z_A, label='A', color='black', s=100)
+    ax.scatter(x_start + dx_A_B, y_A + dy_A_B, z_A + dz_A_B, label='B', color='grey', s=100)
     ax.scatter(x_A +x_A_C, y_A +y_A_C, z_A +z_A_C, label='C', color='purple', s=100)
 
     ax.quiver(x_A, y_A, z_A, 1, 0, 0, color='orange')
@@ -240,13 +236,9 @@ if __name__ == "__main__":
     #   ---------------------------------------------------------------------
 
     # startpunkt
-    start_x = x_A + dx_A_B
-    start_y = y_A + dy_A_B
-    start_z = z_A + dz_A_B
-
-    x_A = start_x
-    y_A = start_y
-    z_A = start_z
+    x_A = x_A + dx_A_B
+    y_A = y_A + dy_A_B
+    z_A = z_A + dz_A_B
 
     # steg 2
     steg_A_B = steg_B_C
@@ -273,19 +265,19 @@ if __name__ == "__main__":
     vektor_A_C, enhets_vektorer_B = transformera_koordinatsystem(steg_A_B, phi_A, theta_A, steg_B_C, phi_B, theta_B)
 
     x_A_C = vektor_A_C[0]
-    tot_x = start_x + x_A_C
+    x_tot = x_A + x_A_C
 
     y_A_C = vektor_A_C[1]
-    tot_y = start_y + y_A_C
+    y_tot = y_A + y_A_C
 
     z_A_C = vektor_A_C[2]
-    tot_z = start_z + z_A_C
+    z_tot = z_A + z_A_C
 
     #   ----------------------------------------------------------------------
     #   FELSÖKNING
     #   ---------------------------------------------------------------------
 
-    print(f'tot: {np.array([[tot_x], [tot_y], [tot_z]])}')
+    print(f'tot: {np.array([[x_tot], [y_tot], [z_tot]])}')
 
     print(f'\nresult: \n{vektor_A_C}\nenhets_vektorer_B: \n{enhets_vektorer_B}')
 
@@ -329,6 +321,7 @@ if __name__ == "__main__":
               color='magenta',
               label='andra steget, B->C')
     ax.quiver(x_A, y_A, z_A, x_A_C, y_A_C, z_A_C, color='red')
+    ax.quiver(0, 0, 0, x_tot, y_tot, z_tot, color='black')
 
     ax.set_xlabel('x')
     ax.set_ylabel('y')

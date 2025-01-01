@@ -19,6 +19,10 @@ def run_MC(iterationer, mu):
     x_start, y_start, z_start = position_start()
     theta, phi = riktning_start()
 
+    tot_x = x_start
+    tot_y = y_start
+    tot_z = z_start
+
     while attenuerad == 0:
         # steglängd: sampla medelvägslängden från inverstransformerad attenueringsfunktion
         steglängd = medelvägslängd(mu)
@@ -48,16 +52,12 @@ def run_MC(iterationer, mu):
             steglängd_compton = medelvägslängd(mu_ny)
             vektor_compton, _ = transformera_koordinatsystem(steglängd, phi, theta, steglängd_compton, phi_compton,
                                                              theta_compton)
-            x_A_C = vektor_compton[0]
-            tot_x = x_start + x_A_C
 
-            y_A_C = vektor_compton[1]
-            tot_y = y_start + y_A_C
+            tot_x += vektor_compton[0]
+            tot_y += vektor_compton[1]
+            tot_z += vektor_compton[2]
 
-            z_A_C = vektor_compton[2]
-            tot_z = z_start + z_A_C
-
-            x_start = x 
+            x_start = x
             y_start = y
             z_start = z
 
