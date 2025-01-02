@@ -6,11 +6,12 @@ from visualisera_bin_fil import visualisera_matris
 #   CREATE SLICED ARRAYS
 #   ----------------------------------------------------------------------
 
-# sliced_array_phantom = array_phantom[30:230, 40:210, 570:900]
+# slicad_fantom_matris = fantom_matris[30:230, 40:210, 570:900]
 
-sliced_array_phantom = fantom_matris[:, :, :]
+# slicad_fantom_matris = fantom_matris[:, :, :]
+slicad_fantom_matris = fantom_matris[50:-50, 50:200, 600:1100] # denna matris inkluderar benmärg i rygg, samt bröst
 
-x, y, z = sliced_array_phantom.shape
+x, y, z = slicad_fantom_matris.shape
 
 #   ----------------------------------------------------------------------
 #   NJURE
@@ -19,8 +20,8 @@ x, y, z = sliced_array_phantom.shape
 slicad_njure_matris = np.zeros((x, y, z))  # skapa tom matris för att sedan fylla i med värden
 
 target_values = [17, 18, 19, 20, 21, 22, 23]  # värden för njure i "Anatomidefinitioner.xlsx"
-mask = np.isin(sliced_array_phantom, target_values)
-slicad_njure_matris[mask] = sliced_array_phantom[mask]
+mask = np.isin(slicad_fantom_matris, target_values)
+slicad_njure_matris[mask] = slicad_fantom_matris[mask]
 
 #   ----------------------------------------------------------------------
 #   BENMÄRG
@@ -35,8 +36,8 @@ Samma grej som när vi gör matrisen med endast njurarna, skillnaden är att vi 
 slicad_benmärg_matris = np.zeros((x, y, z))
 
 target_values = [29]  # värdet för benmärg i "Anatomidefinitioner.xlsx"
-mask = np.isin(sliced_array_phantom, target_values)
-slicad_benmärg_matris[mask] = sliced_array_phantom[mask]
+mask = np.isin(slicad_fantom_matris, target_values)
+slicad_benmärg_matris[mask] = slicad_fantom_matris[mask]
 
 
 if __name__ == "__main__":

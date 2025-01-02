@@ -21,6 +21,7 @@ class visualisera_matris:
         self.ax3 = plt.subplot(self.gs[2])
 
         self.vmin, self.vmax = 0, np.max(array_3d)
+        # print(self.vmax)
         self.img1 = self.ax1.imshow(array_3d[self.slice_x_index, :, :], cmap='gray', vmin=self.vmin,
                                     vmax=self.vmax)  # x-slice
         self.ax1.set_title(f'X Slice: {self.slice_x_index}')
