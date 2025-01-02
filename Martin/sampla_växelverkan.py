@@ -3,8 +3,8 @@ from imports import *
 
 class växelverkan:
 
-    def __init__(self, energi, tvärsnitt_file):
-        self.df = pd.read_excel(tvärsnitt_file, index_col=None)
+    def __init__(self, energi, df_tvärsnitt):
+        self.df = df_tvärsnitt
 
         self.energi = energi
         self.energi_list = self.df['Energy (eV)'].to_list()
@@ -97,7 +97,6 @@ if __name__ == "__main__":
     #   ----------------------------------------------------------------------
     #   INPUT DATA
     #   ----------------------------------------------------------------------
-    tvärsnitt_file = '../given_data/Tvärsnittstabeller_Fotoner.xlsx'
     df = pd.read_excel(tvärsnitt_file, index_col=None)
     # print(df.columns)
 
@@ -115,7 +114,7 @@ if __name__ == "__main__":
     #   LÅT STÅ
     #   ----------------------------------------------------------------------
 
-    instans = växelverkan(energi, tvärsnitt_file)
+    instans = växelverkan(energi, df_tvärsnitt)
 
     foto_target = instans.find_foto_tvärsnitt()
     compton_target = instans.find_compton_tvärsnitt()

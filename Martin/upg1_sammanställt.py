@@ -15,6 +15,7 @@ def run_MC(iterationer, tvärsnitt_file, attenueringsdata_file, anatomidefinitio
 
     df_attenueringsdata = pd.read_excel(attenueringsdata_file, index_col=None)
     df_anatomidefinitioner = pd.read_excel(anatomidefinitioner_file, index_col=None)
+    df_tvärsnitt = pd.read_excel(tvärsnitt_file, index_col=None)
 
     x_size, y_size, z_size = slicad_fantom_matris.shape
     benmärg_matris_deponerad_energi = np.zeros((x_size, y_size, z_size))
@@ -69,7 +70,7 @@ def run_MC(iterationer, tvärsnitt_file, attenueringsdata_file, anatomidefinitio
                     attenuerad = 1
 
                 else:
-                    instans = växelverkan(foton_energi, tvärsnitt_file)
+                    instans = växelverkan(foton_energi, df_tvärsnitt)
                     vxv = instans.bestäm_växelverkan()
                     print(f'energi: {foton_energi * 10 ** (-3)} keV, vxv: {vxv}')
 
@@ -173,40 +174,15 @@ def run_MC(iterationer, tvärsnitt_file, attenueringsdata_file, anatomidefinitio
     return benmärg_matris_deponerad_energi
 
 
+#   ----------------------------------------------------------------------
+#   KÖR KODEN
+#   ----------------------------------------------------------------------
 if __name__ == "__main__":
     start = time.time()
 
-    iterationer = 10000
+    iterationer = 10 ** 5
     benmärg_matris_deponerad_energi = run_MC(iterationer, tvärsnitt_file, attenueringsdata_file, anatomidefinitioner_file, slicad_fantom_matris, slicad_njure_matris, slicad_benmärg_matris, voxel_sidlängd)
 
-    visualisera = visualisera_matris(benmärg_matris_deponerad_energi)
     end_time(start)
 
-    visualisera.show()
-
-    # fig, ax = plt.subplots(figsize=(8, 8))
-    # plt.subplots_adjust(bottom=0.25)
-    # x_size, y_size, z_size = benmärg_matris_deponerad_energi.shape
-    # initial_slice_index = z_size // 2  # Start at the middle slice
-    #
-    # # Display the initial slice
-    # img = ax.imshow(benmärg_matris_deponerad_energi[:, :, initial_slice_index], cmap='hot')
-    # ax.set_title(f'Slice {initial_slice_index}')
-    # plt.colorbar(img, ax=ax)
-    #
-    # # Add a slider for navigating through slices
-    # ax_slider = plt.axes([0.25, 0.01, 0.65, 0.03], facecolor='lightgoldenrodyellow')
-    # slider = Slider(ax_slider, 'Slice Index', 0, z_size - 1, valinit=initial_slice_index, valstep=1)
-    #
-    #
-    # # Update function for the slider
-    # def update(val):
-    #     slice_index = int(slider.val)
-    #     img.set_data(benmärg_matris_deponerad_energi[:, :, slice_index])
-    #     ax.set_title(f'Slice {slice_index}')
-    #     fig.canvas.draw_idle()
-    #
-    #
-    # slider.on_changed(update)
-    #
-    # plt.show()
+    np.save('benmärg_matris_deponerad_energi.npy', benmärg_matris_deponerad_energi)
