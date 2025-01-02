@@ -50,6 +50,40 @@ params, cv= curve_fit (polynom_funktion,Energi, Intensitet)
 
 olika_energier=np.linspace(np.min(Energi), np.max(Energi))
 
+
+#Sampla compton vinkel och energiförlusten med Kahns metod i artikeln "A Monte Carlo program for the simulation of scintillation camera characteristics."
+
+foton_energin= 1 # Test energi på inkommande fotonen
+def Compton_vinkel_och_energiförlust():
+    while True:
+        #Slumpa tre slumpmässiga tal
+        R_1=rand.random()
+        R_2=rand.random()
+        R_3=rand.random()
+        if R_1<=(2*foton_energin+1)/(2*foton_energin+9):
+            nu=2*foton_energin*R_2
+            if R_3<=4*(nu**-1-nu**-2):
+                theata=ma.acos(1-2*R_2)
+                sprid_foton_energin=foton_energin/nu
+                energi_förlust=foton_energin-sprid_foton_energin
+                break
+        else:
+            continue
+        if R_1> (2*foton_energin+1)/(2*foton_energin+9):
+            nu=(2*foton_energin+1)/(2*R_2*foton_energin+1)
+            theata=ma.acos(1-(nu-1)/foton_energin)
+            if R_3<=0.5*(ma.cos(theata)**2+nu**-1):
+                sprid_foton_energin=foton_energin/nu
+                theata=ma.acos(1-(nu-1)/foton_energin)
+                energi_förlust=foton_energin-sprid_foton_energin
+                break
+        else:
+            continue
+
+
+
+
+"""
 #Sfärisk koordinat för riktningnen som fotoner kan färdas i
 import matplotlib.pyplot as plt
 from mpl_toolkits import mplot3d
@@ -59,7 +93,7 @@ Antal_iterationer=500
 fig = plt.figure()
 ax = plt.axes(projection='3d')
 
-"""
+
 #Testa från samplingskoden
 
 def riktning_start(steglängd): 
