@@ -8,9 +8,10 @@ from sampla_steglängd import medelvägslängd
 from sampla_växelverkan import växelverkan
 from transformation_3d import transformera_koordinatsystem
 from visualisera_bin_fil import visualisera_matris
+from attenueringsdata import attenueringsdata, attenueringsdata_file, anatomidefinitioner_file
 
 
-def run_MC(iterationer, mu):
+def run_MC(iterationer):
     x_size, y_size, z_size = slicad_fantom_matris.shape
     benmärg_matris_deponerad_energi = np.zeros((x_size, y_size, z_size))
 
@@ -26,8 +27,13 @@ def run_MC(iterationer, mu):
 
         # start: sampla position, riktning och energi
         foton_energi = energi_start()
+        print(foton_energi)
         x_start, y_start, z_start = position_start(slicad_njure_matris)
         theta, phi = riktning_start()
+
+        voxel_värde = slicad_fantom_matris[x_start, y_start, z_start]
+        instans = attenueringsdata(voxel_värde, foton_energi, attenueringsdata_file, anatomidefinitioner_file)
+        mu = instans.mu()
 
         # steglängd: sampla medelvägslängden från inverstransformerad attenueringsfunktion
         steglängd = medelvägslängd(mu)
@@ -51,6 +57,10 @@ def run_MC(iterationer, mu):
         else:
             while attenuerad == 0:
 
+                voxel_värde = slicad_fantom_matris[x_round, y_round, z_round]
+                instans = attenueringsdata(voxel_värde, foton_energi, attenueringsdata_file, anatomidefinitioner_file)
+                mu = instans.mu()
+
                 if slicad_fantom_matris[x_round, y_round, z_round] == 0:
                     utanför_fantom += 1
                     attenuerad = 1
@@ -58,7 +68,7 @@ def run_MC(iterationer, mu):
                 else:
                     instans = växelverkan(foton_energi, tvärsnitt_file)
                     vxv = instans.bestäm_växelverkan()
-                    # print(f'energi: {foton_energi * 10 ** (-3)} keV, vxv: {vxv}')
+                    print(f'energi: {foton_energi * 10 ** (-3)} keV, vxv: {vxv}')
 
                     if vxv == 'foto':
                         vxv_foto += 1
@@ -80,7 +90,7 @@ def run_MC(iterationer, mu):
                         # mu_nytt energiberoende?
                         theta_compton = 1
                         phi_compton = 2 * pi * random.rand()
-                        mu_ny = mu
+
                         energideponering_compton = foton_energi * 0.5  # placeholder
 
                         if slicad_benmärg_matris[x_round, y_round, z_round] != 0:
@@ -93,15 +103,16 @@ def run_MC(iterationer, mu):
 
                         foton_energi = foton_energi - energideponering_compton
 
-                        steglängd_compton = medelvägslängd(mu_ny)
+
+
+
+                        steglängd_compton = medelvägslängd(mu)
                         vektor_compton, _, dx_compton, dy_compton, dz_compton = transformera_koordinatsystem(steglängd,
                                                                                                              phi,
                                                                                                              theta,
                                                                                                              steglängd_compton,
                                                                                                              phi_compton,
                                                                                                              theta_compton)
-
-
 
                         x_round = round(x + dx_compton / voxel_sidlängd)
                         y_round = round(y + dy_compton / voxel_sidlängd)
@@ -153,7 +164,6 @@ def run_MC(iterationer, mu):
                         theta, phi = theta_rayleigh, phi_rayleigh
                         steglängd = steglängd_rayleigh
 
-
     print(f'max värdet av matrisen: {np.max(benmärg_matris_deponerad_energi)}')
     print(f'utanför: {utanför_fantom}')
     print(f'foto: {vxv_foto}')
@@ -169,15 +179,13 @@ if __name__ == "__main__":
     tvärsnitt_file = '../given_data/Tvärsnittstabeller_Fotoner.xlsx'
     df = pd.read_excel(tvärsnitt_file, index_col=None)
 
-    iterationer = 1000
-    mu = 0.1
-    benmärg_matris_deponerad_energi = run_MC(iterationer, mu)
+    iterationer = 100
+    benmärg_matris_deponerad_energi = run_MC(iterationer)
 
     visualisera = visualisera_matris(benmärg_matris_deponerad_energi)
     end_time(start)
 
     visualisera.show()
-
 
     # fig, ax = plt.subplots(figsize=(8, 8))
     # plt.subplots_adjust(bottom=0.25)

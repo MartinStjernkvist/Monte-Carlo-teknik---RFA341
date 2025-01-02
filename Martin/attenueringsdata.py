@@ -1,6 +1,7 @@
 from imports import *
 
-'''WIP'''
+attenueringsdata_file = '../given_data/Attenueringsdata.xlsx'
+anatomidefinitioner_file = '../given_data/Anatomidefinitioner.xlsx'
 
 
 class attenueringsdata:
@@ -9,14 +10,16 @@ class attenueringsdata:
         self.df_attenueringsdata = pd.read_excel(attenueringsdata_file, index_col=None)
         self.df_anatomidefinitioner = pd.read_excel(anatomidefinitioner_file, index_col=None)
 
-        self.voxelvärde = voxelvärde - 1
+        self.voxelvärde = voxelvärde
         self.energi = energi
         self.energi_list = self.df_attenueringsdata['E'].to_list()
 
     def voxelvärde_till_material(self):
+        print(f'voxelvärde: {self.voxelvärde}')
         # vävnad = self.df_anatomidefinitioner['Unnamed: 1'][self.voxelvärde-1]
         # print(vävnad)
 
+        # luft = 0
         # bihåla? antag vatten
         # matstrupe? antag vatten
         # svalg? antag muskler
@@ -43,7 +46,7 @@ class attenueringsdata:
         cartilage = [34]
         brain = [7]
         spleen = [24]
-        air = [35, 38]
+        air = [0, 35, 38]
         breast_mammary = [5]
         skin = [4]
         eye_lens = [42, 43]
@@ -66,10 +69,13 @@ class attenueringsdata:
 
         for i in range(len(big_list)):
             sublist = big_list[i]
+            # print(sublist)
             if any(self.voxelvärde == värde for värde in sublist):
                 material = big_list_names[i]
-                print(material)
+                # print(material)
                 break
+
+        print(f'material: {material}')
 
         return material
 
@@ -77,7 +83,7 @@ class attenueringsdata:
         energi_list = np.array(self.energi_list)
         diff = np.abs(energi_list - self.energi)
         closest_indices = np.argsort(diff)[:2]
-        print(closest_indices)
+        # print(closest_indices)
 
         material = self.voxelvärde_till_material()
         mu_list = np.array(self.df_attenueringsdata[material].to_list())
@@ -93,14 +99,13 @@ class attenueringsdata:
             mu_target = mu_close[0] + (self.energi - energi_close[0]) * (mu_close[1] - mu_close[0]) / (
                     energi_close[1] - energi_close[0])
 
+        print(f'mu target {mu_target}')
+
         return mu_target
 
 
 if __name__ == "__main__":
     start = time.time()
-
-    attenueringsdata_file = '../given_data/Attenueringsdata.xlsx'
-    anatomidefinitioner_file = '../given_data/Anatomidefinitioner.xlsx'
 
     df_attenueringsdata = pd.read_excel(attenueringsdata_file, index_col=None)
     # print(df_attenueringsdata.columns)
