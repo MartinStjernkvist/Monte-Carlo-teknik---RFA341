@@ -19,10 +19,10 @@ def run_MC(iterationer, mu):
     vxv_foto = 0
     vxv_compton = 0
     vxv_rayleigh = 0
+    träff = 0
 
     for i in range(iterationer):
         attenuerad = 0
-        träff = 0
         # print(i)
 
         # start: sampla position, riktning och energi
@@ -54,6 +54,11 @@ def run_MC(iterationer, mu):
             utanför_fantom += 1
             i += 1
 
+        # elif slicad_fantom_matris[x_round, y_round, z_round] == 0:
+        #         # print(f'utanför fantom')
+        #         utanför_fantom += 1
+        #         i += 1
+
         else:
             while attenuerad == 0:
 
@@ -66,124 +71,125 @@ def run_MC(iterationer, mu):
                     utanför_fantom += 1
                     attenuerad = 1
 
-                instans = växelverkan(foton_energi, tvärsnitt_file)
-                vxv = instans.bestäm_växelverkan()
-                # print(f'energi: {foton_energi * 10 ** (-3)} keV, vxv: {vxv}')
+                else:
+                    instans = växelverkan(foton_energi, tvärsnitt_file)
+                    vxv = instans.bestäm_växelverkan()
+                    # print(f'energi: {foton_energi * 10 ** (-3)} keV, vxv: {vxv}')
 
-                if vxv == 'foto':
-                    vxv_foto += 1
-                    # benmärg_matris_deponerad_energi = energideponering_benmärg(x, y, z, foton_energi, slicad_benmärg_matris,
-                    #                                                            benmärg_matris_deponerad_energi)
-                    if slicad_benmärg_matris[x_round, y_round, z_round] != 0:
-                        träff += 1
-                        benmärg_matris_deponerad_energi[x_round, y_round, z_round] += foton_energi
+                    if vxv == 'foto':
+                        vxv_foto += 1
+                        # benmärg_matris_deponerad_energi = energideponering_benmärg(x, y, z, foton_energi, slicad_benmärg_matris,
+                        #                                                            benmärg_matris_deponerad_energi)
+                        if slicad_benmärg_matris[x_round, y_round, z_round] != 0:
+                            träff += 1
+                            benmärg_matris_deponerad_energi[x_round, y_round, z_round] += foton_energi
 
-                        # print(benmärg_matris_deponerad_energi[x_round, y_round, z_round])
+                            # print(benmärg_matris_deponerad_energi[x_round, y_round, z_round])
 
-                        print(
-                            f'foto: {energideponering_compton * 10 ** (-3):.2f} keV i voxel [{round(x), round(y), round(z)}]')
+                            print(
+                                f'foto: {energideponering_compton * 10 ** (-3):.2f} keV i voxel [{round(x), round(y), round(z)}]')
 
-                    attenuerad = 1
-
-                elif vxv == 'compton':
-                    vxv_compton += 1
-                    # sampla energideponering, vinkel
-                    # theta_compton = sampla_theta_compton
-                    # mu_nytt energiberoende?
-                    theta_compton = 1
-                    phi_compton = 2 * pi * random.rand()
-                    mu_ny = mu
-                    energideponering_compton = foton_energi * 0.5  # placeholder
-
-                    # benmärg_matris_deponerad_energi = energideponering_benmärg(x, y, z, energideponering_compton,
-                    #                                                            benmärg_matris_deponerad_energi,
-                    #                                                            benmärg_matris_deponerad_energi)
-
-                    # if x_round >= x_size or y_round >= y_size or z_round >= z_size:
-                    #     attenuerad = 1
-                    #     print(f'utanför fantom')
-                    #
-                    # elif slicad_benmärg_matris[x_round, y_round, z_round] != 0:
-                    #     benmärg_matris_deponerad_energi[x_round, y_round, z_round] += foton_energi
-
-                    if slicad_benmärg_matris[x_round, y_round, z_round] != 0:
-                        träff += 1
-                        benmärg_matris_deponerad_energi[x_round, y_round, z_round] += energideponering_compton
-
-                        # print(benmärg_matris_deponerad_energi[x_round, y_round, z_round])
-
-                        print(
-                            f'compton: {energideponering_compton * 10 ** (-3):.2f} keV i voxel [{round(x), round(y), round(z)}]')
-
-                    foton_energi = foton_energi - energideponering_compton
-
-                    steglängd_compton = medelvägslängd(mu_ny)
-                    vektor_compton, _, dx_compton, dy_compton, dz_compton = transformera_koordinatsystem(steglängd, phi,
-                                                                                                         theta,
-                                                                                                         steglängd_compton,
-                                                                                                         phi_compton,
-                                                                                                         theta_compton)
-
-                    # x_tot += vektor_compton[0]
-                    # y_tot += vektor_compton[1]
-                    # z_tot += vektor_compton[2]
-
-                    x_round = round(x + dx_compton)
-                    y_round = round(y + dy_compton)
-                    z_round = round(z + dz_compton)
-
-                    if (
-                            x_round < 0
-                            or x_round >= x_size
-                            or y_round < 0
-                            or y_round >= y_size
-                            or z_round < 0
-                            or z_round >= z_size
-                    ):
-                        # print(f'utanför fantom')
-                        utanför_fantom += 1
                         attenuerad = 1
 
-                    theta, phi = theta_compton, phi_compton
-                    steglängd = steglängd_compton
+                    elif vxv == 'compton':
+                        vxv_compton += 1
+                        # sampla energideponering, vinkel
+                        # theta_compton = sampla_theta_compton
+                        # mu_nytt energiberoende?
+                        theta_compton = 1
+                        phi_compton = 2 * pi * random.rand()
+                        mu_ny = mu
+                        energideponering_compton = foton_energi * 0.5  # placeholder
 
-                elif vxv == 'rayleigh':
-                    vxv_rayleigh += 1
-                    theta_rayleigh = 1
-                    phi_rayleigh = 2 * pi * random.rand()
-                    steglängd_rayleigh = medelvägslängd(mu)
+                        # benmärg_matris_deponerad_energi = energideponering_benmärg(x, y, z, energideponering_compton,
+                        #                                                            benmärg_matris_deponerad_energi,
+                        #                                                            benmärg_matris_deponerad_energi)
 
-                    vektor_rayleigh, _, dx_rayleigh, dy_rayleigh, dz_rayleigh = transformera_koordinatsystem(steglängd,
-                                                                                                             phi,
+                        # if x_round >= x_size or y_round >= y_size or z_round >= z_size:
+                        #     attenuerad = 1
+                        #     print(f'utanför fantom')
+                        #
+                        # elif slicad_benmärg_matris[x_round, y_round, z_round] != 0:
+                        #     benmärg_matris_deponerad_energi[x_round, y_round, z_round] += foton_energi
+
+                        if slicad_benmärg_matris[x_round, y_round, z_round] != 0:
+                            träff += 1
+                            benmärg_matris_deponerad_energi[x_round, y_round, z_round] += energideponering_compton
+
+                            # print(benmärg_matris_deponerad_energi[x_round, y_round, z_round])
+
+                            print(
+                                f'compton: {energideponering_compton * 10 ** (-3):.2f} keV i voxel [{round(x), round(y), round(z)}]')
+
+                        foton_energi = foton_energi - energideponering_compton
+
+                        steglängd_compton = medelvägslängd(mu_ny)
+                        vektor_compton, _, dx_compton, dy_compton, dz_compton = transformera_koordinatsystem(steglängd, phi,
                                                                                                              theta,
-                                                                                                             steglängd_rayleigh,
-                                                                                                             phi_rayleigh,
-                                                                                                             theta_rayleigh)
+                                                                                                             steglängd_compton,
+                                                                                                             phi_compton,
+                                                                                                             theta_compton)
 
-                    # x_tot += vektor_rayleigh[0]
-                    # y_tot += vektor_rayleigh[1]
-                    # z_tot += vektor_rayleigh[2]
+                        # x_tot += vektor_compton[0]
+                        # y_tot += vektor_compton[1]
+                        # z_tot += vektor_compton[2]
 
-                    x_round = round(x + dx_rayleigh)
-                    y_round = round(y + dy_rayleigh)
-                    z_round = round(z + dz_rayleigh)
+                        x_round = round(x + dx_compton)
+                        y_round = round(y + dy_compton)
+                        z_round = round(z + dz_compton)
 
-                    if (
-                            x_round < 0
-                            or x_round >= x_size
-                            or y_round < 0
-                            or y_round >= y_size
-                            or z_round < 0
-                            or z_round >= z_size
-                    ):
-                        # print(f'utanför fantom')
-                        utanför_fantom += 1
-                        attenuerad = 1
+                        if (
+                                x_round < 0
+                                or x_round >= x_size
+                                or y_round < 0
+                                or y_round >= y_size
+                                or z_round < 0
+                                or z_round >= z_size
+                        ):
+                            # print(f'utanför fantom')
+                            utanför_fantom += 1
+                            attenuerad = 1
 
-                    theta, phi = theta_rayleigh, phi_rayleigh
-                    steglängd = steglängd_rayleigh
+                        theta, phi = theta_compton, phi_compton
+                        steglängd = steglängd_compton
 
-                    # print(f'rayleighspridning')
+                    elif vxv == 'rayleigh':
+                        vxv_rayleigh += 1
+                        theta_rayleigh = 1
+                        phi_rayleigh = 2 * pi * random.rand()
+                        steglängd_rayleigh = medelvägslängd(mu)
+
+                        vektor_rayleigh, _, dx_rayleigh, dy_rayleigh, dz_rayleigh = transformera_koordinatsystem(steglängd,
+                                                                                                                 phi,
+                                                                                                                 theta,
+                                                                                                                 steglängd_rayleigh,
+                                                                                                                 phi_rayleigh,
+                                                                                                                 theta_rayleigh)
+
+                        # x_tot += vektor_rayleigh[0]
+                        # y_tot += vektor_rayleigh[1]
+                        # z_tot += vektor_rayleigh[2]
+
+                        x_round = round(x + dx_rayleigh)
+                        y_round = round(y + dy_rayleigh)
+                        z_round = round(z + dz_rayleigh)
+
+                        if (
+                                x_round < 0
+                                or x_round >= x_size
+                                or y_round < 0
+                                or y_round >= y_size
+                                or z_round < 0
+                                or z_round >= z_size
+                        ):
+                            # print(f'utanför fantom')
+                            utanför_fantom += 1
+                            attenuerad = 1
+
+                        theta, phi = theta_rayleigh, phi_rayleigh
+                        steglängd = steglängd_rayleigh
+
+                        # print(f'rayleighspridning')
 
     print(f'max värdet av matrisen: {np.max(benmärg_matris_deponerad_energi)}')
     print(f'utanför: {utanför_fantom}')
