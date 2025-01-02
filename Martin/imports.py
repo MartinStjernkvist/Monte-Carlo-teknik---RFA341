@@ -20,6 +20,9 @@ r_e = np.sqrt(0.07941)  # sqrt(b): re2 = e4/Ee2 ≈ 0.07941 b, https://en.wikipe
 a_0 = 5.29177210903 * 10 ** (-11) * 10 ** (14)  # sqrt(b), bohr radius of hydrogen
 c = 3 * 10 ** 8
 
+voxel_sidlängd = 0.15  # cm
+
+
 #   ----------------------------------------------------------------------
 #   FUNKTIONER
 #   ----------------------------------------------------------------------
@@ -68,6 +71,7 @@ def plot_stuff(x_data, y_data, scatter, label_data,
 
     return fig
 
+
 def end_time(start):
     end = time.time()
     runtime = round((end - start), 1)
@@ -75,6 +79,14 @@ def end_time(start):
         print(f'Runtime: {runtime} seconds')
     else:
         print('Runtime: ' + str(round((runtime / 60), 1)) + ' minutes')
+
+
+def timer(func):
+    def wrapper():
+        before = time.time()
+        func()
+        print(f'Function took: {time.time() - before} seconds')
+
 
 """
 def scatter_3d(array,

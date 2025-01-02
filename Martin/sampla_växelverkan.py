@@ -7,10 +7,10 @@ class växelverkan:
         self.df = pd.read_excel(tvärsnitt_file, index_col=None)
 
         self.energi = energi
-        self.energi_list = df['Energy (eV)'].to_list()
-        self.foto_list = df['Photoelectric  (cm^2)'].to_list()
-        self.compton_list = df['Compton (cm^2)'].to_list()
-        self.rayleigh_list = df['Rayleigh (cm^2)'].to_list()
+        self.energi_list = self.df['Energy (eV)'].to_list()
+        self.foto_list = self.df['Photoelectric  (cm^2)'].to_list()
+        self.compton_list = self.df['Compton (cm^2)'].to_list()
+        self.rayleigh_list = self.df['Rayleigh (cm^2)'].to_list()
 
     def find_foto_tvärsnitt(self):
         energi_list = np.array(self.energi_list)
@@ -21,9 +21,13 @@ class växelverkan:
         foto_close = foto_list[closest_indices]
         energi_close = energi_list[closest_indices]
 
-        # linjär interpolering funktion
-        foto_target = foto_close[0] + (energi - energi_close[0]) * (foto_close[1] - foto_close[0]) / (
-                energi_close[1] - energi_close[0])
+        if energi_close[1] - energi_close[0] < 10 ** (-15):
+            foto_target = foto_close[0]
+
+        else:
+            # linjär interpolering funktion
+            foto_target = foto_close[0] + (self.energi - energi_close[0]) * (foto_close[1] - foto_close[0]) / (
+                    energi_close[1] - energi_close[0])
         return foto_target
 
     def find_compton_tvärsnitt(self):
@@ -35,8 +39,12 @@ class växelverkan:
         compton_close = compton_list[closest_indices]
         energi_close = energi_list[closest_indices]
 
-        compton_target = compton_close[0] + (energi - energi_close[0]) * (compton_close[1] - compton_close[0]) / (
-                energi_close[1] - energi_close[0])
+        if energi_close[1] - energi_close[0] < 10 ** (-15):
+            compton_target = compton_close[0]
+
+        else:
+            compton_target = compton_close[0] + (self.energi - energi_close[0]) * (compton_close[1] - compton_close[0]) / (
+                    energi_close[1] - energi_close[0])
 
         return compton_target
 
@@ -50,10 +58,15 @@ class växelverkan:
         rayleigh_close = rayleigh_list[closest_indices]
         energi_close = energi_list[closest_indices]
 
-        rayleigh_target = rayleigh_close[0] + (energi - energi_close[0]) * (rayleigh_close[1] - rayleigh_close[0]) / (
-                energi_close[1] - energi_close[0])
+        if energi_close[1] - energi_close[0] < 10**(-15):
+            rayleigh_target = rayleigh_close[0]
+
+        else:
+            rayleigh_target = rayleigh_close[0] + (self.energi - energi_close[0]) * (rayleigh_close[1] - rayleigh_close[0]) / (
+                    energi_close[1] - energi_close[0])
         return rayleigh_target
 
+    # @timer
     def bestäm_växelverkan(self):
         foto_target = self.find_foto_tvärsnitt()
         compton_target = self.find_compton_tvärsnitt()
@@ -84,7 +97,6 @@ if __name__ == "__main__":
     #   ----------------------------------------------------------------------
     #   INPUT DATA
     #   ----------------------------------------------------------------------
-
     tvärsnitt_file = '../given_data/Tvärsnittstabeller_Fotoner.xlsx'
     df = pd.read_excel(tvärsnitt_file, index_col=None)
     # print(df.columns)

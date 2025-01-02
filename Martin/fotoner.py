@@ -27,7 +27,6 @@ def P(s, mu):
     return 1 - np.exp(-mu * s)
 
 
-# samplingsfkn
 def samplingsfkn(R, mu):
     return -np.log(R) / mu
 
@@ -47,7 +46,6 @@ lambda_t = 1 / sigma_t
 #   ----------------------------------------------------------------------
 
 n_particles = 10 ** 3
-
 
 #   ----------------------------------------------------------------------
 #   FOR-LOOP
@@ -73,13 +71,13 @@ for j in range(n_particles):
         s = - lambda_t * np.log(random.rand())  # sample
 
         # angles
-        theta = np.arcsin(-1 + 2 * random.rand())
+        theta = np.arccos(-1 + 2 * random.rand())
         phi = 2 * pi * random.rand()
 
         # movement
-        dx = s * np.cos(theta) * np.cos(phi)
-        dy = s * np.cos(theta) * np.sin(phi)
-        dz = s * np.sin(theta)
+        dx = s * np.sin(theta) * np.cos(phi)
+        dy = s * np.sin(theta) * np.sin(phi)
+        dz = s * np.cos(theta)
 
         # new position
         x[j] = x[j] + dx
@@ -117,9 +115,6 @@ plt.xticks(fontsize=small_font_size)
 plt.yticks(fontsize=small_font_size)
 plt.legend(fontsize=small_font_size)
 # plt.show()
-
-
-
 
 
 end = time.time()
