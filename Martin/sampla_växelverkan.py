@@ -21,9 +21,13 @@ class växelverkan:
         foto_close = foto_list[closest_indices]
         energi_close = energi_list[closest_indices]
 
-        # linjär interpolering funktion
-        foto_target = foto_close[0] + (self.energi - energi_close[0]) * (foto_close[1] - foto_close[0]) / (
-                energi_close[1] - energi_close[0])
+        if energi_close[1] - energi_close[0] < 10 ** (-15):
+            foto_target = foto_close[0]
+
+        else:
+            # linjär interpolering funktion
+            foto_target = foto_close[0] + (self.energi - energi_close[0]) * (foto_close[1] - foto_close[0]) / (
+                    energi_close[1] - energi_close[0])
         return foto_target
 
     def find_compton_tvärsnitt(self):
@@ -35,8 +39,12 @@ class växelverkan:
         compton_close = compton_list[closest_indices]
         energi_close = energi_list[closest_indices]
 
-        compton_target = compton_close[0] + (self.energi - energi_close[0]) * (compton_close[1] - compton_close[0]) / (
-                energi_close[1] - energi_close[0])
+        if energi_close[1] - energi_close[0] < 10 ** (-15):
+            compton_target = compton_close[0]
+
+        else:
+            compton_target = compton_close[0] + (self.energi - energi_close[0]) * (compton_close[1] - compton_close[0]) / (
+                    energi_close[1] - energi_close[0])
 
         return compton_target
 
@@ -50,8 +58,12 @@ class växelverkan:
         rayleigh_close = rayleigh_list[closest_indices]
         energi_close = energi_list[closest_indices]
 
-        rayleigh_target = rayleigh_close[0] + (self.energi - energi_close[0]) * (rayleigh_close[1] - rayleigh_close[0]) / (
-                energi_close[1] - energi_close[0])
+        if energi_close[1] - energi_close[0] < 10**(-15):
+            rayleigh_target = rayleigh_close[0]
+
+        else:
+            rayleigh_target = rayleigh_close[0] + (self.energi - energi_close[0]) * (rayleigh_close[1] - rayleigh_close[0]) / (
+                    energi_close[1] - energi_close[0])
         return rayleigh_target
 
     # @timer
