@@ -181,7 +181,7 @@ def run_MC(iterationer, tvärsnitt_file, attenueringsdata_file, anatomidefinitio
 if __name__ == "__main__":
     start = time.time()
 
-    iterationer = 10 ** 6
+    iterationer = 10 **2
 
     radionuklid_energi = Lu177_energi
     radionuklid_intensitet = Lu177_intensitet
