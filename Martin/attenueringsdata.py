@@ -1,21 +1,19 @@
 from imports import *
 
-attenueringsdata_file = '../given_data/Attenueringsdata.xlsx'
-anatomidefinitioner_file = '../given_data/Anatomidefinitioner.xlsx'
-
 
 class attenueringsdata:
 
-    def __init__(self, voxelvärde, energi, attenueringsdata_file, anatomidefinitioner_file):
-        self.df_attenueringsdata = pd.read_excel(attenueringsdata_file, index_col=None)
-        self.df_anatomidefinitioner = pd.read_excel(anatomidefinitioner_file, index_col=None)
+    def __init__(self, voxelvärde, energi, df_attenueringsdata, df_anatomidefinitioner):
+
+        self.df_attenueringsdata = df_attenueringsdata
+        self.anatomidefinitioner = df_anatomidefinitioner
 
         self.voxelvärde = voxelvärde
         self.energi = energi
         self.energi_list = self.df_attenueringsdata['E'].to_list()
 
     def voxelvärde_till_material(self):
-        print(f'voxelvärde: {self.voxelvärde}')
+        # print(f'voxelvärde: {self.voxelvärde}')
         # vävnad = self.df_anatomidefinitioner['Unnamed: 1'][self.voxelvärde-1]
         # print(vävnad)
 
@@ -32,7 +30,7 @@ class attenueringsdata:
         water = [3, 8, 12, 37]
         muscle = [6, 13]
         lung = [11]
-        dry_spine = [28, 29]
+        dry_spine = [27, 28]
         dry_rib = [25]
         # adipose = {}
         blood = [2]
@@ -54,7 +52,7 @@ class attenueringsdata:
         red_marrow = [26, 29]
         yellow_marrow = [44]
         # testis = []
-        thyroid = [39]
+        thyroid = [39, 40]
         bladder = [10, 30, 31]
 
         big_list = [water, muscle, lung, dry_spine, dry_rib, blood, heart, kidney, liver, lymph, pancreas, intestine,
@@ -69,13 +67,12 @@ class attenueringsdata:
 
         for i in range(len(big_list)):
             sublist = big_list[i]
-            # print(sublist)
             if any(self.voxelvärde == värde for värde in sublist):
                 material = big_list_names[i]
                 # print(material)
                 break
 
-        print(f'material: {material}')
+        # print(f'material: {material}')
 
         return material
 
@@ -99,7 +96,7 @@ class attenueringsdata:
             mu_target = mu_close[0] + (self.energi - energi_close[0]) * (mu_close[1] - mu_close[0]) / (
                     energi_close[1] - energi_close[0])
 
-        print(f'mu target {mu_target}')
+        # print(f'mu target {mu_target}')
 
         return mu_target
 
@@ -123,7 +120,7 @@ if __name__ == "__main__":
     voxelvärde = 1
     energi = 10000
 
-    instans = attenueringsdata(voxelvärde, energi, attenueringsdata_file, anatomidefinitioner_file)
+    instans = attenueringsdata(voxelvärde, energi, df_attenueringsdata, df_anatomidefinitioner)
     mu = instans.mu()
     print(mu)
 
