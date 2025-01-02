@@ -1,5 +1,7 @@
 from imports import *
 
+'''WIP'''
+
 class attenueringsdata:
 
     def __init__(self, x,y,z,energi, attenueringsdata_file, anatomi_file):

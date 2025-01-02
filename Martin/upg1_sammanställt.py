@@ -3,12 +3,10 @@ from imports import *
 from sampla_energi_start import energi_start, Lu177_sannolik
 from matriser import slicad_fantom_matris, slicad_njure_matris, slicad_benmärg_matris
 from sampla_position_start import position_start
-from sampla_riktning_start import riktning_start
+from sampla_riktning_och_steg_start import riktning_start, första_steg
 from sampla_steglängd import medelvägslängd
-from sampla_steg_start import första_steg
 from sampla_växelverkan import växelverkan
 from transformation_3d import transformera_koordinatsystem
-from energideponering import energideponering_benmärg
 from visualisera_bin_fil import visualisera_matris
 
 
@@ -47,7 +45,6 @@ def run_MC(iterationer, mu):
                 or z_round < 0
                 or z_round >= z_size
         ):
-            # print(f'utanför fantom')
             utanför_fantom += 1
             i += 1
 
@@ -65,13 +62,11 @@ def run_MC(iterationer, mu):
 
                     if vxv == 'foto':
                         vxv_foto += 1
-                        # benmärg_matris_deponerad_energi = energideponering_benmärg(x, y, z, foton_energi, slicad_benmärg_matris,
-                        #                                                            benmärg_matris_deponerad_energi)
+
                         if slicad_benmärg_matris[x_round, y_round, z_round] != 0:
                             träff += 1
-                            benmärg_matris_deponerad_energi[x_round, y_round, z_round] += foton_energi
 
-                            # print(benmärg_matris_deponerad_energi[x_round, y_round, z_round])
+                            benmärg_matris_deponerad_energi[x_round, y_round, z_round] += foton_energi
 
                             print(
                                 f'foto: {energideponering_compton * 10 ** (-3):.2f} keV i voxel [{round(x), round(y), round(z)}]')
@@ -88,20 +83,10 @@ def run_MC(iterationer, mu):
                         mu_ny = mu
                         energideponering_compton = foton_energi * 0.5  # placeholder
 
-                        # benmärg_matris_deponerad_energi = energideponering_benmärg(x, y, z, energideponering_compton,
-                        #                                                            benmärg_matris_deponerad_energi,
-                        #                                                            benmärg_matris_deponerad_energi)
-
-
-
-                        # elif slicad_benmärg_matris[x_round, y_round, z_round] != 0:
-                        #     benmärg_matris_deponerad_energi[x_round, y_round, z_round] += foton_energi
-
                         if slicad_benmärg_matris[x_round, y_round, z_round] != 0:
                             träff += 1
-                            benmärg_matris_deponerad_energi[x_round, y_round, z_round] += energideponering_compton
 
-                            # print(benmärg_matris_deponerad_energi[x_round, y_round, z_round])
+                            benmärg_matris_deponerad_energi[x_round, y_round, z_round] += energideponering_compton
 
                             print(
                                 f'compton: {energideponering_compton * 10 ** (-3):.2f} keV i voxel [{round(x), round(y), round(z)}]')
@@ -193,9 +178,6 @@ if __name__ == "__main__":
 
     visualisera.show()
 
-    # print(benmärg_matris_deponerad_energi)
-
-    # print(benmärg_matris_deponerad_energi[184, 151, 796], benmärg_matris_deponerad_energi[], benmärg_matris_deponerad_energi[],benmärg_matris_deponerad_energi[],benmärg_matris_deponerad_energi[],benmärg_matris_deponerad_energi[],benmärg_matris_deponerad_energi[],benmärg_matris_deponerad_energi[],benmärg_matris_deponerad_energi[],benmärg_matris_deponerad_energi[],benmärg_matris_deponerad_energi[],benmärg_matris_deponerad_energi[],benmärg_matris_deponerad_energi[],benmärg_matris_deponerad_energi[],)
 
     # fig, ax = plt.subplots(figsize=(8, 8))
     # plt.subplots_adjust(bottom=0.25)
