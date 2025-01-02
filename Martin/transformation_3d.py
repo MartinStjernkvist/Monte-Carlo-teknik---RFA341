@@ -23,8 +23,89 @@ def transformera_koordinatsystem(steg_A_B, phi_A, theta_A, steg_B_C, phi_B, thet
     :param theta_B: vinkel för steget mellan B och C
 
     :return: 1) vektor vars första 3 värden är positionen för punkt C enligt A's koord-syst
-            2) matris med enhetsvektorerna som B's koord-syst består av
     """
+
+    dx_A_B = steg_A_B * np.sin(theta_A) * np.cos(phi_A)
+    dy_A_B = steg_A_B * np.sin(theta_A) * np.sin(phi_A)
+    dz_A_B = steg_A_B * np.cos(theta_A)
+
+    dx_B_C = steg_B_C * np.sin(theta_B) * np.cos(phi_B)
+    dy_B_C = steg_B_C * np.sin(theta_B) * np.sin(phi_B)
+    dz_B_C = steg_B_C * np.cos(theta_B)
+
+    enhets_vektorer_A = np.array(
+        [
+            [1, 0, 0, 0],
+            [0, 1, 0, 0],
+            [0, 0, 1, 0],
+            [0, 0, 0, 0]
+        ])
+
+    # transformera med rotation i z-led (phi)
+    # 4D matrix för att kunna skapa homogenitet-transformsmatris
+    # R_z = np.array(
+    #     [
+    #         [np.cos(phi), -np.sin(phi), 0, 0],
+    #         [np.sin(phi), np.cos(phi), 0, 0],
+    #         [0, 0, 1, 0],
+    #         [0, 0, 0, 0]
+    #     ])
+
+    R_z = np.array(
+        [
+            [np.cos(phi_A), -np.sin(phi_A), 0],
+            [np.sin(phi_A), np.cos(phi_A), 0],
+            [0, 0, 1]
+        ])
+
+    # R_y = np.array(
+    #     [
+    #         [np.cos(pi / 2 - theta), 0, -np.sin(pi / 2 - theta), 0],
+    #         [0, 1, 0, 0],
+    #         [np.sin(pi / 2 - theta), 0, np.cos(pi / 2 - theta), 0],
+    #         [0, 0, 0, 0]
+    #     ])
+
+    # för att x-axeln ska sammanfalla med riktningsvektorn måste rotationsvinkeln vara pi/2 - theta
+    angle = pi / 2 - theta_A
+    R_y = np.array(
+        [
+            [np.cos(angle), 0, -np.sin(angle)],
+            [0, 1, 0],
+            [np.sin(angle), 0, np.cos(angle)],
+        ])
+
+    # R_y = np.identity(3)
+    # R_z = np.identity(3)
+
+    # R = R_y @ R_z
+
+    # först rotation i theta (y-axeln), sedan rotation i phi (z-axeln)
+    R = R_z @ R_y
+
+    # print(f'\nR matrix: \n{R}')
+    # print(f'\nlength of vector: \nx: {np.linalg.norm(R[0:3,0])}\ny: {np.linalg.norm(R[0:3,1])}\nz: {np.linalg.norm(R[0:3,2])}')
+
+    Homogenous_matrix = np.array(
+        [
+            [R[0, 0], R[0, 1], R[0, 2], dx_A_B],
+            [R[1, 0], R[1, 1], R[1, 2], dy_A_B],
+            [R[2, 0], R[2, 1], R[2, 2], dz_A_B],
+            [0, 0, 0, 1]
+        ])
+
+    vektor_A_C = Homogenous_matrix @ np.array(
+        [
+            [dx_B_C],
+            [dy_B_C],
+            [dz_B_C],
+            [1]
+        ])
+
+    return vektor_A_C, dx_B_C, dy_B_C, dz_B_C
+
+
+def transformera_koordinatsystem_extended(steg_A_B, phi_A, theta_A, steg_B_C, phi_B, theta_B):
 
     dx_A_B = steg_A_B * np.sin(theta_A) * np.cos(phi_A)
     dy_A_B = steg_A_B * np.sin(theta_A) * np.sin(phi_A)
@@ -140,7 +221,7 @@ if __name__ == "__main__":
     dy_A_B = steg_A_B * np.sin(theta_A) * np.sin(phi_A)
     dz_A_B = steg_A_B * np.cos(theta_A)
 
-    vektor_A_C, enhets_vektorer_B, dx_B_C, dy_B_C, dz_B_C = transformera_koordinatsystem(steg_A_B, phi_A, theta_A,
+    vektor_A_C, enhets_vektorer_B, dx_B_C, dy_B_C, dz_B_C = transformera_koordinatsystem_extended(steg_A_B, phi_A, theta_A,
                                                                                          steg_B_C, phi_B, theta_B)
 
     x_A_C = vektor_A_C[0]
@@ -235,7 +316,7 @@ if __name__ == "__main__":
     dy_A_B = steg_A_B * np.sin(theta_A) * np.sin(phi_A)
     dz_A_B = steg_A_B * np.cos(theta_A)
 
-    vektor_A_C, enhets_vektorer_B, dx_B_C, dy_B_C, dz_B_C = transformera_koordinatsystem(steg_A_B, phi_A, theta_A,
+    vektor_A_C, enhets_vektorer_B, dx_B_C, dy_B_C, dz_B_C = transformera_koordinatsystem_extended(steg_A_B, phi_A, theta_A,
                                                                                          steg_B_C, phi_B, theta_B)
 
     x_A_C = vektor_A_C[0]

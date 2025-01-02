@@ -22,6 +22,14 @@ c = 3 * 10 ** 8
 
 voxel_sidlängd = 0.15  # cm
 
+#   ----------------------------------------------------------------------
+#   FILER
+#   ----------------------------------------------------------------------
+
+tvärsnitt_file = '../given_data/Tvärsnittstabeller_Fotoner.xlsx'
+attenueringsdata_file = '../given_data/Attenueringsdata.xlsx'
+anatomidefinitioner_file = '../given_data/Anatomidefinitioner.xlsx'
+
 
 #   ----------------------------------------------------------------------
 #   FUNKTIONER

@@ -8,10 +8,14 @@ from sampla_steglängd import medelvägslängd
 from sampla_växelverkan import växelverkan
 from transformation_3d import transformera_koordinatsystem
 from visualisera_bin_fil import visualisera_matris
-from attenueringsdata import attenueringsdata, attenueringsdata_file, anatomidefinitioner_file
+from attenueringsdata import attenueringsdata
 
 
-def run_MC(iterationer):
+def run_MC(iterationer, tvärsnitt_file, attenueringsdata_file, anatomidefinitioner_file, slicad_fantom_matris, slicad_njure_matris, slicad_benmärg_matris, voxel_sidlängd):
+
+    df_attenueringsdata = pd.read_excel(attenueringsdata_file, index_col=None)
+    df_anatomidefinitioner = pd.read_excel(anatomidefinitioner_file, index_col=None)
+
     x_size, y_size, z_size = slicad_fantom_matris.shape
     benmärg_matris_deponerad_energi = np.zeros((x_size, y_size, z_size))
 
@@ -27,12 +31,11 @@ def run_MC(iterationer):
 
         # start: sampla position, riktning och energi
         foton_energi = energi_start()
-        print(foton_energi)
         x_start, y_start, z_start = position_start(slicad_njure_matris)
         theta, phi = riktning_start()
 
         voxel_värde = slicad_fantom_matris[x_start, y_start, z_start]
-        instans = attenueringsdata(voxel_värde, foton_energi, attenueringsdata_file, anatomidefinitioner_file)
+        instans = attenueringsdata(voxel_värde, foton_energi, df_attenueringsdata, df_anatomidefinitioner)
         mu = instans.mu()
 
         # steglängd: sampla medelvägslängden från inverstransformerad attenueringsfunktion
@@ -58,7 +61,7 @@ def run_MC(iterationer):
             while attenuerad == 0:
 
                 voxel_värde = slicad_fantom_matris[x_round, y_round, z_round]
-                instans = attenueringsdata(voxel_värde, foton_energi, attenueringsdata_file, anatomidefinitioner_file)
+                instans = attenueringsdata(voxel_värde, foton_energi, df_attenueringsdata, df_anatomidefinitioner)
                 mu = instans.mu()
 
                 if slicad_fantom_matris[x_round, y_round, z_round] == 0:
@@ -103,16 +106,13 @@ def run_MC(iterationer):
 
                         foton_energi = foton_energi - energideponering_compton
 
-
-
-
                         steglängd_compton = medelvägslängd(mu)
-                        vektor_compton, _, dx_compton, dy_compton, dz_compton = transformera_koordinatsystem(steglängd,
-                                                                                                             phi,
-                                                                                                             theta,
-                                                                                                             steglängd_compton,
-                                                                                                             phi_compton,
-                                                                                                             theta_compton)
+                        vektor_compton, dx_compton, dy_compton, dz_compton = transformera_koordinatsystem(steglängd,
+                                                                                                          phi,
+                                                                                                          theta,
+                                                                                                          steglängd_compton,
+                                                                                                          phi_compton,
+                                                                                                          theta_compton)
 
                         x_round = round(x + dx_compton / voxel_sidlängd)
                         y_round = round(y + dy_compton / voxel_sidlängd)
@@ -138,7 +138,7 @@ def run_MC(iterationer):
                         phi_rayleigh = 2 * pi * random.rand()
                         steglängd_rayleigh = medelvägslängd(mu)
 
-                        vektor_rayleigh, _, dx_rayleigh, dy_rayleigh, dz_rayleigh = transformera_koordinatsystem(
+                        vektor_rayleigh, dx_rayleigh, dy_rayleigh, dz_rayleigh = transformera_koordinatsystem(
                             steglängd,
                             phi,
                             theta,
@@ -176,11 +176,8 @@ def run_MC(iterationer):
 if __name__ == "__main__":
     start = time.time()
 
-    tvärsnitt_file = '../given_data/Tvärsnittstabeller_Fotoner.xlsx'
-    df = pd.read_excel(tvärsnitt_file, index_col=None)
-
-    iterationer = 100
-    benmärg_matris_deponerad_energi = run_MC(iterationer)
+    iterationer = 10000
+    benmärg_matris_deponerad_energi = run_MC(iterationer, tvärsnitt_file, attenueringsdata_file, anatomidefinitioner_file, slicad_fantom_matris, slicad_njure_matris, slicad_benmärg_matris, voxel_sidlängd)
 
     visualisera = visualisera_matris(benmärg_matris_deponerad_energi)
     end_time(start)
