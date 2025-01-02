@@ -201,8 +201,8 @@ if __name__ == "__main__":
     radionuklid_intensitet = Lu177_intensitet
     radionuklid_sannolikhet = Lu177_sannolikhet
 
-    tot_iterationer = 10**5
-    antal_cores = 6
+    tot_iterationer = 5* 10**6
+    antal_cores = 8
 
     chunk_storlek = tot_iterationer // antal_cores
     chunk_ranges = [(i * chunk_storlek, (i + 1) * chunk_storlek) for i in range(antal_cores)]
