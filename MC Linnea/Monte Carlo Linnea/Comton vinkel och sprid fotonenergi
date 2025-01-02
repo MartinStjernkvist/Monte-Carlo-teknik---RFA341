@@ -6,7 +6,7 @@ np.random.rand( )# ger slumptal mellan 0 till 1)
 import math as ma
 
 foton_energin= 1 # Test energi på inkommande fotonen
-def Compton_vinkel_och_energiförlust():
+def Compton_vinkel_och_energiförlust(foton_energin):
     while True:
         #Slumpa tre slumpmässiga tal
         R_1=rand.random()
