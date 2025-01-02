@@ -10,6 +10,7 @@ from visualisera_bin_fil import fantom_matris, visualisera_matris
 # slicad_fantom_matris = fantom_matris[:, :, :]
 slicad_fantom_matris = fantom_matris[50:-50, 50:200, 600:1100]  # denna matris inkluderar benmärg i rygg, samt bröst
 
+
 x, y, z = slicad_fantom_matris.shape
 
 #   ----------------------------------------------------------------------

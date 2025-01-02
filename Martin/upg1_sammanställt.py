@@ -1,17 +1,16 @@
 from imports import *
 
-from sampla_energi_start import energi_start, Lu177_sannolik
+from sampla_energi_start import energi_start, Lu177_energi, Lu177_intensitet, Lu177_sannolikhet
 from matriser import slicad_fantom_matris, slicad_njure_matris, slicad_benmärg_matris
 from sampla_position_start import position_start
 from sampla_riktning_och_steg_start import riktning_start, första_steg
 from sampla_steglängd import medelvägslängd
-from sampla_växelverkan import växelverkan
+from sampla_växelverkan import växelverkan, växelverkan_slimmad
 from transformation_3d import transformera_koordinatsystem
-from visualisera_bin_fil import visualisera_matris
 from attenueringsdata import attenueringsdata
 
 
-def run_MC(iterationer, tvärsnitt_file, attenueringsdata_file, anatomidefinitioner_file, slicad_fantom_matris, slicad_njure_matris, slicad_benmärg_matris, voxel_sidlängd):
+def run_MC(iterationer, tvärsnitt_file, attenueringsdata_file, anatomidefinitioner_file, slicad_fantom_matris, slicad_njure_matris, slicad_benmärg_matris, voxel_sidlängd, radionuklid_energi, radionuklid_intensitet, radionuklid_sannolikhet):
 
     df_attenueringsdata = pd.read_excel(attenueringsdata_file, index_col=None)
     df_anatomidefinitioner = pd.read_excel(anatomidefinitioner_file, index_col=None)
@@ -22,8 +21,8 @@ def run_MC(iterationer, tvärsnitt_file, attenueringsdata_file, anatomidefinitio
 
     utanför_fantom = 0
     vxv_foto = 0
-    vxv_compton = 0
-    vxv_rayleigh = 0
+    # vxv_compton = 0
+    # vxv_rayleigh = 0
     träff = 0
 
     for i in range(iterationer):
@@ -31,7 +30,7 @@ def run_MC(iterationer, tvärsnitt_file, attenueringsdata_file, anatomidefinitio
         # print(i)
 
         # start: sampla position, riktning och energi
-        foton_energi = energi_start()
+        foton_energi = energi_start(radionuklid_energi, radionuklid_intensitet, radionuklid_sannolikhet)
         x_start, y_start, z_start = position_start(slicad_njure_matris)
         theta, phi = riktning_start()
 
@@ -70,9 +69,9 @@ def run_MC(iterationer, tvärsnitt_file, attenueringsdata_file, anatomidefinitio
                     attenuerad = 1
 
                 else:
-                    instans = växelverkan(foton_energi, df_tvärsnitt)
-                    vxv = instans.bestäm_växelverkan()
-                    print(f'energi: {foton_energi * 10 ** (-3)} keV, vxv: {vxv}')
+                    instans = växelverkan_slimmad(foton_energi, df_tvärsnitt)
+                    vxv = instans.bestäm_växelverkan_slimmad()
+                    # print(f'energi: {foton_energi * 10 ** (-3)} keV, vxv: {vxv}')
 
                     if vxv == 'foto':
                         vxv_foto += 1
@@ -88,7 +87,8 @@ def run_MC(iterationer, tvärsnitt_file, attenueringsdata_file, anatomidefinitio
                         attenuerad = 1
 
                     elif vxv == 'compton':
-                        vxv_compton += 1
+                        # vxv_compton += 1
+
                         # sampla energideponering, vinkel
                         # theta_compton = sampla_theta_compton
                         # mu_nytt energiberoende?
@@ -134,7 +134,8 @@ def run_MC(iterationer, tvärsnitt_file, attenueringsdata_file, anatomidefinitio
                         steglängd = steglängd_compton
 
                     elif vxv == 'rayleigh':
-                        vxv_rayleigh += 1
+                        # vxv_rayleigh += 1
+
                         theta_rayleigh = 1
                         phi_rayleigh = 2 * pi * random.rand()
                         steglängd_rayleigh = medelvägslängd(mu)
@@ -168,8 +169,8 @@ def run_MC(iterationer, tvärsnitt_file, attenueringsdata_file, anatomidefinitio
     print(f'max värdet av matrisen: {np.max(benmärg_matris_deponerad_energi)}')
     print(f'utanför: {utanför_fantom}')
     print(f'foto: {vxv_foto}')
-    print(f'rayleigh: {vxv_rayleigh}')
-    print(f'compton: {vxv_compton}')
+    # print(f'rayleigh: {vxv_rayleigh}')
+    # print(f'compton: {vxv_compton}')
     print(f'träffar: {träff}')
     return benmärg_matris_deponerad_energi
 
@@ -181,7 +182,12 @@ if __name__ == "__main__":
     start = time.time()
 
     iterationer = 10 ** 5
-    benmärg_matris_deponerad_energi = run_MC(iterationer, tvärsnitt_file, attenueringsdata_file, anatomidefinitioner_file, slicad_fantom_matris, slicad_njure_matris, slicad_benmärg_matris, voxel_sidlängd)
+
+    radionuklid_energi = Lu177_energi
+    radionuklid_intensitet = Lu177_intensitet
+    radionuklid_sannolikhet = Lu177_sannolikhet
+
+    benmärg_matris_deponerad_energi = run_MC(iterationer, tvärsnitt_file, attenueringsdata_file, anatomidefinitioner_file, slicad_fantom_matris, slicad_njure_matris, slicad_benmärg_matris, voxel_sidlängd, radionuklid_energi, radionuklid_intensitet, radionuklid_sannolikhet)
 
     end_time(start)
 
