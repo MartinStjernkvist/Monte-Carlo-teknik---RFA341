@@ -6,7 +6,7 @@ from visualisera_bin_fil import visualisera_matris
 #   ----------------------------------------------------------------------
 
 if __name__ == "__main__":
-    benmärg_matris_deponerad_energi = np.load('benmärg_matris_deponerad_energi.npy')
+    benmärg_matris_deponerad_energi = np.load('result_E6.npy')
     visualisera = visualisera_matris(benmärg_matris_deponerad_energi, visa_något=True)
 
     visualisera.show()
