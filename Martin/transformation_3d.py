@@ -42,7 +42,7 @@ def transformera_koordinatsystem(steg_A_B, phi_A, theta_A, steg_B_C, phi_B, thet
             [0, 0, 0, 0]
         ])
 
-    # transformera först med rotation i z-led (phi)
+    # transformera med rotation i z-led (phi)
     # 4D matrix för att kunna skapa homogenitet-transformsmatris
     # R_z = np.array(
     #     [
@@ -59,9 +59,6 @@ def transformera_koordinatsystem(steg_A_B, phi_A, theta_A, steg_B_C, phi_B, thet
             [0, 0, 1]
         ])
 
-    # transformera sedan i theta
-    ### tänk att theta rotationsmatrisen har anti-clockwise rotation som standard, men theta är clockwise, så ta -theta
-    # om vi har theta, måste kompenseringen (för att x-axeln ska hamna längs vektorn) vara pi/2 - theta, clockwise
     # R_y = np.array(
     #     [
     #         [np.cos(pi / 2 - theta), 0, -np.sin(pi / 2 - theta), 0],
@@ -70,6 +67,7 @@ def transformera_koordinatsystem(steg_A_B, phi_A, theta_A, steg_B_C, phi_B, thet
     #         [0, 0, 0, 0]
     #     ])
 
+    # för att x-axeln ska sammanfalla med riktningsvektorn måste rotationsvinkeln vara pi/2 - theta
     angle = pi / 2 - theta_A
     R_y = np.array(
         [
