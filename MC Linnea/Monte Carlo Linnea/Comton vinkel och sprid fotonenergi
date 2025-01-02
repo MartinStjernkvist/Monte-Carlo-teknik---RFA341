@@ -5,7 +5,7 @@ import numpy as np
 np.random.rand( )# ger slumptal mellan 0 till 1)
 import math as ma
 
-foton_energin= 1 # Test energi på inkommande fotonen
+#foton_energin= 1 # Test energi på inkommande fotonen
 def Compton_vinkel_och_energiförlust(foton_energin):
     while True:
         #Slumpa tre slumpmässiga tal
@@ -18,21 +18,18 @@ def Compton_vinkel_och_energiförlust(foton_energin):
                 theata=ma.acos(1-2*R_2)
                 sprid_foton_energin=foton_energin/nu
                 energi_förlust=foton_energin-sprid_foton_energin
-                print(theata)
-                print(energi_förlust)
                 break
-        else:
-            continue
-        if R_1> (2*foton_energin+1)/(2*foton_energin+9):
+            return theata, sprid_foton_energin
+        
+        elif R_1> (2*foton_energin+1)/(2*foton_energin+9):
             nu=(2*foton_energin+1)/(2*R_2*foton_energin+1)
             theata=ma.acos(1-(nu-1)/foton_energin)
             if R_3<=0.5*(ma.cos(theata)**2+nu**-1):
                 sprid_foton_energin=foton_energin/nu
                 theata=ma.acos(1-(nu-1)/foton_energin)
                 energi_förlust=foton_energin-sprid_foton_energin
-                print(theata)
-                print(energi_förlust)
                 break
+            return theata, sprid_foton_energin
         else:
             continue
 
