@@ -6,7 +6,7 @@ Fantom
     [KLART]
     - läsa in fantommatris i python
 
-    [FRÅGA]
+    [KLART]
     - skapa ett snitt av matrisen (intervall för 3D matris) -  inte svårt, snart
 
 Foton
@@ -26,19 +26,18 @@ Transport
     [KLART]
     - mean free path (från funktion)
 
-    [WIP]
+    [KLART]
     - detektera vilken voxel (avrundning av steg till närmaste heltal) - borde inte va supersvårt
 
 Växelverkan
 
+    [KLART]
     Vilken typ av växelverkan?
-
-        [KLART]
         - slumpa tal mellan 0 och 1
         - ta ut data för tvärsnitt
         - om tal inom visst intervall -> växelverkan
 
-    [ENKELT]
+    [KLART]
     Foto
         - antag lokalt deponerad energi från elektroner
         - vid foto kommer alltså all energi att deponeras i voxeln (se även länk i sampla_compton_vinkel från Linköping
@@ -46,8 +45,14 @@ Växelverkan
     Compton
         - cdf finns i litteratur om man letar
         - invertera cfd, eller använda någon root-finding kod
+
+        [KLART]
         - transfromera rummet (Lorentztransform?) för att räkna med vinklar
+            - Homogenitetsmatris
+
         - [?] samplad energi (hos utgående fotonen) -> vinkel
+
+        [KLART]
         - följa efter fotonen
 
     Deponering eller transport?
@@ -61,7 +66,7 @@ Deponering
         - target matris (benmärg i ryggkotan)
         - identifiera om foton innanför matris
 
-    [VÄLDIGT ENKELT]
+    [KLART]
     - visualisera energideponering matris enligt samma visualiseringsmetod som för fantomen
 
 
@@ -74,4 +79,7 @@ Vid bestämning av vilken sorts växelverkan som sker:
 
 Hur ska vi göra snittet?
     - vi kan testa att endast inkludera z-intervallet för ryggkotan, sedan jämföra med en matris som har hela kroppen
+
+
+Root finder eller hur ska vi göra med compton?
 

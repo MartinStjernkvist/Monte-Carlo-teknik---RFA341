@@ -244,15 +244,3 @@ if __name__ == "__main__":
 
     print(len(bingo))
 """
-
-
-# x_round = round(x)
-#                 y_round = round(y)
-#                 z_round = round(z)
-#
-#                 if x_round >= x_size or y_round >= y_size or z_round >= z_size:
-#                     attenuerad = 1
-#                     print(f'utanför fantom')
-#
-#                 elif slicad_benmärg_matris[x_round, y_round, z_round] != 0:
-#                     benmärg_matris_deponerad_energi[x_round, y_round, z_round] += foton_energi

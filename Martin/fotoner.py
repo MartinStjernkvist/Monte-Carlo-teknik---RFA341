@@ -27,7 +27,6 @@ def P(s, mu):
     return 1 - np.exp(-mu * s)
 
 
-# samplingsfkn
 def samplingsfkn(R, mu):
     return -np.log(R) / mu
 
@@ -47,7 +46,6 @@ lambda_t = 1 / sigma_t
 #   ----------------------------------------------------------------------
 
 n_particles = 10 ** 3
-
 
 #   ----------------------------------------------------------------------
 #   FOR-LOOP
@@ -117,9 +115,6 @@ plt.xticks(fontsize=small_font_size)
 plt.yticks(fontsize=small_font_size)
 plt.legend(fontsize=small_font_size)
 # plt.show()
-
-
-
 
 
 end = time.time()

@@ -15,6 +15,7 @@ from visualisera_bin_fil import visualisera_matris
 def run_MC(iterationer, mu):
     x_size, y_size, z_size = slicad_fantom_matris.shape
     benmärg_matris_deponerad_energi = np.zeros((x_size, y_size, z_size))
+
     utanför_fantom = 0
     vxv_foto = 0
     vxv_compton = 0
@@ -29,10 +30,6 @@ def run_MC(iterationer, mu):
         foton_energi = energi_start()
         x_start, y_start, z_start = position_start(slicad_njure_matris)
         theta, phi = riktning_start()
-
-        # x_tot = x_start
-        # y_tot = y_start
-        # z_tot = z_start
 
         # steglängd: sampla medelvägslängden från inverstransformerad attenueringsfunktion
         steglängd = medelvägslängd(mu)
@@ -54,20 +51,10 @@ def run_MC(iterationer, mu):
             utanför_fantom += 1
             i += 1
 
-        # elif slicad_fantom_matris[x_round, y_round, z_round] == 0:
-        #         # print(f'utanför fantom')
-        #         utanför_fantom += 1
-        #         i += 1
-
         else:
             while attenuerad == 0:
 
-                # if x < 0 or x >= x_size or y < 0 or y >= y_size or z < 0 or z >= z_size:
-                #     print(f'utanför fantom')
-                #     break
-
                 if slicad_fantom_matris[x_round, y_round, z_round] == 0:
-                    # print(f'utanför fantom')
                     utanför_fantom += 1
                     attenuerad = 1
 
@@ -105,10 +92,8 @@ def run_MC(iterationer, mu):
                         #                                                            benmärg_matris_deponerad_energi,
                         #                                                            benmärg_matris_deponerad_energi)
 
-                        # if x_round >= x_size or y_round >= y_size or z_round >= z_size:
-                        #     attenuerad = 1
-                        #     print(f'utanför fantom')
-                        #
+
+
                         # elif slicad_benmärg_matris[x_round, y_round, z_round] != 0:
                         #     benmärg_matris_deponerad_energi[x_round, y_round, z_round] += foton_energi
 
@@ -124,19 +109,18 @@ def run_MC(iterationer, mu):
                         foton_energi = foton_energi - energideponering_compton
 
                         steglängd_compton = medelvägslängd(mu_ny)
-                        vektor_compton, _, dx_compton, dy_compton, dz_compton = transformera_koordinatsystem(steglängd, phi,
+                        vektor_compton, _, dx_compton, dy_compton, dz_compton = transformera_koordinatsystem(steglängd,
+                                                                                                             phi,
                                                                                                              theta,
                                                                                                              steglängd_compton,
                                                                                                              phi_compton,
                                                                                                              theta_compton)
 
-                        # x_tot += vektor_compton[0]
-                        # y_tot += vektor_compton[1]
-                        # z_tot += vektor_compton[2]
 
-                        x_round = round(x + dx_compton)
-                        y_round = round(y + dy_compton)
-                        z_round = round(z + dz_compton)
+
+                        x_round = round(x + dx_compton / voxel_sidlängd)
+                        y_round = round(y + dy_compton / voxel_sidlängd)
+                        z_round = round(z + dz_compton / voxel_sidlängd)
 
                         if (
                                 x_round < 0
@@ -146,7 +130,6 @@ def run_MC(iterationer, mu):
                                 or z_round < 0
                                 or z_round >= z_size
                         ):
-                            # print(f'utanför fantom')
                             utanför_fantom += 1
                             attenuerad = 1
 
@@ -159,20 +142,17 @@ def run_MC(iterationer, mu):
                         phi_rayleigh = 2 * pi * random.rand()
                         steglängd_rayleigh = medelvägslängd(mu)
 
-                        vektor_rayleigh, _, dx_rayleigh, dy_rayleigh, dz_rayleigh = transformera_koordinatsystem(steglängd,
-                                                                                                                 phi,
-                                                                                                                 theta,
-                                                                                                                 steglängd_rayleigh,
-                                                                                                                 phi_rayleigh,
-                                                                                                                 theta_rayleigh)
+                        vektor_rayleigh, _, dx_rayleigh, dy_rayleigh, dz_rayleigh = transformera_koordinatsystem(
+                            steglängd,
+                            phi,
+                            theta,
+                            steglängd_rayleigh,
+                            phi_rayleigh,
+                            theta_rayleigh)
 
-                        # x_tot += vektor_rayleigh[0]
-                        # y_tot += vektor_rayleigh[1]
-                        # z_tot += vektor_rayleigh[2]
-
-                        x_round = round(x + dx_rayleigh)
-                        y_round = round(y + dy_rayleigh)
-                        z_round = round(z + dz_rayleigh)
+                        x_round = round(x + dx_rayleigh / voxel_sidlängd)
+                        y_round = round(y + dy_rayleigh / voxel_sidlängd)
+                        z_round = round(z + dz_rayleigh / voxel_sidlängd)
 
                         if (
                                 x_round < 0
@@ -182,14 +162,12 @@ def run_MC(iterationer, mu):
                                 or z_round < 0
                                 or z_round >= z_size
                         ):
-                            # print(f'utanför fantom')
                             utanför_fantom += 1
                             attenuerad = 1
 
                         theta, phi = theta_rayleigh, phi_rayleigh
                         steglängd = steglängd_rayleigh
 
-                        # print(f'rayleighspridning')
 
     print(f'max värdet av matrisen: {np.max(benmärg_matris_deponerad_energi)}')
     print(f'utanför: {utanför_fantom}')
