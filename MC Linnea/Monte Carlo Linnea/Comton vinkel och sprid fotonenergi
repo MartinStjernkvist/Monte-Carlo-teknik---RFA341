@@ -9,7 +9,7 @@ import math as ma
 def Compton_vinkel_och_energiförlust(foton_energin):
     while True:
         #Slumpa tre slumpmässiga tal
-        R_1=rand.random()
+        R_1=rand.random() 
         R_2=rand.random()
         R_3=rand.random()
         #Khans metod (från artikeln "A Monte Carlo program for the simulation of scintillation camera characteristics") för att ta reda på vinkeln och energin på fotonen:
