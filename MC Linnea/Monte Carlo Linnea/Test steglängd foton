@@ -11,60 +11,56 @@ import matplotlib.pyplot as plt
 from scipy.optimize import curve_fit
 import openpyxl as op
 
-#Hittar Excel filen i datorn och läs in
-file_attenuering=pd.read_excel(r"C:\Users\Admin\Documents\GitHub\Monte Carlo Linnea\Attenueringsdata.xlsx")
-#Orelevanta datan som ska ta bort i filen som t.ex. titanium och bly
+def Steglängd_foton(Foton_energi, riktning):
+    while True:
 
-#Hitta ett sätt att ta bort viss coloumn data
+        #Hittar Excel filen i datorn och läs in
+        file_attenuering=pd.read_excel(r"C:\Users\Admin\Documents\GitHub\Monte Carlo Linnea\Attenueringsdata.xlsx")
+        #Orelevanta datan som ska ta bort i filen som t.ex. titanium och bly
 
-
-while True:
-    #Testar och se om det blir en förändring
-    print(file_attenuering.shape) #Ta bort sen
-
-    #Testa drop funktionen och ta bort 
-    file_attenuering=file_attenuering.drop(file_attenuering.columns[[20, 21, 22, 24,25]], axis=1,inplace=True) #Tar bort kolumnerna som inte är relevanta
-
-    #Testar och se om det blir en förändring på storleken
-    print(file_attenuering.shape) #Ta bort sen
+        #Testa drop funktionen och ta bort 
+        file_attenuering=file_attenuering.drop(file_attenuering.columns[[20, 21, 22, 24,25]], axis=1, inplace=True) #Tar bort kolumnerna som inte är relevanta
 
 
+        Foton_energi=208.3 #Test, ta bort sen,  energi på Lu 177 i keV
 
-    Foton_energi=208.3 #Test, ta bort sen,  energi på Lu 177 i keV
-    Energi_data=file_attenuering['E'] #Data i keV också
+        Energi_data=file_attenuering['E'] #Data i keV från excelfilen
+
+        data_kropp=file_attenuering.values.tolist() #Resten av attenueringskoefficienten i fantomen på rader
+
+        #Tar ut attenueringskoefficienterna från Excel datan 
+        for i in range(len(Energi_data)):
+            attenueringskoefficienter=[]
+            if Energi_data[i]== int(Foton_energi):
+                #Interpolera energi så man får samma värde från datan
+                Energi_delar=np.linspace(Energi_data[i], Energi_data[i+1],5) 
+                #Interpolera raden i och i+1 för alla datavärden
+                data_kropp_delar=np.linspace(data_kropp[i],data_kropp[i+1],5)
+
+                for j in range(len(Energi_delar)):
+                    if Energi_delar[j]==Foton_energi:
+                        #Sampla attenueringskoefficienten från alla vävnader i fantomkroppen 
+                        attenueringskoefficienter.append(data_kropp_delar[j]) #Hitta ett sätt att ta ta bort delar som inte är relevanta i filen
+                        break
+            else:
+                continue
+
+        #ta reda på my_m genom att ta max för allavoxlar attenueringskoefficient
+        my_m=np.max(attenueringskoefficienter)
+        #Steglängden på fotonerna
+        R=rand.random()
+        steglängd=-ma.log(R)/my_m
 
 
-    data_kropp=file_attenuering.values.tolist() #Resten av attenueringskoefficienten i fantomen på rader
 
-    #Tar ut attenueringskoefficienterna från Excel datan 
-    for i in range(len(Energi_data)):
-        attenueringskoefficienter=[]
-        if Energi_data[i]== int(Foton_energi):
-            #Interpolera energi så man får samma värde från datan
-            Energi_delar=np.linspace(Energi_data[i], Energi_data[i+1],5) 
-            #Interpolera raden i och i+1 för alla datavärden
-            data_kropp_delar=np.linspace(data_kropp[i],data_kropp[i+1],5)
 
-            for j in range(len(Energi_delar)):
-                if Energi_delar[j]==Foton_energi:
-                    #Sampla attenueringskoefficienten från alla vävnader i fantomkroppen 
-                    attenueringskoefficienter.append(data_kropp_delar[j]) #Hitta ett sätt att ta ta bort delar som inte är relevanta i filen
-                    break
+        #Ta fram vilken voxel fotoner kommer till efter att gått steglängden i en riktning
+        #Attenueringskoefficienten för voxeln
+        mu_voxel= 1 #test voxel, sampla fram vilken voxel det blir 
+
+        if R<= mu_voxel/my_m:
+            #Växelverkan sker i steglängden och riktningen !!!
+            break
+            return steglängd
         else:
-            continue
-
-    #ta reda på my_m genom att ta max för allavoxlar attenueringskoefficient
-    my_m=np.max(attenueringskoefficienter)
-    #Steglängden på fotonerna
-    R=rand.random()
-    steg=-ma.log(R)/my_m
-
-    #Ta fram vilken voxel fotoner kommer till efter att gått steglängden
-    #Attenueringskoefficienten för voxeln
-    mu_voxel= 1 #test voxel, sampla fram vilken voxel det blir 
-
-    if R<= mu_voxel/my_m:
-        #Växelverkan sker
-        break
-    else:
-        continue #Sampla ny stegläng men i samma riktning
+            continue #Sampla ny stegläng men i samma riktning
