@@ -5,73 +5,9 @@ import numpy as np
 np.random.rand( )# ger slumptal mellan 0 till 1)
 import math as ma
 
-#Ursprungsenergier från nukliden
-Y90_energ=2278.7 #keV men ska slumpa i spektrumet i en av filerna
 
 
-#Steglängden på fotonerna, Wendy ska göra detta
-
-#Ta reda på majortiteta attenuerigskoefficienten för varje matris/slice
-#file_path_attenuering="C:\Users\Admin\Documents\GitHub\Monte Carlo Linnea\Attenueringsdata.xlsx"
-... #ta reda på my_m genom att ta max för allavoxlar attenueringskoefficient
-#my_m=np.max()
-
-#Steglängden på fotonerna
-#steg=-ma.log(rand.random())/my_m
-
-
-
-
-
-
-#Läser en Excel fil
-import pandas as pd
-import matplotlib.pyplot as plt
-from scipy.optimize import curve_fit
-import openpyxl as op
-
-#Hittar Excel filen i datorn och läs in
-file_attenuering=pd.read_excel(r"C:\Users\Admin\Documents\GitHub\Monte Carlo Linnea\Attenueringsdata.xlsx")
-#Orelevanta datan som ska ta bort i filen som t.ex. titanium och bly
-
-#Testar och se om det blir en förändring
-print(file_attenuering.shape)
-
-#Testa drop funktionen och ta bort 
-file_attenuering=file_attenuering.drop([20, 21, 22, 24,25], axis=1) # Nope..
- 
-#Testar och se om det blir en förändring
-print(file_attenuering.shape)
-
-
-Foton_energi=208.3 #Test, ta bort sen,  energi på Lu 177 i keV
-Energi_data=file_attenuering['E'] #Data i keV också
-
-
-data_kropp=file_attenuering.values.tolist() #Resten av attenueringskoefficienten i fantomen på rader
-
-#Tar ut attenueringskoefficienterna från Excel datan 
-for i in range(len(Energi_data)):
-    attenueringskoefficienter=[]
-    if Energi_data[i]== int(Foton_energi):
-        #Interpolera energi så man får samma värde från datan
-        Energi_delar=np.linspace(Energi_data[i], Energi_data[i+1],5) 
-        #Interpolera raden i och i+1 för alla datavärden
-        data_kropp_delar=np.linspace(data_kropp[i],data_kropp[i+1],5)
-
-        for j in range(len(Energi_delar)):
-            if Energi_delar[j]==Foton_energi:
-                #Sampla attenueringskoefficienten från alla vävnader i fantomkroppen 
-                attenueringskoefficienter.append(data_kropp_delar[j]) #Hitta ett sätt att ta ta bort delar som inte är relevanta i filen
-                
-
-                break
-
-    else:
-        continue
-
-
-
+#Slumpa ut energi på betakällan
 import pandas as pd
 import matplotlib.pyplot as plt
 from scipy.optimize import curve_fit
@@ -96,17 +32,28 @@ plt.scatter(Energi_Y90, Intensitet_Y90)
 def polynom_funktion(x,a,b,c,d):
     return a*x**3+b*x**2+c*x+d
 params, cv= curve_fit (polynom_funktion,Energi_Y90, Intensitet_Y90)
-
+#print(*params)
 olika_energier=np.linspace(np.min(Energi_Y90), np.max(Energi_Y90))
 
 plt.plot(olika_energier,polynom_funktion(olika_energier,*params))
 
-#plt.show()
+plt.show()
 
-#Inver transformera funktionen
-
-
+Skärpunkt=2.206882599192 #Enligt Wolfram alfa
 """
+def Lösning_tredjegradare(a,b,c,d):
+    p=c/a-(b/a)**2/3
+    q=d/a+(2*b/a**3-9*b*c/a**2)/27
+    D=(p/3)**3+(q/2)**2
+    u=(-q/2+D**0.5)**(1/3)
+    v=(-q/2-D**0.5)**(1/3)
+    x=u+v-b/(3*a)
+    return x
+print(Lösning_tredjegradare(*params))
+#Inver transformera funktionen??
+
+
+
 #Sfärisk koordinat för riktningnen som fotoner kan färdas i
 import matplotlib.pyplot as plt
 from mpl_toolkits import mplot3d

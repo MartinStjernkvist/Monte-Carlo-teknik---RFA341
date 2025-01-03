@@ -1,0 +1,61 @@
+#Steglängden på fotonerna, Wendy ska göra detta
+
+#Ta reda på majortiteta attenuerigskoefficienten för varje matris/slice
+
+#Läser en Excel fil
+import pandas as pd
+import math as ma
+import numpy as np
+import random as rand
+import matplotlib.pyplot as plt
+from scipy.optimize import curve_fit
+import openpyxl as op
+
+#Hittar Excel filen i datorn och läs in
+file_attenuering=pd.read_excel(r"C:\Users\Admin\Documents\GitHub\Monte Carlo Linnea\Attenueringsdata.xlsx")
+#Orelevanta datan som ska ta bort i filen som t.ex. titanium och bly
+
+#Hitta ett sätt att ta bort viss coloumn data
+Excel_fil=op.load_workbook("C:\Users\Admin\Documents\GitHub\Monte Carlo Linnea\Attenueringsdata.xlsx")
+
+
+#Testar och se om det blir en förändring
+print(file_attenuering.shape)
+
+#Testa drop funktionen och ta bort 
+file_attenuering=file_attenuering.drop([20, 21, 22, 24,25], axis=1) # Nope..
+ 
+#Testar och se om det blir en förändring
+print(file_attenuering.shape)
+
+
+
+
+Foton_energi=208.3 #Test, ta bort sen,  energi på Lu 177 i keV
+Energi_data=file_attenuering['E'] #Data i keV också
+
+
+data_kropp=file_attenuering.values.tolist() #Resten av attenueringskoefficienten i fantomen på rader
+
+#Tar ut attenueringskoefficienterna från Excel datan 
+for i in range(len(Energi_data)):
+    attenueringskoefficienter=[]
+    if Energi_data[i]== int(Foton_energi):
+        #Interpolera energi så man får samma värde från datan
+        Energi_delar=np.linspace(Energi_data[i], Energi_data[i+1],5) 
+        #Interpolera raden i och i+1 för alla datavärden
+        data_kropp_delar=np.linspace(data_kropp[i],data_kropp[i+1],5)
+
+        for j in range(len(Energi_delar)):
+            if Energi_delar[j]==Foton_energi:
+                #Sampla attenueringskoefficienten från alla vävnader i fantomkroppen 
+                attenueringskoefficienter.append(data_kropp_delar[j]) #Hitta ett sätt att ta ta bort delar som inte är relevanta i filen
+                break
+
+    else:
+        continue
+
+#ta reda på my_m genom att ta max för allavoxlar attenueringskoefficient
+my_m=np.max(attenueringskoefficienter)
+#Steglängden på fotonerna
+steg=-ma.log(rand.random())/my_m
