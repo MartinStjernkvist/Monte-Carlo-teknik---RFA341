@@ -11,6 +11,7 @@ import math as ma
 import pandas as pd
 import matplotlib.pyplot as plt
 from scipy.optimize import curve_fit
+from scipy import integrate
 #Hittar filen och ta info från excelfilen
 #Läser en Excel fil
 file_Y90=pd.read_excel(r"C:\Users\Admin\Documents\GitHub\Monte Carlo Linnea\Y90_Spektrum.xlsx" )
@@ -32,7 +33,7 @@ plt.scatter(Energi_Y90, Intensitet_Y90)
 def polynom_funktion(x,a,b,c,d):
     return a*x**3+b*x**2+c*x+d
 params, cv= curve_fit (polynom_funktion,Energi_Y90, Intensitet_Y90)
-#print(*params)
+print(*params)
 olika_energier=np.linspace(np.min(Energi_Y90), np.max(Energi_Y90))
 
 plt.plot(olika_energier,polynom_funktion(olika_energier,*params))
@@ -40,20 +41,22 @@ plt.plot(olika_energier,polynom_funktion(olika_energier,*params))
 plt.show()
 
 Skärpunkt=2.206882599192 #Enligt Wolfram alfa
-"""
+
 def Lösning_tredjegradare(a,b,c,d):
-    p=c/a-(b/a)**2/3
-    q=d/a+(2*b/a**3-9*b*c/a**2)/27
+    p=c/a-((b/a)**2)/3
+    q=d/a+(2*(b/a)**3-9*b*c/a**2)/27
     D=(p/3)**3+(q/2)**2
     u=(-q/2+D**0.5)**(1/3)
     v=(-q/2-D**0.5)**(1/3)
     x=u+v-b/(3*a)
     return x
 print(Lösning_tredjegradare(*params)) #Stämmer inte med grafen
-#Inver transformera funktionen??
 
+#Inver transformera funktionen
+#k=1/integrate.quad(polynom_funktion(olika_energier,*params),0,Skärpunkt)
+#print(k)
 
-
+"""
 #Sfärisk koordinat för riktningnen som fotoner kan färdas i
 import matplotlib.pyplot as plt
 from mpl_toolkits import mplot3d
