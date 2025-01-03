@@ -3,8 +3,8 @@ from imports import *
 
 class växelverkan:
 
-    def __init__(self, energi, tvärsnitt_file):
-        self.df = pd.read_excel(tvärsnitt_file, index_col=None)
+    def __init__(self, energi, df_tvärsnitt):
+        self.df = df_tvärsnitt
 
         self.energi = energi
         self.energi_list = self.df['Energy (eV)'].to_list()
@@ -86,6 +86,74 @@ class växelverkan:
         return text
 
 
+
+class växelverkan_slimmad:
+
+    def __init__(self, energi, df_tvärsnitt):
+        self.df = df_tvärsnitt
+
+        self.energi = energi
+        self.energi_list = self.df['Energy (eV)'].to_list()
+        self.foto_list = self.df['Photoelectric  (cm^2)'].to_list()
+        self.compton_list = self.df['Compton (cm^2)'].to_list()
+        self.rayleigh_list = self.df['Rayleigh (cm^2)'].to_list()
+
+    def find_foto_tvärsnitt_slimmad(self):
+        energi_list = np.array(self.energi_list)
+        foto_list = np.array(self.foto_list)
+
+        diff = np.abs(energi_list - self.energi)
+        closest_indices = np.argsort(diff)[:2]
+        foto_close = foto_list[closest_indices]
+
+        foto_target = foto_close[0]
+
+        return foto_target
+
+    def find_compton_tvärsnitt_slimmad(self):
+        energi_list = np.array(self.energi_list)
+        compton_list = np.array(self.compton_list)
+
+        diff = np.abs(energi_list - self.energi)
+        closest_indices = np.argsort(diff)[:2]
+        compton_close = compton_list[closest_indices]
+
+        compton_target = compton_close[0]
+
+        return compton_target
+
+
+    def find_rayleigh_tvärsnitt_slimmad(self):
+        energi_list = np.array(self.energi_list)
+        rayleigh_list = np.array(self.rayleigh_list)
+
+        diff = np.abs(energi_list - self.energi)
+        closest_indices = np.argsort(diff)[:2]
+        rayleigh_close = rayleigh_list[closest_indices]
+
+        rayleigh_target = rayleigh_close[0]
+
+        return rayleigh_target
+
+    # @timer
+    def bestäm_växelverkan_slimmad(self):
+        foto_target = self.find_foto_tvärsnitt_slimmad()
+        compton_target = self.find_compton_tvärsnitt_slimmad()
+        rayleigh_target = self.find_rayleigh_tvärsnitt_slimmad()
+
+        tvärsnitt_lista = [foto_target, compton_target, rayleigh_target]  # cm^2
+
+        tvärsnitt_lista_norm = np.cumsum(tvärsnitt_lista) / np.sum(tvärsnitt_lista)
+
+        slump_tal = np.random.rand()
+        if slump_tal <= tvärsnitt_lista_norm[0]:
+            text = 'foto'
+        elif slump_tal <= tvärsnitt_lista_norm[1]:
+            text = 'compton'
+        else:
+            text = 'rayleigh'
+        return text
+
 #   ----------------------------------------------------------------------
 #   FOTO OCH COMPTON
 #   ----------------------------------------------------------------------
@@ -97,14 +165,13 @@ if __name__ == "__main__":
     #   ----------------------------------------------------------------------
     #   INPUT DATA
     #   ----------------------------------------------------------------------
-    tvärsnitt_file = '../given_data/Tvärsnittstabeller_Fotoner.xlsx'
-    df = pd.read_excel(tvärsnitt_file, index_col=None)
+    df_tvärsnitt = pd.read_excel(tvärsnitt_file, index_col=None)
     # print(df.columns)
 
-    energi_list = df['Energy (eV)'].to_list()
-    compton_list = df['Compton (cm^2)'].to_list()
-    foto_list = df['Photoelectric  (cm^2)'].to_list()
-    rayleigh_list = df['Rayleigh (cm^2)'].to_list()
+    energi_list = df_tvärsnitt['Energy (eV)'].to_list()
+    compton_list = df_tvärsnitt['Compton (cm^2)'].to_list()
+    foto_list = df_tvärsnitt['Photoelectric  (cm^2)'].to_list()
+    rayleigh_list = df_tvärsnitt['Rayleigh (cm^2)'].to_list()
 
     #   ----------------------------------------------------------------------
     #   INPUT ENERGI
@@ -115,7 +182,7 @@ if __name__ == "__main__":
     #   LÅT STÅ
     #   ----------------------------------------------------------------------
 
-    instans = växelverkan(energi, tvärsnitt_file)
+    instans = växelverkan(energi, df_tvärsnitt)
 
     foto_target = instans.find_foto_tvärsnitt()
     compton_target = instans.find_compton_tvärsnitt()

@@ -9,6 +9,9 @@ import pandas as pd
 from scipy.interpolate import interp1d
 from numpy import random
 from scipy.optimize import curve_fit
+import multiprocessing as mp
+import tkinter as tk
+from tkinter import simpledialog
 
 #   ----------------------------------------------------------------------
 #   KONSTANTER

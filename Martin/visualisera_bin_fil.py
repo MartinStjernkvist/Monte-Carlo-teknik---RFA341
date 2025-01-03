@@ -2,7 +2,7 @@ from imports import *
 
 
 class visualisera_matris:
-    def __init__(self, array_3d):
+    def __init__(self, array_3d, visa_något=False):
         self.array_3d = array_3d
         self.x, self.y, self.z = array_3d.shape
 
@@ -20,7 +20,10 @@ class visualisera_matris:
         self.ax2 = plt.subplot(self.gs[1])
         self.ax3 = plt.subplot(self.gs[2])
 
-        self.vmin, self.vmax = 0, np.max(array_3d)
+        if visa_något == False:
+            self.vmin, self.vmax = 0, np.max(array_3d)
+        else:
+            self.vmin, self.vmax = 0, 0.0001*np.max(array_3d)
         # print(self.vmax)
         self.img1 = self.ax1.imshow(array_3d[self.slice_x_index, :, :], cmap='gray', vmin=self.vmin,
                                     vmax=self.vmax)  # x-slice
