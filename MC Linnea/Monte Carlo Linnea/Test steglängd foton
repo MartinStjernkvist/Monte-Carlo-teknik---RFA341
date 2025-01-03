@@ -32,7 +32,7 @@ def Steglängd_foton(Foton_energi, riktning):
         for i in range(len(Energi_data)):
             attenueringskoefficienter=[]
             if Energi_data[i]== int(Foton_energi):
-                #Interpolera energi så man får samma värde från datan
+                #Interpolera energidatan så man får samma värde som fotonenergin
                 Energi_delar=np.linspace(Energi_data[i], Energi_data[i+1],5) 
                 #Interpolera raden i och i+1 för alla datavärden
                 data_kropp_delar=np.linspace(data_kropp[i],data_kropp[i+1],5)
