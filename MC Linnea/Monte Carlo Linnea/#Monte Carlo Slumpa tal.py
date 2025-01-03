@@ -12,6 +12,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from scipy.optimize import curve_fit
 from scipy import integrate
+from scipy.special import cbrt 
+
 #Hittar filen och ta info från excelfilen
 #Läser en Excel fil
 file_Y90=pd.read_excel(r"C:\Users\Admin\Documents\GitHub\Monte Carlo Linnea\Y90_Spektrum.xlsx" )
@@ -44,17 +46,19 @@ Skärpunkt=2.206882599192 #Enligt Wolfram alfa
 
 def Lösning_tredjegradare(a,b,c,d):
     p=c/a-((b/a)**2)/3
-    q=d/a+(2*(b/a)**3-9*b*c/a**2)/27
+    q=d/a+(2*(b/a)**3-9*b/a*c/a)/27
     D=(p/3)**3+(q/2)**2
-    u=(-q/2+D**0.5)**(1/3)
-    v=(-q/2-D**0.5)**(1/3)
+    u=cbrt(-q/2+D**0.5)
+    v=cbrt(-q/2-D**0.5)
     x=u+v-b/(3*a)
     return x
 print(Lösning_tredjegradare(*params)) #Stämmer inte med grafen
 
 #Inver transformera funktionen
-#k=1/integrate.quad(polynom_funktion(olika_energier,*params),0,Skärpunkt)
+#k=1/integrate.quad(polynom_funktion(olika_energier,*params),0,Skärpunkt) #kunde inte integrera av någon anledning
 #print(k)
+
+
 
 """
 #Sfärisk koordinat för riktningnen som fotoner kan färdas i

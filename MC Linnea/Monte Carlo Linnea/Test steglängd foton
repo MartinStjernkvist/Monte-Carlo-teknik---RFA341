@@ -16,18 +16,17 @@ file_attenuering=pd.read_excel(r"C:\Users\Admin\Documents\GitHub\Monte Carlo Lin
 #Orelevanta datan som ska ta bort i filen som t.ex. titanium och bly
 
 #Hitta ett sätt att ta bort viss coloumn data
-Excel_fil=op.load_workbook("C:\Users\Admin\Documents\GitHub\Monte Carlo Linnea\Attenueringsdata.xlsx")
+#Excel_fil=op.load_workbook("C:\Users\Admin\Documents\GitHub\Monte Carlo Linnea\Attenueringsdata.xlsx")
 
 
 #Testar och se om det blir en förändring
 print(file_attenuering.shape)
 
 #Testa drop funktionen och ta bort 
-file_attenuering=file_attenuering.drop([20, 21, 22, 24,25], axis=1) # Nope..
- 
-#Testar och se om det blir en förändring
-print(file_attenuering.shape)
+file_attenuering=file_attenuering.drop(file_attenuering.columns[[20, 21, 22, 24,25]], axis=1,inplace=True) #Tar bort kolumnerna som inte är relevanta
 
+#Testar och se om det blir en förändring på storleken
+print(file_attenuering.shape)
 
 
 
