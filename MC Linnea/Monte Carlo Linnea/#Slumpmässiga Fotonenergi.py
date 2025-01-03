@@ -44,6 +44,7 @@ for i in range(Antal_iterationer):
     elif Slump_tal <= Lu177_sannolik[5]:
         Foton_energi.append(Lu177_energ[5])
     else:
+        #Ingen foton 
         continue
 
 # print(Foton_energi)
