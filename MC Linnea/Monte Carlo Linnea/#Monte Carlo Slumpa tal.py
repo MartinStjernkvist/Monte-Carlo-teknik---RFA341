@@ -49,7 +49,7 @@ def Lösning_tredjegradare(a,b,c,d):
     v=(-q/2-D**0.5)**(1/3)
     x=u+v-b/(3*a)
     return x
-print(Lösning_tredjegradare(*params))
+print(Lösning_tredjegradare(*params)) #Stämmer inte med grafen
 #Inver transformera funktionen??
 
 
