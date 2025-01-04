@@ -1,6 +1,8 @@
 from imports import *
 
+
 def energi_start(radionuklid_energi, radionuklid_intensitet, radionuklid_sannolikhet):
+
     slump_tal = np.random.rand()
     if slump_tal <= Lu177_sannolikhet[0]:
         foton_energi = Lu177_energi[0]

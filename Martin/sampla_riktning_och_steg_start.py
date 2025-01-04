@@ -1,6 +1,6 @@
 from imports import *
 
-
+@jit(nopython=True)
 def riktning_start():
     # theta = random.gauss(pi / 2, 1)  # theta = np.arcsin(-1 + 2 * random.rand())
 
@@ -8,7 +8,7 @@ def riktning_start():
     phi = 2 * pi * random.rand()
     return theta, phi
 
-
+@jit(nopython=True)
 def första_steg(theta, phi, steglängd, x, y, z):
     dx = steglängd * np.cos(theta) * np.cos(phi) / voxel_sidlängd
     dy = steglängd * np.cos(theta) * np.sin(phi) / voxel_sidlängd

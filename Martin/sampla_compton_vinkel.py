@@ -40,23 +40,23 @@ from imports import *
 
 # Sampla Compton vinkel och den sprida fotonenergin
 import random as rand
-import math as ma
 
 
 # foton_energin= 1 # Test energi på inkommande fotonen
-def Compton_vinkel_och_energiförlust(foton_energi):
+@jit(nopython=True)
+def compton_vinkel_och_energiförlust(foton_energi):
     while True:
         # Slumpa tre slumpmässiga tal
-        R_1 = rand.random()
-        R_2 = rand.random()
-        R_3 = rand.random()
+        R_1 = np.random.rand()
+        R_2 = np.random.rand()
+        R_3 = np.random.rand()
 
         # Khans metod (från artikeln "A Monte Carlo program for the simulation of scintillation camera characteristics") för att ta reda på vinkeln och energin på fotonen:
         if R_1 <= (2 * foton_energi + 1) / (2 * foton_energi + 9):
             
             nu = 2 * foton_energi * R_2
             if R_3 <= 4 * (nu ** -1 - nu ** -2):
-                theta = ma.acos(1 - 2 * R_2)
+                theta = np.arccos(1 - 2 * R_2)
                 spridd_foton_energi = foton_energi / nu
                 energi_förlust = foton_energi - spridd_foton_energi
 
@@ -65,15 +65,16 @@ def Compton_vinkel_och_energiförlust(foton_energi):
         elif R_1 > (2 * foton_energi + 1) / (2 * foton_energi + 9):
 
             nu = (2 * foton_energi + 1) / (2 * R_2 * foton_energi + 1)
-            theta = ma.acos(1 - (nu - 1) / foton_energi)
+            theta = np.arccos(1 - (nu - 1) / foton_energi)
 
-            if R_3 <= 0.5 * (ma.cos(theta) ** 2 + nu ** -1):
+            if R_3 <= 0.5 * (np.cos(theta) ** 2 + nu ** -1):
 
                 spridd_foton_energi = foton_energi / nu
-                theta = ma.acos(1 - (nu - 1) / foton_energi)
+                theta = np.arccos(1 - (nu - 1) / foton_energi)
                 energi_förlust = foton_energi - spridd_foton_energi
 
                 break
+
         else:
             continue
 

@@ -6,12 +6,15 @@ from sampla_position_start import position_start
 from sampla_riktning_och_steg_start import riktning_start, första_steg
 from sampla_steglängd import medelvägslängd
 from sampla_växelverkan import växelverkan, växelverkan_slimmad
-from transformation_3d import transformera_koordinatsystem
+from transformation_3d import transformera_koordinatsystem, transformera_koordinatsystem_jit
 from attenueringsdata import attenueringsdata
+from sampla_compton_vinkel import compton_vinkel_och_energiförlust
 
 
 def run_MC_multiprocess(args):
-    (start, end, tvärsnitt_file, attenueringsdata_file, anatomidefinitioner_file, slicad_fantom_matris, slicad_njure_matris, slicad_benmärg_matris, voxel_sidlängd, radionuklid_energi, radionuklid_intensitet, radionuklid_sannolikhet) = args
+    (start, end, tvärsnitt_file, attenueringsdata_file, anatomidefinitioner_file, slicad_fantom_matris,
+     slicad_njure_matris, slicad_benmärg_matris, voxel_sidlängd, radionuklid_energi, radionuklid_intensitet,
+     radionuklid_sannolikhet) = args
     df_attenueringsdata = pd.read_excel(attenueringsdata_file, index_col=None)
     df_anatomidefinitioner = pd.read_excel(anatomidefinitioner_file, index_col=None)
     df_tvärsnitt = pd.read_excel(tvärsnitt_file, index_col=None)
@@ -89,13 +92,13 @@ def run_MC_multiprocess(args):
                     elif vxv == 'compton':
                         # vxv_compton += 1
 
-                        # sampla energideponering, vinkel
-                        # theta_compton = sampla_theta_compton
-                        # mu_nytt energiberoende?
-                        theta_compton = 1
+                        theta_compton, foton_energi, energideponering_compton = compton_vinkel_och_energiförlust(
+                            foton_energi)
+
+                        # theta_compton = 1
                         phi_compton = 2 * pi * random.rand()
 
-                        energideponering_compton = foton_energi * 0.5  # placeholder
+                        # energideponering_compton = foton_energi * 0.5  # placeholder
 
                         if slicad_benmärg_matris[x_round, y_round, z_round] != 0:
                             träff += 1
@@ -105,15 +108,12 @@ def run_MC_multiprocess(args):
                             print(
                                 f'compton: {energideponering_compton * 10 ** (-3):.2f} keV i voxel [{round(x), round(y), round(z)}]')
 
-                        foton_energi = foton_energi - energideponering_compton
+                        # foton_energi = foton_energi - energideponering_compton
 
                         steglängd_compton = medelvägslängd(mu)
-                        vektor_compton, dx_compton, dy_compton, dz_compton = transformera_koordinatsystem(steglängd,
-                                                                                                          phi,
-                                                                                                          theta,
-                                                                                                          steglängd_compton,
-                                                                                                          phi_compton,
-                                                                                                          theta_compton)
+                        dx_compton, dy_compton, dz_compton = transformera_koordinatsystem_jit(steglängd, phi, theta, steglängd_compton, phi_compton, theta_compton)
+
+
 
                         x_round = round(x + dx_compton / voxel_sidlängd)
                         y_round = round(y + dy_compton / voxel_sidlängd)
@@ -174,6 +174,7 @@ def run_MC_multiprocess(args):
     print(f'träffar: {träff}')
     return benmärg_matris_deponerad_energi
 
+
 # def input_viktiga_parametrar():
 #     root = tk.Tk()
 #     root.withdraw()
@@ -195,27 +196,65 @@ def run_MC_multiprocess(args):
 #   KÖR KODEN
 #   ----------------------------------------------------------------------
 if __name__ == "__main__":
+    #   ----------------------------------------------------------------------
+    #   DUMMY RUN
+    #   ----------------------------------------------------------------------
+    print(
+        '\n----------------------------------------------------------------------\nDUMMY RUN\n----------------------------------------------------------------------\n')
     start = time.time()
 
     radionuklid_energi = Lu177_energi
     radionuklid_intensitet = Lu177_intensitet
     radionuklid_sannolikhet = Lu177_sannolikhet
 
-    tot_iterationer = 5* 10**6
+    tot_iterationer = 10 ** 2
     antal_cores = 8
 
     chunk_storlek = tot_iterationer // antal_cores
     chunk_ranges = [(i * chunk_storlek, (i + 1) * chunk_storlek) for i in range(antal_cores)]
     chunk_ranges[-1] = (chunk_ranges[-1][0], tot_iterationer)
 
-    args_packed = [(start, end, tvärsnitt_file, attenueringsdata_file, anatomidefinitioner_file, slicad_fantom_matris, slicad_njure_matris, slicad_benmärg_matris, voxel_sidlängd, radionuklid_energi, radionuklid_intensitet, radionuklid_sannolikhet) for start, end in chunk_ranges]
-
+    args_packed = [(start, end, tvärsnitt_file, attenueringsdata_file, anatomidefinitioner_file, slicad_fantom_matris,
+                    slicad_njure_matris, slicad_benmärg_matris, voxel_sidlängd, radionuklid_energi,
+                    radionuklid_intensitet, radionuklid_sannolikhet) for start, end in chunk_ranges]
 
     with mp.Pool(antal_cores) as pool:
         partial_results = pool.map(run_MC_multiprocess, args_packed)
 
-    benmärg_matris_deponerad_energi =np.sum(partial_results, axis=0)
+    benmärg_matris_deponerad_energi = np.sum(partial_results, axis=0)
+
+    end_time(start)
+
+    #   ----------------------------------------------------------------------
+    #   ACTUAL
+    #   ----------------------------------------------------------------------
+
+    print(
+        '\n----------------------------------------------------------------------\nACTUAL RUN\n----------------------------------------------------------------------\n')
+    start = time.time()
+
+    radionuklid_energi = Lu177_energi
+    radionuklid_intensitet = Lu177_intensitet
+    radionuklid_sannolikhet = Lu177_sannolikhet
+
+    tot_iterationer = 10 ** 4
+    antal_cores = 8
+
+    chunk_storlek = tot_iterationer // antal_cores
+    chunk_ranges = [(i * chunk_storlek, (i + 1) * chunk_storlek) for i in range(antal_cores)]
+    chunk_ranges[-1] = (chunk_ranges[-1][0], tot_iterationer)
+
+    args_packed = [(start, end, tvärsnitt_file, attenueringsdata_file, anatomidefinitioner_file, slicad_fantom_matris,
+                    slicad_njure_matris, slicad_benmärg_matris, voxel_sidlängd, radionuklid_energi,
+                    radionuklid_intensitet, radionuklid_sannolikhet) for start, end in chunk_ranges]
+
+    with mp.Pool(antal_cores) as pool:
+        partial_results = pool.map(run_MC_multiprocess, args_packed)
+
+    benmärg_matris_deponerad_energi = np.sum(partial_results, axis=0)
 
     end_time(start)
 
     np.save('resultat_multiprocess.npy', benmärg_matris_deponerad_energi)
+
+# 24.4 seconds

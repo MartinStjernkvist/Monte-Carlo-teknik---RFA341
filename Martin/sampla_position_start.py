@@ -1,6 +1,6 @@
 from imports import *
 
-
+@jit(nopython=True)
 def position_start(slicad_njure_matris):
     x_size, y_size, z_size = slicad_njure_matris.shape
 

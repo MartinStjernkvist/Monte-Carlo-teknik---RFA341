@@ -122,7 +122,6 @@ class växelverkan_slimmad:
 
         return compton_target
 
-
     def find_rayleigh_tvärsnitt_slimmad(self):
         energi_list = np.array(self.energi_list)
         rayleigh_list = np.array(self.rayleigh_list)
@@ -135,7 +134,7 @@ class växelverkan_slimmad:
 
         return rayleigh_target
 
-    # @timer
+
     def bestäm_växelverkan_slimmad(self):
         foto_target = self.find_foto_tvärsnitt_slimmad()
         compton_target = self.find_compton_tvärsnitt_slimmad()
