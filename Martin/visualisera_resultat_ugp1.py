@@ -13,8 +13,14 @@ if __name__ == "__main__":
 
     benmärg_matris_deponerad_energi = np.load('resultat_multiprocess.npy')
     visualisera = visualisera_matris(benmärg_matris_deponerad_energi, visa_något=True)
-
     visualisera.show()
+
+    ryggrad_matris_deponerad = benmärg_matris_deponerad_energi[90:150,75:,270:630]
+    visualisera = visualisera_matris(ryggrad_matris_deponerad, visa_något=True)
+    visualisera.show()
+
+    print(f'benmärg eV / decay: ', np.sum(benmärg_matris_deponerad_energi)/10**7)
+    print(f'ryggrad benmärg eV / decay: ', np.sum(ryggrad_matris_deponerad) / 10 ** 7)
 
     # fig, ax = plt.subplots(figsize=(8, 8))
     # plt.subplots_adjust(bottom=0.25)
