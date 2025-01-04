@@ -67,7 +67,8 @@ def run_MC_multiprocess(args):
         #   Om foton hamnar utanför fantommatrisen -> kasta ut foton ur loopen
         #   Ekvationen förekommer nedan efter varje nytt steg tas, dock utan if-statement.
         #   ----------------------------------------------------------------------
-        attenuerad, utanför_fantom = bestäm_om_attenuerad(x_round, y_round, z_round, x_size, y_size, z_size, utanför_fantom, slicad_fantom_matris, foton_energi)
+        attenuerad, utanför_fantom = bestäm_om_attenuerad(x_round, y_round, z_round, x_size, y_size, z_size,
+                                                          utanför_fantom, slicad_fantom_matris, foton_energi)
         if attenuerad == 1:
             i += 1
 
@@ -107,25 +108,28 @@ def run_MC_multiprocess(args):
                         benmärg_matris_deponerad_energi[x_round, y_round, z_round] += energi_deponering
 
                         print(
-                            f'foto: {energi_deponering:.2f} eV i voxel [{round(x), round(y), round(z)}]')
+                            f'foto: {energi_deponering:.0f} eV i voxel [{round(x), round(y), round(z)}]')
 
                     # Om fluorescens sker -> följ ny foton.
                     if attenuerad == 0:
-
-                        # Sampla spridningsvinklar
+                        # Sampla spridningsvinklar (uniformt samplade).
                         theta_foto, phi_foto = riktning_koherent()
 
+                        # Identifiera vilken voxel fotonen befinner sig i.
                         voxel_värde = slicad_fantom_matris[x_round, y_round, z_round]
                         instans = attenueringsdata(voxel_värde, foton_energi, df_attenueringsdata,
                                                    df_anatomidefinitioner)
                         mu = instans.mu()
-                        steglängd_foto = medelvägslängd(mu)
 
+                        # Ta ett nytt steg.
+                        steglängd_foto = medelvägslängd(mu)
                         x, y, z = steg(theta, phi, steglängd, x_round, y_round, z_round)
                         x_round, y_round, z_round = round(x), round(y), round(z)
 
                         # Om foton hamnar utanför fantommatrisen -> kasta ut foton ur loopen.
-                        attenuerad, utanför_fantom = bestäm_om_attenuerad(x_round, y_round, z_round, x_size, y_size, z_size, utanför_fantom, slicad_fantom_matris, foton_energi)
+                        attenuerad, utanför_fantom = bestäm_om_attenuerad(x_round, y_round, z_round, x_size, y_size,
+                                                                          z_size, utanför_fantom, slicad_fantom_matris,
+                                                                          foton_energi)
 
                         # Ingångsvärden till koordinat-transformeringen som behöver genomföras ifall växelverkan = compton eller rayleigh.
                         theta, phi = theta_foto, phi_foto
@@ -149,21 +153,25 @@ def run_MC_multiprocess(args):
                         benmärg_matris_deponerad_energi[x_round, y_round, z_round] += energideponering_compton
 
                         print(
-                            f'compton: {energideponering_compton:.2f} eV i voxel [{round(x), round(y), round(z)}]')
+                            f'compton: {energideponering_compton:.0f} eV i voxel [{round(x), round(y), round(z)}]')
 
                     steglängd_compton = medelvägslängd(mu)
 
                     # Koordinattransformation, eftersom spridningsvinklarna för Comptonspridning inte kan samplas uniformt.
-                    dx_compton, dy_compton, dz_compton = ny_transformera_koordinatsystem(steglängd, phi, theta, steglängd_compton, phi_compton, theta_compton)
+                    dx_compton, dy_compton, dz_compton = ny_transformera_koordinatsystem(steglängd, phi, theta,
+                                                                                         steglängd_compton, phi_compton,
+                                                                                         theta_compton)
 
+                    # Ta ett nytt steg.
                     x = x + dx_compton
                     y = y + dy_compton
                     z = z + dz_compton
-
                     x_round, y_round, z_round = round(x), round(y), round(z)
 
                     # Om foton hamnar utanför fantommatrisen -> kasta ut foton ur loopen.
-                    attenuerad, utanför_fantom = bestäm_om_attenuerad(x_round, y_round, z_round, x_size, y_size, z_size, utanför_fantom, slicad_fantom_matris, foton_energi)
+                    attenuerad, utanför_fantom = bestäm_om_attenuerad(x_round, y_round, z_round, x_size, y_size, z_size,
+                                                                      utanför_fantom, slicad_fantom_matris,
+                                                                      foton_energi)
 
                     # Ingångsvärden till koordinat-transformeringen (om nästa växelverkan är Comptonspridning eller Rayleighspridning).
                     theta, phi = theta_compton, phi_compton
@@ -175,9 +183,8 @@ def run_MC_multiprocess(args):
                 #
                 #   ----------------------------------------------------------------------
                 elif vxv == 'rayleigh':
-                    # vxv_rayleigh += 1
 
-                    theta_rayleigh = 1 # ERSÄTT MED THOMPSON TVÄRSNITT
+                    theta_rayleigh = 1  # ERSÄTT MED THOMPSON TVÄRSNITT
 
                     voxel_värde = slicad_fantom_matris[x_round, y_round, z_round]
                     instans = attenueringsdata(voxel_värde, foton_energi, df_attenueringsdata,
@@ -196,14 +203,16 @@ def run_MC_multiprocess(args):
                         phi_rayleigh,
                         theta_rayleigh)
 
+                    # Ta ett nytt steg.
                     x = x + dx_rayleigh
                     y = y + dy_rayleigh
                     z = z + dz_rayleigh
-
                     x_round, y_round, z_round = round(x), round(y), round(z)
 
                     # Om foton hamnar utanför fantommatrisen -> kasta ut foton ur loopen.
-                    attenuerad, utanför_fantom = bestäm_om_attenuerad(x_round, y_round, z_round, x_size, y_size, z_size, utanför_fantom, slicad_fantom_matris, foton_energi)
+                    attenuerad, utanför_fantom = bestäm_om_attenuerad(x_round, y_round, z_round, x_size, y_size, z_size,
+                                                                      utanför_fantom, slicad_fantom_matris,
+                                                                      foton_energi)
 
                     # Ingångsvärden till koordinat-transformeringen (om nästa växelverkan är Comptonspridning eller Rayleighspridning).
                     theta, phi = theta_rayleigh, phi_rayleigh
@@ -212,34 +221,11 @@ def run_MC_multiprocess(args):
     print(f'max värdet av matrisen: {np.max(benmärg_matris_deponerad_energi)}')
     print(f'utanför: {utanför_fantom}')
     print(f'foto: {vxv_foto}')
-    # print(f'rayleigh: {vxv_rayleigh}')
-    # print(f'compton: {vxv_compton}')
     print(f'träffar: {träff_benmärg}')
     return benmärg_matris_deponerad_energi
 
 
-# def input_viktiga_parametrar():
-#     root = tk.Tk()
-#     root.withdraw()
-#
-#     tot_iterationer = 10 ** (simpledialog.askfloat("Iterationer", "Ange magnitud:"))
-#     antal_cores = round(int(simpledialog.askfloat("Cores", "[VIKTIGT] Ange antal kärnor:")))
-#
-#     if antal_cores >= 8:
-#         antal_cores = 1
-#         print('FÖR STORT VÄRDE PÅ ANTAL CORES')
-#
-#     if tot_iterationer >= 10**7:
-#         tot_iterationer = 1
-#         print('FÖR STORT VÄRDE PÅ ANTAL ITERATIONER')
-#
-#     return tot_iterationer, antal_cores
-
-#   ----------------------------------------------------------------------
-#   KÖR KODEN
-#   ----------------------------------------------------------------------
 if __name__ == "__main__":
-
     radionuklid_energi = Lu177_energi
     radionuklid_intensitet = Lu177_intensitet
     radionuklid_sannolikhet = Lu177_sannolikhet
@@ -274,10 +260,6 @@ if __name__ == "__main__":
         '\n----------------------------------------------------------------------\nACTUAL RUN\n----------------------------------------------------------------------\n')
     start = time.time()
 
-    radionuklid_energi = Lu177_energi
-    radionuklid_intensitet = Lu177_intensitet
-    radionuklid_sannolikhet = Lu177_sannolikhet
-
     chunk_storlek = iterationer_tot // antal_cores
     chunk_ranges = [(i * chunk_storlek, (i + 1) * chunk_storlek) for i in range(antal_cores)]
     chunk_ranges[-1] = (chunk_ranges[-1][0], iterationer_tot)
@@ -294,5 +276,3 @@ if __name__ == "__main__":
     end_time(start)
 
     np.save('resultat_multiprocess.npy', benmärg_matris_deponerad_energi)
-
-# 24.4 seconds
