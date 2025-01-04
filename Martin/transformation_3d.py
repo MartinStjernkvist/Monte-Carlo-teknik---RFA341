@@ -1,5 +1,6 @@
 from imports import *
 
+
 def transformera_koordinatsystem(steg_A_B, phi_A, theta_A, steg_B_C, phi_B, theta_B):
     """
     - Börjar på position A[x,y,z]- kalla detta koordinatsystem A.
@@ -105,7 +106,6 @@ def transformera_koordinatsystem(steg_A_B, phi_A, theta_A, steg_B_C, phi_B, thet
 
 
 def transformera_koordinatsystem_extended(steg_A_B, phi_A, theta_A, steg_B_C, phi_B, theta_B):
-
     dx_A_B = steg_A_B * np.sin(theta_A) * np.cos(phi_A)
     dy_A_B = steg_A_B * np.sin(theta_A) * np.sin(phi_A)
     dz_A_B = steg_A_B * np.cos(theta_A)
@@ -189,7 +189,7 @@ def transformera_koordinatsystem_extended(steg_A_B, phi_A, theta_A, steg_B_C, ph
 
 
 # @jit(nopython=True)
-def transformera_koordinatsystem_jit(steg_A_B, phi_A, theta_A, steg_B_C, phi_B, theta_B):
+def ny_transformera_koordinatsystem(steg_A_B, phi_A, theta_A, steg_B_C, phi_B, theta_B):
     """
     - Börjar på position A[x,y,z]- kalla detta koordinatsystem A.
     - Tar ett steg med steglängd steg_A_B, riktning (phi_A, theta_A), enligt koordinatsystemet i A.
@@ -210,7 +210,7 @@ def transformera_koordinatsystem_jit(steg_A_B, phi_A, theta_A, steg_B_C, phi_B, 
     :param phi_B: vinkel för steget mellan B och C
     :param theta_B: vinkel för steget mellan B och C
 
-    :return: 1) vektor vars första 3 värden är positionen för punkt C enligt A's koord-syst
+    :return: 3 värden är förflyttningen från B till C, enligt A's koord-syst
     """
 
     dx_A_B = steg_A_B * np.sin(theta_A) * np.cos(phi_A)
@@ -220,7 +220,6 @@ def transformera_koordinatsystem_jit(steg_A_B, phi_A, theta_A, steg_B_C, phi_B, 
     dx_B_C = steg_B_C * np.sin(theta_B) * np.cos(phi_B)
     dy_B_C = steg_B_C * np.sin(theta_B) * np.sin(phi_B)
     dz_B_C = steg_B_C * np.cos(theta_B)
-
 
     # transformera med rotation i z-led (phi)
     # 4D matrix för att kunna skapa homogenitet-transformsmatris
@@ -287,12 +286,12 @@ def transformera_koordinatsystem_jit(steg_A_B, phi_A, theta_A, steg_B_C, phi_B, 
         [dx_A_B],
         [dy_A_B],
         [dz_A_B],
-        [1] # nödvändigt för beräkningen
+        [1]  # nödvändigt för beräkningen
     ], dtype=np.float64)
 
     # eftersom vi vill ha vektor B->C
     vektor_compton = np.subtract(vektor_A_C, vektor_A_B)
-    dx_compton, dy_compton, dz_compton = vektor_compton[0][0], vektor_compton[2][0], vektor_compton[3][0]
+    dx_compton, dy_compton, dz_compton = vektor_compton[0][0] / voxel_sidlängd, vektor_compton[2][0] / voxel_sidlängd, vektor_compton[3][0] / voxel_sidlängd
 
     return dx_compton, dy_compton, dz_compton
 
@@ -329,8 +328,10 @@ if __name__ == "__main__":
     dy_A_B = steg_A_B * np.sin(theta_A) * np.sin(phi_A)
     dz_A_B = steg_A_B * np.cos(theta_A)
 
-    vektor_A_C, enhets_vektorer_B, dx_B_C, dy_B_C, dz_B_C = transformera_koordinatsystem_extended(steg_A_B, phi_A, theta_A,
-                                                                                         steg_B_C, phi_B, theta_B)
+    vektor_A_C, enhets_vektorer_B, dx_B_C, dy_B_C, dz_B_C = transformera_koordinatsystem_extended(steg_A_B, phi_A,
+                                                                                                  theta_A,
+                                                                                                  steg_B_C, phi_B,
+                                                                                                  theta_B)
 
     x_A_C = vektor_A_C[0]
     x_tot = x_A + x_A_C
@@ -424,8 +425,10 @@ if __name__ == "__main__":
     dy_A_B = steg_A_B * np.sin(theta_A) * np.sin(phi_A)
     dz_A_B = steg_A_B * np.cos(theta_A)
 
-    vektor_A_C, enhets_vektorer_B, dx_B_C, dy_B_C, dz_B_C = transformera_koordinatsystem_extended(steg_A_B, phi_A, theta_A,
-                                                                                         steg_B_C, phi_B, theta_B)
+    vektor_A_C, enhets_vektorer_B, dx_B_C, dy_B_C, dz_B_C = transformera_koordinatsystem_extended(steg_A_B, phi_A,
+                                                                                                  theta_A,
+                                                                                                  steg_B_C, phi_B,
+                                                                                                  theta_B)
 
     x_A_C = vektor_A_C[0]
     x_tot = x_A + x_A_C

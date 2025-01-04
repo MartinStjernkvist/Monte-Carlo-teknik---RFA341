@@ -75,14 +75,12 @@ FRÅGOR
 
 Vid bestämning av vilken sorts växelverkan som sker:
     - var sätter vi den undre gränsen för energi, varvid fotoelektrisk effekt inte längre sker?
-    - Ska vi ta hänsyn till Rayleigh spridning?
 
-Hur ska vi göra snittet?
-    - vi kan testa att endast inkludera z-intervallet för ryggkotan, sedan jämföra med en matris som har hela kroppen
-
+Hur nära facit är "nära nog"? Hur många fotoner förväntas man kunna beräkna (i nuläget tar 10**7 st fotoner ca 20min)?
 
 Root finder eller hur ska vi göra med compton?
 
+Implementera funktion som ger attenueringskoefficient.
 
-klasserna växelverkan vs växelverkan_slimmad
+
 

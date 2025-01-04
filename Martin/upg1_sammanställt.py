@@ -3,7 +3,7 @@ from imports import *
 from sampla_energi_start import energi_start, Lu177_energi, Lu177_intensitet, Lu177_sannolikhet
 from matriser import slicad_fantom_matris, slicad_njure_matris, slicad_benmärg_matris
 from sampla_position_start import position_start
-from sampla_riktning_och_steg_start import riktning_start, första_steg
+from sampla_riktning_och_steg_start import riktning_koherent, steg
 from sampla_steglängd import medelvägslängd
 from sampla_växelverkan import växelverkan, växelverkan_slimmad
 from transformation_3d import transformera_koordinatsystem
@@ -32,7 +32,7 @@ def run_MC(iterationer, tvärsnitt_file, attenueringsdata_file, anatomidefinitio
         # start: sampla position, riktning och energi
         foton_energi = energi_start(radionuklid_energi, radionuklid_intensitet, radionuklid_sannolikhet)
         x_start, y_start, z_start = position_start(slicad_njure_matris)
-        theta, phi = riktning_start()
+        theta, phi = riktning_koherent()
 
         voxel_värde = slicad_fantom_matris[x_start, y_start, z_start]
         instans = attenueringsdata(voxel_värde, foton_energi, df_attenueringsdata, df_anatomidefinitioner)
@@ -43,7 +43,7 @@ def run_MC(iterationer, tvärsnitt_file, attenueringsdata_file, anatomidefinitio
         # print(f'steglängd: {steglängd}')
 
         # steg: gå steget till ny position i startriktning
-        x, y, z = första_steg(theta, phi, steglängd, x_start, y_start, z_start)
+        x, y, z = steg(theta, phi, steglängd, x_start, y_start, z_start)
         x_round, y_round, z_round = round(x), round(y), round(z)
 
         if (
