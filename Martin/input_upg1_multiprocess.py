@@ -2,7 +2,7 @@
 #   VIKTIGA INPUTS
 #   ----------------------------------------------------------------------
 iterationer_dummy = 2 * 10 ** 2
-iterationer_tot = 10 ** 6
+iterationer_tot = 10 ** 5
 
 antal_cores = 8
 

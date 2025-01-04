@@ -8,7 +8,7 @@ from sampla_steglängd import medelvägslängd
 from sampla_växelverkan import växelverkan
 from transformation_3d import ny_transformera_koordinatsystem
 from attenueringsdata import attenueringsdata
-from sampla_compton_vinkel import compton_vinkel_och_energiförlust
+from sampla_compton import compton_vinkel_och_energiförlust
 from sampla_foto_vxv import foto_vxv
 from bestäm_om_attenuerad import bestäm_om_attenuerad
 from input_upg1_multiprocess import iterationer_tot, antal_cores, iterationer_dummy
@@ -53,7 +53,7 @@ def run_MC_multiprocess(args):
 
         voxel_värde = slicad_fantom_matris[x_start, y_start, z_start]
         instans = attenueringsdata(voxel_värde, foton_energi, df_attenueringsdata, df_anatomidefinitioner)
-        mu = instans.mu()
+        mu = instans.mu_max()
 
         # Sampla medelvägslängden från inverstransformerad attenueringsfunktion.
         steglängd = medelvägslängd(mu)
@@ -82,7 +82,7 @@ def run_MC_multiprocess(args):
                 # Identifiera vilken voxel fotonen befinner sig i.
                 voxel_värde = slicad_fantom_matris[x_round, y_round, z_round]
                 instans = attenueringsdata(voxel_värde, foton_energi, df_attenueringsdata, df_anatomidefinitioner)
-                mu = instans.mu()
+                mu = instans.mu_max()
 
                 # Bestäm vilken typ av växelverkan som sker vid nya positionen.
                 instans = växelverkan(foton_energi, df_tvärsnitt)
@@ -119,7 +119,7 @@ def run_MC_multiprocess(args):
                         voxel_värde = slicad_fantom_matris[x_round, y_round, z_round]
                         instans = attenueringsdata(voxel_värde, foton_energi, df_attenueringsdata,
                                                    df_anatomidefinitioner)
-                        mu = instans.mu()
+                        mu = instans.mu_max()
 
                         # Ta ett nytt steg.
                         steglängd_foto = medelvägslängd(mu)
@@ -145,7 +145,7 @@ def run_MC_multiprocess(args):
                     # Sampla spridningsvinklar, samt energideponeringen vid Comptonväxelverkan.
                     theta_compton, foton_energi, energideponering_compton = compton_vinkel_och_energiförlust(
                         foton_energi)
-                    phi_compton = 2 * pi * random.rand()
+                    phi_compton = 2 * pi * np.random.rand()
 
                     if slicad_benmärg_matris[x_round, y_round, z_round] != 0:
                         träff_benmärg += 1
@@ -179,7 +179,7 @@ def run_MC_multiprocess(args):
 
                 #   ----------------------------------------------------------------------
                 #
-                #   Rayleighspridning
+                #   Rayleighspridning.
                 #
                 #   ----------------------------------------------------------------------
                 elif vxv == 'rayleigh':
@@ -189,7 +189,7 @@ def run_MC_multiprocess(args):
                     voxel_värde = slicad_fantom_matris[x_round, y_round, z_round]
                     instans = attenueringsdata(voxel_värde, foton_energi, df_attenueringsdata,
                                                df_anatomidefinitioner)
-                    mu = instans.mu()
+                    mu = instans.mu_max()
 
                     phi_rayleigh = 2 * pi * np.random.rand()
                     steglängd_rayleigh = medelvägslängd(mu)

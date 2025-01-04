@@ -1,6 +1,7 @@
 from imports import *
 
 
+
 class attenueringsdata:
 
     def __init__(self, voxelvärde, energi, df_attenueringsdata, df_anatomidefinitioner):
@@ -74,7 +75,7 @@ class attenueringsdata:
 
         # print(f'material: {material}')
 
-        return material
+        return material, big_list_names
 
     def mu(self):
         energi_list = np.array(self.energi_list)
@@ -82,7 +83,7 @@ class attenueringsdata:
         closest_indices = np.argsort(diff)[:2]
         # print(closest_indices)
 
-        material = self.voxelvärde_till_material()
+        material, _ = self.voxelvärde_till_material()
         mu_list = np.array(self.df_attenueringsdata[material].to_list())
 
         energi_close = energi_list[closest_indices]
@@ -99,6 +100,38 @@ class attenueringsdata:
         # print(f'mu target {mu_target}')
 
         return mu_target
+
+
+    def mu_max(self):
+        energi_list = np.array(self.energi_list)
+        diff = np.abs(energi_list - self.energi)
+        closest_indices = np.argsort(diff)[:2]
+
+        _, big_list_names = self.voxelvärde_till_material()
+
+        mu_array = np.zeros(len(big_list_names), dtype=object)
+
+        for i in range(len(big_list_names)):
+            mu_array[i] = np.array(self.df_attenueringsdata[big_list_names[i]][closest_indices].to_list())
+
+
+        mu_max_close_values = [np.max(arr) for arr in mu_array]
+        mu_max_close = max(mu_max_close_values)
+        mu_max_close_index = mu_max_close_values.index(mu_max_close)
+
+        mu_max_close = mu_array[mu_max_close_index]
+        energi_close = energi_list[closest_indices]
+
+        if mu_max_close[1] - mu_max_close[0] < 10 ** (-15):
+            mu_max = mu_max_close[0]
+
+        else:
+            # linjär interpolering funktion
+            mu_max = mu_max_close[0] + (self.energi - energi_close[0]) * (mu_max_close[1] - mu_max_close[0]) / (
+                    energi_close[1] - energi_close[0])
+
+        return mu_max
+
 
 
 if __name__ == "__main__":
