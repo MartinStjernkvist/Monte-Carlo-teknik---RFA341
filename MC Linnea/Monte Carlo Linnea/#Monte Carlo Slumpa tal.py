@@ -35,12 +35,12 @@ plt.scatter(Energi_Y90, Intensitet_Y90)
 def polynom_funktion(x,a,b,c,d):
     return a*x**3+b*x**2+c*x+d
 params, cv= curve_fit (polynom_funktion,Energi_Y90, Intensitet_Y90)
-print(*params)
+#print(*params)
 olika_energier=np.linspace(np.min(Energi_Y90), np.max(Energi_Y90))
 
 plt.plot(olika_energier,polynom_funktion(olika_energier,*params))
 
-plt.show()
+#plt.show()
 
 Skärpunkt=2.206882599192 #Enligt Wolfram alfa
 
@@ -52,48 +52,29 @@ def Lösning_tredjegradare(a,b,c,d):
     v=cbrt(-q/2-D**0.5)
     x=u+v-b/(3*a)
     return x
-print(Lösning_tredjegradare(*params)) #Stämmer inte med grafen
+#print(Lösning_tredjegradare(*params)) #Stämmer inte med grafen
 
 #Inver transformera funktionen
 #k=1/integrate.quad(polynom_funktion(olika_energier,*params),0,Skärpunkt) #kunde inte integrera av någon anledning
 #print(k)
 
 
+import pandas as pd
+import math as ma
+import numpy as np
+import random as rand
 
-"""
-#Sfärisk koordinat för riktningnen som fotoner kan färdas i
-import matplotlib.pyplot as plt
-from mpl_toolkits import mplot3d
-steg=1 #Test steglängd
-Antal_iterationer=1000
+#Hittar Excel filen i datorn och läs in
+file_attenuering=pd.read_excel(r"C:\Users\Admin\Documents\GitHub\Monte-Carlo-teknik---RFA341\given_data\Attenueringsdata.xlsx")
+#Orelevanta datan som ska ta bort i filen som t.ex. titanium och bly
+file_attenuering=file_attenuering.drop(file_attenuering.columns[[20, 21, 22, 24,25]], axis=1, inplace=True) #Tar bort kolumnerna som inte är relevanta
 
-fig = plt.figure(2)
-ax = plt.axes(projection='3d')
 
-#Testa från samplingskoden
-#from Martin.sampla_riktning_och_steg_start import riktning_start
+Foton_energi=208.3 #Test, ta bort sen,  energi på Lu 177 i keV
 
-def riktning_start():
-    # theta = random.gauss(pi / 2, 1)  # theta = np.arcsin(-1 + 2 * random.rand())
+#Fixa att energidatan läses in:
+Energi_data=file_attenuering['E'] #Data i keV från excelfilen
 
-    theta = np.arccos(-1 + 2 * rand.random()) 
-    phi = 2 * ma.pi * rand.random()
-    return theta, phi
+data_kropp=file_attenuering.values.tolist() #Resten av attenueringskoefficienten i fantomen på rader
 
-for i in range(Antal_iterationer):     
-    #Slumpar vinklarna på teata och si
-    theata,phi=riktning_start()
-    #theata=rand.gauss(ma.pi/2,1) #Fortfarande många vid toppen och botten när många iterationer görs, men är bättre än uniform
-    #phi=np.random.uniform(0,2*ma.pi) #Slumpar uniform phi
-    #Koordinaterna för vinklarna
-
-    x=steg*ma.sin(theata)*ma.cos(phi)
-    y=steg*ma.sin(theata)*ma.sin(phi)
-    z=steg*ma.cos(theata)
-    #Testar för att se hur punkerna är fördelade
-    ax.scatter(x,y,z,color='blue',s=2)#Plottar ut punkter
-   
-
-#Plotta figur
-plt.show()
-"""
+print(Energi_data.shape)
