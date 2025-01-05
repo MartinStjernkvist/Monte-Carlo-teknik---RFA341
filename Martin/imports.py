@@ -29,16 +29,25 @@ c = 3 * 10 ** 8
 
 
 # Neutroner???
-massa_H = 1
-massa_C = 6
-massa_N = 7
-massa_O = 8
-massa_Na = 11
-massa_Mg = 12
-massa_P = 15
-massa_S = 16
-massa_K = 19
-massa_Ca = 20
+massa_H = 1 # enhet u
+# massa_C = 6
+# massa_N = 7
+# massa_O = 8
+# massa_Na = 11
+# massa_Mg = 12
+# massa_P = 15
+# massa_S = 16
+# massa_K = 19
+# massa_Ca = 20
+massa_C = 12
+massa_N = 14
+massa_O = 16
+massa_Na = 23
+massa_Mg = 24.3
+massa_P = 31
+massa_S = 32
+massa_K = 39
+massa_Ca = 40
 
 # Sammansättning av vävnad, sida 71 tabeller radiofysik del 1 canvas RFA331.
 vävnad_sammansättning_vektor = np.array(
@@ -101,11 +110,6 @@ Lu177_sannolikhet = np.cumsum(Lu177_intensitet) / np.sum(Lu177_intensitet)  # Ku
 tvärsnitt_file = '../given_data/Tvärsnittstabeller_Fotoner.xlsx'
 attenueringsdata_file = '../given_data/Attenueringsdata.xlsx'
 anatomidefinitioner_file = '../given_data/Anatomidefinitioner.xlsx'
-
-
-# tvärsnitt_file = 'Tvärsnittstabeller_Fotoner.xlsx'
-# attenueringsdata_file = 'Attenueringsdata.xlsx'
-# anatomidefinitioner_file = 'Anatomidefinitioner.xlsx'
 
 mat_file = 'phantom_data.mat'
 
