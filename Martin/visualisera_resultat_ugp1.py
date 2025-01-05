@@ -13,10 +13,12 @@ if __name__ == "__main__":
     visualisera.show()
 
     # Visualisera en kapad version av energideponering matrisen, där endast ryggraden tas med.
-    ryggrad_matris_deponerad = benmärg_matris_deponerad_energi[105:155, 75:, 260:630]
+    ryggrad_matris_deponerad = benmärg_matris_deponerad_energi[105:160, 80:, 140:630]
     visualisera = visualisera_matris(ryggrad_matris_deponerad, visa_något=True)
     visualisera.show()
 
     # Beräkna energideponering per foton: ev / foton.
     print(f'benmärg eV / decay: ', np.sum(benmärg_matris_deponerad_energi) / iterationer_tot)
     print(f'ryggrad benmärg eV / decay: ', np.sum(ryggrad_matris_deponerad) / iterationer_tot)
+
+    np.save('resultat_5_E6', ryggrad_matris_deponerad)
