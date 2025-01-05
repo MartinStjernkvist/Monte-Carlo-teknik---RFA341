@@ -2,10 +2,17 @@ from imports import *
 
 @jit(nopython=True)
 def invers_funktion(x, mu):
-    # x borde i det här fallet vara rand(0,1)
+    """
+    Invers funktion, som används för att sampla fotonens steglängd.
+    :param x: Ett slumpat tal mellan 0 och 1.
+    :param mu: Attenueringskoefficient
+    """
     return -np.log(x) / mu
 
 @jit(nopython=True)
 def medelvägslängd(mu):
+    """
+    Funktion som samplar steglängden utifrån den inverstransformerade funktionen ovan.
+    """
     medelvägslängd = invers_funktion(np.random.rand(), mu)
     return medelvägslängd

@@ -43,11 +43,11 @@ class växelverkan:
             compton_target = compton_close[0]
 
         else:
-            compton_target = compton_close[0] + (self.energi - energi_close[0]) * (compton_close[1] - compton_close[0]) / (
-                    energi_close[1] - energi_close[0])
+            compton_target = compton_close[0] + (self.energi - energi_close[0]) * (
+                        compton_close[1] - compton_close[0]) / (
+                                     energi_close[1] - energi_close[0])
 
         return compton_target
-
 
     def find_rayleigh_tvärsnitt(self):
         energi_list = np.array(self.energi_list)
@@ -58,15 +58,15 @@ class växelverkan:
         rayleigh_close = rayleigh_list[closest_indices]
         energi_close = energi_list[closest_indices]
 
-        if energi_close[1] - energi_close[0] < 10**(-15):
+        if energi_close[1] - energi_close[0] < 10 ** (-15):
             rayleigh_target = rayleigh_close[0]
 
         else:
-            rayleigh_target = rayleigh_close[0] + (self.energi - energi_close[0]) * (rayleigh_close[1] - rayleigh_close[0]) / (
-                    energi_close[1] - energi_close[0])
+            rayleigh_target = rayleigh_close[0] + (self.energi - energi_close[0]) * (
+                        rayleigh_close[1] - rayleigh_close[0]) / (
+                                      energi_close[1] - energi_close[0])
         return rayleigh_target
 
-    # @timer
     def bestäm_växelverkan(self):
         foto_target = self.find_foto_tvärsnitt()
         compton_target = self.find_compton_tvärsnitt()
@@ -86,7 +86,7 @@ class växelverkan:
         return text
 
 
-
+"""
 class växelverkan_slimmad:
 
     def __init__(self, energi, df_tvärsnitt):
@@ -152,6 +152,7 @@ class växelverkan_slimmad:
         else:
             text = 'rayleigh'
         return text
+"""
 
 #   ----------------------------------------------------------------------
 #   FOTO OCH COMPTON
@@ -196,8 +197,8 @@ if __name__ == "__main__":
 
     fig = plot_stuff(x_data, y_data, scatter, label_data,
                      marker, color, x_label='energi (eV)', y_label='tvärsnitt (cm^2)', title='foto och compton',
-                     fig_size=(10, 10), symbol_size=100, font_size=30, alpha=1, line_width=2, x_lim=(10, 10**6),
-                     y_lim=(10**(-30), 10**(-17)),
+                     fig_size=(10, 10), symbol_size=100, font_size=30, alpha=1, line_width=2, x_lim=(10, 10 ** 6),
+                     y_lim=(10 ** (-30), 10 ** (-17)),
                      grid=True, x_scale='log', y_scale='log')
 
     fig.savefig('tvärsnitt', bbox_inches='tight')

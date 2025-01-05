@@ -1,9 +1,9 @@
 from imports import *
 
-from sampla_energi_start import energi_start, Lu177_energi, Lu177_intensitet, Lu177_sannolikhet
+from sampla_energi_start import energi_start
 from matriser import slicad_fantom_matris, slicad_njure_matris, slicad_benmärg_matris
 from sampla_position_start import position_start
-from sampla_riktning_och_steg_start import riktning_koherent, steg
+from sampla_riktning_och_steg_start import riktning_uniform, steg
 from sampla_steglängd import medelvägslängd
 from sampla_växelverkan import växelverkan
 from transformation_3d import ny_transformera_koordinatsystem
@@ -28,6 +28,8 @@ def run_MC_multiprocess(args):
 
     # Matrisdimensionerna, viktigt för att bedöma ifall fotonen är innanför matrisen eller inte.
     x_size, y_size, z_size = slicad_fantom_matris.shape
+
+    # Skapa tom matris, för att sedan fylla på med energideponering i voxklarna.
     benmärg_matris_deponerad_energi = np.zeros((x_size, y_size, z_size))
 
     #   ----------------------------------------------------------------------
@@ -42,14 +44,14 @@ def run_MC_multiprocess(args):
     #   ----------------------------------------------------------------------
     for i in range(start, end):
 
-        # initiera loopen med att attenuerad = 0
+        # Initiera loopen med att attenuerad = 0.
         attenuerad = 0
         # print(i)
 
-        # start: sampla position, riktning och energi
-        foton_energi = energi_start(radionuklid_energi, radionuklid_intensitet, radionuklid_sannolikhet)
+        # Start: sampla position, riktning och energi
+        foton_energi = energi_start(radionuklid_energi, radionuklid_sannolikhet)
         x_start, y_start, z_start = position_start(slicad_njure_matris)
-        theta, phi = riktning_koherent()
+        theta, phi = riktning_uniform()
 
         voxel_värde = slicad_fantom_matris[x_start, y_start, z_start]
         instans = attenueringsdata(voxel_värde, foton_energi, df_attenueringsdata, df_anatomidefinitioner)
@@ -61,6 +63,7 @@ def run_MC_multiprocess(args):
 
         # Gå steget till ny position från startpositionen i startriktningen.
         x, y, z = steg(theta, phi, steglängd, x_start, y_start, z_start)
+        # Eftersom voxlarna har diskreta positioner måste avrundning till närmaste heltal göras.
         x_round, y_round, z_round = round(x), round(y), round(z)
 
         #   ----------------------------------------------------------------------
@@ -90,9 +93,7 @@ def run_MC_multiprocess(args):
                 # print(f'energi: {foton_energi * 10 ** (-3)} keV, vxv: {vxv}')
 
                 #   ----------------------------------------------------------------------
-                #
                 #   Fotoabsorption.
-                #
                 #   ----------------------------------------------------------------------
                 if vxv == 'foto':
                     vxv_foto += 1
@@ -101,7 +102,7 @@ def run_MC_multiprocess(args):
                     energi_deponering, attenuerad = foto_vxv(foton_energi)
                     foton_energi = foton_energi - energi_deponering
 
-                    # Registrera endast energideponeringen om nuvarande voxel är i benmärg matrisen.
+                    # Registrera energideponering ifall fotonen växelverkar i en voxel med benmärg.
                     if slicad_benmärg_matris[x_round, y_round, z_round] != 0:
                         träff_benmärg += 1
 
@@ -113,13 +114,15 @@ def run_MC_multiprocess(args):
                     # Om fluorescens sker -> följ ny foton.
                     if attenuerad == 0:
                         # Sampla spridningsvinklar (uniformt samplade).
-                        theta_foto, phi_foto = riktning_koherent()
+                        theta_foto, phi_foto = riktning_uniform()
 
+                        """
                         # Identifiera vilken voxel fotonen befinner sig i.
                         voxel_värde = slicad_fantom_matris[x_round, y_round, z_round]
                         instans = attenueringsdata(voxel_värde, foton_energi, df_attenueringsdata,
                                                    df_anatomidefinitioner)
                         mu = instans.mu_max()
+                        """
 
                         # Ta ett nytt steg.
                         steglängd_foto = medelvägslängd(mu)
@@ -136,9 +139,7 @@ def run_MC_multiprocess(args):
                         steglängd = steglängd_foto
 
                 #   ----------------------------------------------------------------------
-                #
                 #   Comptonspridning.
-                #
                 #   ----------------------------------------------------------------------
                 elif vxv == 'compton':
 
@@ -147,6 +148,7 @@ def run_MC_multiprocess(args):
                         foton_energi)
                     phi_compton = 2 * pi * np.random.rand()
 
+                    # Registrera energideponering ifall fotonen växelverkar i en voxel med benmärg.
                     if slicad_benmärg_matris[x_round, y_round, z_round] != 0:
                         träff_benmärg += 1
 
@@ -178,19 +180,19 @@ def run_MC_multiprocess(args):
                     steglängd = steglängd_compton
 
                 #   ----------------------------------------------------------------------
-                #
                 #   Rayleighspridning.
-                #
                 #   ----------------------------------------------------------------------
                 elif vxv == 'rayleigh':
 
-                    theta_rayleigh = 1  # ERSÄTT MED THOMPSON TVÄRSNITT
-
+                    """
                     voxel_värde = slicad_fantom_matris[x_round, y_round, z_round]
                     instans = attenueringsdata(voxel_värde, foton_energi, df_attenueringsdata,
                                                df_anatomidefinitioner)
                     mu = instans.mu_max()
+                    """
 
+                    # Sampla spridningsvinklar och steglängd.
+                    theta_rayleigh = 1  # ERSÄTT MED THOMSON TVÄRSNITT
                     phi_rayleigh = 2 * pi * np.random.rand()
                     steglängd_rayleigh = medelvägslängd(mu)
 
@@ -213,15 +215,23 @@ def run_MC_multiprocess(args):
                     attenuerad, utanför_fantom = bestäm_om_attenuerad(x_round, y_round, z_round, x_size, y_size, z_size,
                                                                       utanför_fantom, slicad_fantom_matris,
                                                                       foton_energi)
+                    """
+                    voxel_värde = slicad_fantom_matris[x_round, y_round, z_round]
+                    instans = attenueringsdata(voxel_värde, foton_energi, df_attenueringsdata,
+                                               df_anatomidefinitioner)
+                    mu = instans.mu_max()
+                    """
 
                     # Ingångsvärden till koordinat-transformeringen (om nästa växelverkan är Comptonspridning eller Rayleighspridning).
                     theta, phi = theta_rayleigh, phi_rayleigh
                     steglängd = steglängd_rayleigh
 
+    # Några print statements, för att hålla reda på vad som händer när koden kör.
     print(f'max värdet av matrisen: {np.max(benmärg_matris_deponerad_energi)}')
     print(f'utanför: {utanför_fantom}')
     print(f'foto: {vxv_foto}')
     print(f'träffar: {träff_benmärg}')
+
     return benmärg_matris_deponerad_energi
 
 
@@ -231,16 +241,18 @@ if __name__ == "__main__":
     radionuklid_sannolikhet = Lu177_sannolikhet
 
     #   ----------------------------------------------------------------------
-    #   DUMMY RUN
+    #   Dummy run - för att snabba på den riktiga körningen av koden.
     #   ----------------------------------------------------------------------
     print(
         '\n----------------------------------------------------------------------\nDUMMY RUN\n----------------------------------------------------------------------\n')
     start = time.time()
 
+    # Lite kod för att dela upp arbetet i flera processer, fördelat på olika processor-kärnor.
     chunk_storlek = iterationer_dummy // antal_cores
     chunk_ranges = [(i * chunk_storlek, (i + 1) * chunk_storlek) for i in range(antal_cores)]
     chunk_ranges[-1] = (chunk_ranges[-1][0], iterationer_dummy)
 
+    # Inbakade argument för funktionen.
     args_packed = [(start, end, tvärsnitt_file, attenueringsdata_file, anatomidefinitioner_file, slicad_fantom_matris,
                     slicad_njure_matris, slicad_benmärg_matris, voxel_sidlängd, radionuklid_energi,
                     radionuklid_intensitet, radionuklid_sannolikhet) for start, end in chunk_ranges]
@@ -248,12 +260,13 @@ if __name__ == "__main__":
     with mp.Pool(antal_cores) as pool:
         partial_results = pool.map(run_MC_multiprocess, args_packed)
 
+    # Kör funktionen
     benmärg_matris_deponerad_energi = np.sum(partial_results, axis=0)
 
     end_time(start)
 
     #   ----------------------------------------------------------------------
-    #   ACTUAL
+    #   Riktig körning.
     #   ----------------------------------------------------------------------
 
     print(
