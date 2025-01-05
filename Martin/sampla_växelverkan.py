@@ -1,12 +1,12 @@
 from imports import *
 
-
 class växelverkan:
 
     def __init__(self, energi, df_tvärsnitt):
         self.df = df_tvärsnitt
 
         self.energi = energi
+
         self.energi_list = self.df['Energy (eV)'].to_list()
         self.foto_list = self.df['Photoelectric  (cm^2)'].to_list()
         self.compton_list = self.df['Compton (cm^2)'].to_list()
@@ -83,6 +83,7 @@ class växelverkan:
             text = 'compton'
         else:
             text = 'rayleigh'
+
         return text
 
 
@@ -166,7 +167,7 @@ if __name__ == "__main__":
     #   INPUT DATA
     #   ----------------------------------------------------------------------
     df_tvärsnitt = pd.read_excel(tvärsnitt_file, index_col=None)
-    # print(df.columns)
+    print('kolumnnamn', df_tvärsnitt.columns)
 
     energi_list = df_tvärsnitt['Energy (eV)'].to_list()
     compton_list = df_tvärsnitt['Compton (cm^2)'].to_list()

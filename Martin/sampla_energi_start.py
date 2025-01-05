@@ -5,11 +5,12 @@ def energi_start(radionuklid_energi, radionuklid_sannolikhet):
     """
     Funktion som samplar den ursprungliga fotonenergin för varje ny foton som sänds ut.
     :param radionuklid_energi: Lista med fotonenergier som är möjliga.
-    :param radionuklid_sannolikhet: Lista med sannolikheten för
+    :param radionuklid_sannolikhet: Lista med sannolikheten för fotonergierna.
     :return:
     """
 
     slump_tal = np.random.rand()
+
     if slump_tal <= radionuklid_sannolikhet[0]:
         foton_energi = radionuklid_energi[0]
     elif slump_tal <= radionuklid_sannolikhet[1]:

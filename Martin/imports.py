@@ -27,6 +27,8 @@ r_e = np.sqrt(0.07941)  # sqrt(b): re2 = e4/Ee2 ≈ 0.07941 b, https://en.wikipe
 a_0 = 5.29177210903 * 10 ** (-11) * 10 ** (14)  # sqrt(b), bohr radius of hydrogen
 c = 3 * 10 ** 8
 
+
+# Neutroner???
 massa_H = 1
 massa_C = 6
 massa_N = 7
@@ -87,8 +89,9 @@ fluorescence_yield = (1 / np.sum(
 # Sidlängd på voxlarna i matriserna.
 voxel_sidlängd = 0.15  # cm
 
+
 Lu177_energi = [208_366, 112_950, 321_316, 249_674, 71_642, 136_725]  # Sönderfallsenergierna för Lu-177.
-Lu177_intensitet = [10.38, 6.2, 0.216, 0.2012, 0.1726, 0.047]  # Sönderfallsintensitet i % för respektive energi.
+Lu177_intensitet = [10.38, 6.2, 0.216, 0.2012, 0.1726, 0.047]  # Sönderfallsintensitet i % för respektive energi. Från laraweb.
 Lu177_sannolikhet = np.cumsum(Lu177_intensitet) / np.sum(Lu177_intensitet)  # Kumulativa sannolikheten för sönderfall.
 
 #   ----------------------------------------------------------------------
@@ -98,6 +101,8 @@ Lu177_sannolikhet = np.cumsum(Lu177_intensitet) / np.sum(Lu177_intensitet)  # Ku
 # tvärsnitt_file = '../given_data/Tvärsnittstabeller_Fotoner.xlsx'
 # attenueringsdata_file = '../given_data/Attenueringsdata.xlsx'
 # anatomidefinitioner_file = '../given_data/Anatomidefinitioner.xlsx'
+
+
 tvärsnitt_file = 'Tvärsnittstabeller_Fotoner.xlsx'
 attenueringsdata_file = 'Attenueringsdata.xlsx'
 anatomidefinitioner_file = 'Anatomidefinitioner.xlsx'

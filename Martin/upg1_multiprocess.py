@@ -70,6 +70,8 @@ def run_MC_multiprocess(args):
         #   Om foton hamnar utanför fantommatrisen -> kasta ut foton ur loopen
         #   Ekvationen förekommer nedan efter varje nytt steg tas, dock utan if-statement.
         #   ----------------------------------------------------------------------
+
+        # Vad händer om t.ex. lungorna.
         attenuerad, utanför_fantom = bestäm_om_attenuerad(x_round, y_round, z_round, x_size, y_size, z_size,
                                                           utanför_fantom, slicad_fantom_matris, foton_energi)
         if attenuerad == 1:
@@ -126,7 +128,7 @@ def run_MC_multiprocess(args):
 
                         # Ta ett nytt steg.
                         steglängd_foto = medelvägslängd(mu)
-                        x, y, z = steg(theta, phi, steglängd, x_round, y_round, z_round)
+                        x, y, z = steg(theta, phi, steglängd, x_round, y_round, z_round) # fel? borde vara arg = x,y,z
                         x_round, y_round, z_round = round(x), round(y), round(z)
 
                         # Om foton hamnar utanför fantommatrisen -> kasta ut foton ur loopen.
