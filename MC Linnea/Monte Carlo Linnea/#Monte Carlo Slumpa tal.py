@@ -58,23 +58,9 @@ def Lösning_tredjegradare(a,b,c,d):
 #k=1/integrate.quad(polynom_funktion(olika_energier,*params),0,Skärpunkt) #kunde inte integrera av någon anledning
 #print(k)
 
-
-import pandas as pd
-import math as ma
-import numpy as np
-import random as rand
-
-#Hittar Excel filen i datorn och läs in
-file_attenuering=pd.read_excel(r"C:\Users\Admin\Documents\GitHub\Monte-Carlo-teknik---RFA341\given_data\Attenueringsdata.xlsx")
-#Orelevanta datan som ska ta bort i filen som t.ex. titanium och bly
-file_attenuering=file_attenuering.drop(file_attenuering.columns[[20, 21, 22, 24,25]], axis=1, inplace=True) #Tar bort kolumnerna som inte är relevanta
+#Testar att filerna fungerar:
+file_tvärsnitt=pd.read_excel(r"C:\Users\Admin\Documents\GitHub\Monte-Carlo-teknik---RFA341\given_data\Tvärsnittstabell_Elektroner.xlsx")
+Energi_data=file_tvärsnitt['Energy(eV)'].to_list()
+    
 
 
-Foton_energi=208.3 #Test, ta bort sen,  energi på Lu 177 i keV
-
-#Fixa att energidatan läses in:
-Energi_data=file_attenuering['E'] #Data i keV från excelfilen
-
-data_kropp=file_attenuering.values.tolist() #Resten av attenueringskoefficienten i fantomen på rader
-
-print(Energi_data.shape)
