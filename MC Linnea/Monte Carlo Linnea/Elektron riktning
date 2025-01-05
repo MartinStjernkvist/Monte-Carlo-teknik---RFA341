@@ -14,7 +14,9 @@ def Elektron_riktning(Elektron_energi): #Energi i elektron i tabell är i eV
     Bromsförmåga=file_tvärsnitt['Total STP (eV/(g/cm^2))']
     #Hittar närmast energi som liknar elektron energin och ta fram scatter power:
 
-    Närmast(Energi_data,Elektron_energi)
+    Närmast(Energi_data,Elektron_energi) #Hitta ett sätt att få scattering power och därmet theata_s
+
+
 
     """
     Energi_data=np.array(Energi_data)

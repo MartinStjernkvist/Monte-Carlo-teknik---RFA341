@@ -58,9 +58,22 @@ def Lösning_tredjegradare(a,b,c,d):
 #k=1/integrate.quad(polynom_funktion(olika_energier,*params),0,Skärpunkt) #kunde inte integrera av någon anledning
 #print(k)
 
+
+
+
 #Testar att filerna fungerar:
 file_tvärsnitt=pd.read_excel(r"C:\Users\Admin\Documents\GitHub\Monte-Carlo-teknik---RFA341\given_data\Tvärsnittstabell_Elektroner.xlsx")
 Energi_data=file_tvärsnitt['Energy(eV)'].to_list()
-    
+#nope..
 
 
+
+#Artikel från Persliden, 1983 
+#Vinkeln i Coherentspridning
+g_theata=np.random.random() 
+p=np.random.random()
+if g_theata>p:
+    #Acceptera theata
+    break
+else:
+    continue
