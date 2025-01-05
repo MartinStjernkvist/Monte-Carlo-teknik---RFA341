@@ -22,6 +22,7 @@ def energi_start(radionuklid_energi, radionuklid_sannolikhet):
         foton_energi = radionuklid_energi[4]
     else:
         foton_energi = radionuklid_energi[5]
+
     return foton_energi
 
 if __name__ == "__main__":

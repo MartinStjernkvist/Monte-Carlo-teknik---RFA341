@@ -5,7 +5,6 @@ from input_upg1_multiprocess import iterationer_tot
 #   ----------------------------------------------------------------------
 #   VISUALISERA RESULTATEN FRÅN upg1_sammanställt
 #   ----------------------------------------------------------------------
-
 if __name__ == "__main__":
 
     # Visualisera matrisen med registrerad energideponering.
