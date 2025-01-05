@@ -70,10 +70,12 @@ Energi_data=file_tvärsnitt['Energy(eV)'].to_list()
 
 #Artikel från Persliden, 1983 
 #Vinkeln i Coherentspridning
-g_theata=np.random.random() 
-p=np.random.random()
-if g_theata>p:
-    #Acceptera theata
-    break
-else:
-    continue
+while True:
+    g_theata=np.random.random()#eller np.random random(0.5,1)?? 
+    p=np.random.random()
+    #Sampla x^2 från funktion f(x^2,Z) och får theata
+    if g_theata>p:
+        #Acceptera theata
+        break
+    else:
+        continue
