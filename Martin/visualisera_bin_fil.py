@@ -2,40 +2,45 @@ from imports import *
 
 
 class visualisera_matris:
+    """
+    Kod som visualiserar fantomen i tre olika tvärsnitt, med sliders.
+    """
     def __init__(self, array_3d, visa_något=False):
         self.array_3d = array_3d
         self.x, self.y, self.z = array_3d.shape
 
-        # Initialize slice indices for each axis
+        # Initialisera mitt-tvärsnittet för respektive dimension.
         self.slice_x_index = self.x // 2
         self.slice_y_index = self.y // 2
         self.slice_z_index = self.z // 2
 
-        # Create the figure and layout
+        # Skapa figur.
         self.fig = plt.figure(figsize=(15, 7.5))
         self.gs = GridSpec(1, 3, width_ratios=[1, 1, 1], height_ratios=[1])
 
-        # Create subplots
+        # Skapa delfigurer.
         self.ax1 = plt.subplot(self.gs[0])
         self.ax2 = plt.subplot(self.gs[1])
         self.ax3 = plt.subplot(self.gs[2])
 
+        # visa_något bestämmer ifall det som plottas ska ha olika färger beroende på voxelvärde, eller
+        # ifall allt som plottas ska vara vitt (så att det syns)
         if visa_något == False:
             self.vmin, self.vmax = 0, np.max(array_3d)
         else:
             self.vmin, self.vmax = 0, 0.0001*np.max(array_3d)
-        # print(self.vmax)
+
         self.img1 = self.ax1.imshow(array_3d[self.slice_x_index, :, :], cmap='gray', vmin=self.vmin,
-                                    vmax=self.vmax)  # x-slice
+                                    vmax=self.vmax)  # x-tvärsnitt
         self.ax1.set_title(f'X Slice: {self.slice_x_index}')
         self.img2 = self.ax2.imshow(array_3d[:, self.slice_y_index, :], cmap='gray', vmin=self.vmin,
-                                    vmax=self.vmax)  # y-slice
+                                    vmax=self.vmax)  # y-tvärsnitt
         self.ax2.set_title(f'Y Slice: {self.slice_y_index}')
         self.img3 = self.ax3.imshow(array_3d[:, :, self.slice_z_index], cmap='gray', vmin=self.vmin,
-                                    vmax=self.vmax)  # z-slice
+                                    vmax=self.vmax)  # z-tvärsnitt
         self.ax3.set_title(f'Z Slice: {self.slice_z_index}')
 
-        # Create sliders
+        # Skapa sliders.
         self.create_sliders()
 
         # Attach update function to sliders
@@ -54,12 +59,12 @@ class visualisera_matris:
         self.slider_z = Slider(ax_slider_z, 'Z Slice', 0, self.z - 1, valinit=self.slice_z_index, valstep=1)
 
     def update(self, val):
-        # Update slice indices
+        # Updatera sliders.
         self.slice_x_index = int(self.slider_x.val)
         self.slice_y_index = int(self.slider_y.val)
         self.slice_z_index = int(self.slider_z.val)
 
-        # Update the images
+        # Updatera figurerna.
         self.img1.set_data(self.array_3d[self.slice_x_index, :, :])
         self.ax1.set_title(f'X Slice: {self.slice_x_index}')
 
@@ -69,12 +74,10 @@ class visualisera_matris:
         self.img3.set_data(self.array_3d[:, :, self.slice_z_index])
         self.ax3.set_title(f'Z Slice: {self.slice_z_index}')
 
-        # Redraw the canvas
         self.fig.canvas.draw_idle()
 
     def show(self):
         plt.show()
-
 
 #   ----------------------------------------------------------------------
 #   READ IN DATA
@@ -87,7 +90,6 @@ I matlab:
 save('phantom_data.mat', 'array_3d');
 """
 
-mat_file = 'phantom_data.mat'
 data = scipy.io.loadmat(mat_file)
 fantom_matris = data['array_3d']
 
@@ -150,70 +152,4 @@ def update(val):
 slider.on_changed(update)
 
 # plt.show()
-"""
-
-"""
-#   ----------------------------------------------------------------------
-#   PLOTTING 3D
-#   ----------------------------------------------------------------------
-
-# Create a larger figure with a GridSpec layout
-fig = plt.figure(figsize=(18, 10))  # Increase figure size
-gs = GridSpec(1, 3, width_ratios=[1, 1, 1], height_ratios=[1])  # Adjust ratios to make plots fill space
-
-# Create subplots with custom sizing
-ax1 = plt.subplot(gs[0])  # First larger plot
-ax2 = plt.subplot(gs[1])  # Second larger plot
-ax3 = plt.subplot(gs[2])  # Smaller plot
-
-# Initialize slice indices for each axis
-slice_x_index = x // 2  # Start in the middle of x
-slice_y_index = y // 2  # Start in the middle of y
-slice_z_index = z // 2  # Start in the middle of z
-
-# Display the initial slices
-img1 = ax1.imshow(array_3d[slice_x_index, :, :], cmap='gray')  # x-slice
-ax1.set_title(f'X Slice: {slice_x_index}')
-img2 = ax2.imshow(array_3d[:, slice_y_index, :], cmap='gray')  # y-slice
-ax2.set_title(f'Y Slice: {slice_y_index}')
-img3 = ax3.imshow(array_3d[:, :, slice_z_index], cmap='gray')  # z-slice
-ax3.set_title(f'Z Slice: {slice_z_index}')
-
-# Create sliders for controlling the slices
-ax_slider_x = plt.axes([0.1, 0.01, 0.75, 0.03], facecolor='lightgoldenrodyellow')
-slider_x = Slider(ax_slider_x, 'X Slice', 0, x - 1, valinit=slice_x_index, valstep=1)
-
-ax_slider_y = plt.axes([0.1, 0.06, 0.75, 0.03], facecolor='lightgoldenrodyellow')
-slider_y = Slider(ax_slider_y, 'Y Slice', 0, y - 1, valinit=slice_y_index, valstep=1)
-
-ax_slider_z = plt.axes([0.1, 0.11, 0.75, 0.03], facecolor='lightgoldenrodyellow')
-slider_z = Slider(ax_slider_z, 'Z Slice', 0, z - 1, valinit=slice_z_index, valstep=1)
-
-
-# Update function for the sliders
-def update(val):
-    slice_x_index = int(slider_x.val)
-    slice_y_index = int(slider_y.val)
-    slice_z_index = int(slider_z.val)
-
-    # Update the images for each slice
-    img1.set_data(array_3d[slice_x_index, :, :])
-    ax1.set_title(f'X Slice: {slice_x_index}')
-
-    img2.set_data(array_3d[:, slice_y_index, :])
-    ax2.set_title(f'Y Slice: {slice_y_index}')
-
-    img3.set_data(array_3d[:, :, slice_z_index])
-    ax3.set_title(f'Z Slice: {slice_z_index}')
-
-    fig.canvas.draw_idle()
-
-
-# Attach the update function to the sliders
-slider_x.on_changed(update)
-slider_y.on_changed(update)
-slider_z.on_changed(update)
-
-# Show the plot
-plt.show()
 """
