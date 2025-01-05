@@ -70,6 +70,7 @@ def run_MC_multiprocess(args):
         #   Om foton hamnar utanför fantommatrisen -> kasta ut foton ur loopen
         #   Ekvationen förekommer nedan efter varje nytt steg tas, dock utan if-statement.
         #   ----------------------------------------------------------------------
+
         attenuerad, utanför_fantom = bestäm_om_attenuerad(x_round, y_round, z_round, x_size, y_size, z_size,
                                                           utanför_fantom, slicad_fantom_matris, foton_energi)
         if attenuerad == 1:
@@ -81,6 +82,7 @@ def run_MC_multiprocess(args):
             #   Loopa under tiden som fotonen inte attenuerats och fortfarande är i matrisen.
             #   ----------------------------------------------------------------------
             while attenuerad == 0:
+                # print('steglängd: ', steglängd)
 
                 # Identifiera vilken voxel fotonen befinner sig i.
                 voxel_värde = slicad_fantom_matris[x_round, y_round, z_round]
@@ -126,7 +128,8 @@ def run_MC_multiprocess(args):
 
                         # Ta ett nytt steg.
                         steglängd_foto = medelvägslängd(mu)
-                        x, y, z = steg(theta, phi, steglängd, x_round, y_round, z_round)
+                        x, y, z = steg(theta, phi, steglängd, x, y, z)
+                        # x, y, z = steg(theta, phi, steglängd, x_round, y_round, z_round) # fel? borde vara arg = x,y,z
                         x_round, y_round, z_round = round(x), round(y), round(z)
 
                         # Om foton hamnar utanför fantommatrisen -> kasta ut foton ur loopen.
@@ -192,7 +195,7 @@ def run_MC_multiprocess(args):
                     """
 
                     # Sampla spridningsvinklar och steglängd.
-                    theta_rayleigh = 1  # ERSÄTT MED THOMSON TVÄRSNITT
+                    theta_rayleigh = np.arccos(-1 + 2 * np.random.rand())  # ERSÄTT MED THOMSON TVÄRSNITT
                     phi_rayleigh = 2 * pi * np.random.rand()
                     steglängd_rayleigh = medelvägslängd(mu)
 

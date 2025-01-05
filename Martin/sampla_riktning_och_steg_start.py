@@ -9,9 +9,9 @@ def riktning_uniform():
     """
 
     # cos(theta) ska vara mellan -1 och 1
-    theta = np.arccos(-1 + 2 * random.rand())
+    theta = np.arccos(-1 + 2 * np.random.rand())
 
-    phi = 2 * pi * random.rand()
+    phi = 2 * pi * np.random.rand()
     return theta, phi
 
 @jit(nopython=True)

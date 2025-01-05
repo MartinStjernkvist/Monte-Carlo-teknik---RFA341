@@ -19,3 +19,9 @@ def position_start(slicad_njure_matris):
             break
 
     return x, y, z
+
+if __name__ == "__main__":
+    from matriser import slicad_njure_matris
+
+    x,y,z = position_start(slicad_njure_matris)
+    print(x,y,z)

@@ -265,10 +265,10 @@ def ny_transformera_koordinatsystem(steg_A_B, phi_A, theta_A, steg_B_C, phi_B, t
     ], dtype=np.float64)
 
     # Vill ha vektor B->C
-    vektor_compton = np.subtract(vektor_A_C, vektor_A_B)
-    dx_compton, dy_compton, dz_compton = vektor_compton[0][0] / voxel_sidlängd, vektor_compton[2][0] / voxel_sidlängd, vektor_compton[3][0] / voxel_sidlängd
+    vektor = np.subtract(vektor_A_C, vektor_A_B)
+    dx, dy, dz = vektor[0][0] / voxel_sidlängd, vektor[2][0] / voxel_sidlängd, vektor[3][0] / voxel_sidlängd
 
-    return dx_compton, dy_compton, dz_compton
+    return dx, dy, dz
 
 
 if __name__ == "__main__":
@@ -459,6 +459,20 @@ if __name__ == "__main__":
               label='andra steget, C -> D')
     ax.quiver(x_B, y_B, z_B, x_B_D, y_B_D, z_B_D, color='red')
     ax.quiver(0, 0, 0, x_tot, y_tot, z_tot, color='black')
+
+    ax.scatter(x_start, y_A, z_A, label='A', color='black', s=100)
+
+    ax.quiver(x_A + dx_A_B, y_A + dy_A_B, z_A + dz_A_B, enhets_vektorer_B[0, 0], enhets_vektorer_B[1, 0],
+              enhets_vektorer_B[2, 0],
+              color='orange')
+    ax.quiver(x_A + dx_A_B, y_A + dy_A_B, z_A + dz_A_B, enhets_vektorer_B[0, 1], enhets_vektorer_B[1, 1],
+              enhets_vektorer_B[2, 1],
+              color='brown')
+    ax.quiver(x_A + dx_A_B, y_A + dy_A_B, z_A + dz_A_B, enhets_vektorer_B[0, 2], enhets_vektorer_B[1, 2],
+              enhets_vektorer_B[2, 2],
+              color='green')
+
+    ax.quiver(x_A, y_A, z_A, dx_A_B, dy_A_B, dz_A_B, color='blue', label='första steget, A-> B')
 
     ax.set_xlabel('x')
     ax.set_ylabel('y')
