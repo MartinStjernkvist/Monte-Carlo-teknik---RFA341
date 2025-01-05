@@ -83,6 +83,7 @@ def run_MC_multiprocess(args):
             #   Loopa under tiden som fotonen inte attenuerats och fortfarande är i matrisen.
             #   ----------------------------------------------------------------------
             while attenuerad == 0:
+                print('steglängd: ', steglängd)
 
                 # Identifiera vilken voxel fotonen befinner sig i.
                 voxel_värde = slicad_fantom_matris[x_round, y_round, z_round]

@@ -14,5 +14,6 @@ def medelvägslängd(mu):
     """
     Funktion som samplar steglängden utifrån den inverstransformerade funktionen ovan.
     """
-    medelvägslängd = invers_funktion(np.random.rand(), mu)
+    medelvägslängd = invers_funktion(np.random.rand(), mu) / voxel_sidlängd
+    # LÄGG TILL VOXELLÄNGD
     return medelvägslängd
