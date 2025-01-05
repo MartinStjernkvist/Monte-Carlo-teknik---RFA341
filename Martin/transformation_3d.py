@@ -222,29 +222,12 @@ def ny_transformera_koordinatsystem(steg_A_B, phi_A, theta_A, steg_B_C, phi_B, t
     dz_B_C = steg_B_C * np.cos(theta_B)
 
     # transformera med rotation i z-led (phi)
-    # 4D matrix för att kunna skapa homogenitet-transformsmatris
-    # R_z = np.array(
-    #     [
-    #         [np.cos(phi), -np.sin(phi), 0, 0],
-    #         [np.sin(phi), np.cos(phi), 0, 0],
-    #         [0, 0, 1, 0],
-    #         [0, 0, 0, 0]
-    #     ])
-
     R_z = np.array(
         [
             [np.cos(phi_A), -np.sin(phi_A), 0],
             [np.sin(phi_A), np.cos(phi_A), 0],
             [0, 0, 1]
         ], dtype=np.float64)
-
-    # R_y = np.array(
-    #     [
-    #         [np.cos(pi / 2 - theta), 0, -np.sin(pi / 2 - theta), 0],
-    #         [0, 1, 0, 0],
-    #         [np.sin(pi / 2 - theta), 0, np.cos(pi / 2 - theta), 0],
-    #         [0, 0, 0, 0]
-    #     ])
 
     # för att x-axeln ska sammanfalla med riktningsvektorn måste rotationsvinkeln vara pi/2 - theta
     angle = pi / 2 - theta_A
@@ -255,16 +238,8 @@ def ny_transformera_koordinatsystem(steg_A_B, phi_A, theta_A, steg_B_C, phi_B, t
             [np.sin(angle), 0, np.cos(angle)],
         ], dtype=np.float64)
 
-    # R_y = np.identity(3)
-    # R_z = np.identity(3)
-
-    # R = R_y @ R_z
-
     # först rotation i theta (y-axeln), sedan rotation i phi (z-axeln)
     R = R_z @ R_y
-
-    # print(f'\nR matrix: \n{R}')
-    # print(f'\nlength of vector: \nx: {np.linalg.norm(R[0:3,0])}\ny: {np.linalg.norm(R[0:3,1])}\nz: {np.linalg.norm(R[0:3,2])}')
 
     Homogenous_matrix = np.array(
         [
@@ -279,7 +254,7 @@ def ny_transformera_koordinatsystem(steg_A_B, phi_A, theta_A, steg_B_C, phi_B, t
             [dx_B_C],
             [dy_B_C],
             [dz_B_C],
-            [1]
+            [1]   # nödvändigt för beräkningen
         ], dtype=np.float64)
 
     vektor_A_B = np.array([
@@ -289,7 +264,7 @@ def ny_transformera_koordinatsystem(steg_A_B, phi_A, theta_A, steg_B_C, phi_B, t
         [1]  # nödvändigt för beräkningen
     ], dtype=np.float64)
 
-    # eftersom vi vill ha vektor B->C
+    # Vill ha vektor B->C
     vektor_compton = np.subtract(vektor_A_C, vektor_A_B)
     dx_compton, dy_compton, dz_compton = vektor_compton[0][0] / voxel_sidlängd, vektor_compton[2][0] / voxel_sidlängd, vektor_compton[3][0] / voxel_sidlängd
 
@@ -403,56 +378,56 @@ if __name__ == "__main__":
     #   ---------------------------------------------------------------------
 
     # startpunkt
-    x_A = x_A + dx_A_B
-    y_A = y_A + dy_A_B
-    z_A = z_A + dz_A_B
+    x_B = x_A + dx_A_B
+    y_B = y_A + dy_A_B
+    z_B = z_A + dz_A_B
 
     # steg 2
-    steg_A_B = steg_B_C
-    phi_A = phi_B
-    theta_A = theta_B
+    # steg_B_C
+    # phi_B
+    # theta_B
 
     # steg 3
-    steg_B_C = 2
-    theta_B = pi / 4
-    phi_B = pi / 4
+    steg_C_D = 2
+    theta_C = pi / 4
+    phi_C = pi / 4
 
     #   ----------------------------------------------------------------------
     #   BERÄKNING
     #   ---------------------------------------------------------------------
 
-    dx_A_B = steg_A_B * np.sin(theta_A) * np.cos(phi_A)
-    dy_A_B = steg_A_B * np.sin(theta_A) * np.sin(phi_A)
-    dz_A_B = steg_A_B * np.cos(theta_A)
+    dx_B_C = steg_B_C * np.sin(theta_B) * np.cos(phi_B)
+    dy_B_C = steg_B_C * np.sin(theta_B) * np.sin(phi_B)
+    dz_B_C = steg_B_C * np.cos(theta_B)
 
-    vektor_A_C, enhets_vektorer_B, dx_B_C, dy_B_C, dz_B_C = transformera_koordinatsystem_extended(steg_A_B, phi_A,
-                                                                                                  theta_A,
-                                                                                                  steg_B_C, phi_B,
-                                                                                                  theta_B)
+    vektor_B_D, enhets_vektorer_C, dx_C_D, dy_C_D, dz_C_D = transformera_koordinatsystem_extended(steg_B_C, phi_B,
+                                                                                                  theta_B,
+                                                                                                  steg_C_D, phi_C,
+                                                                                                  theta_C)
 
-    x_A_C = vektor_A_C[0]
-    x_tot = x_A + x_A_C
+    x_B_D = vektor_B_D[0]
+    x_tot = x_B + x_B_D
 
-    y_A_C = vektor_A_C[1]
-    y_tot = y_A + y_A_C
+    y_B_D = vektor_B_D[1]
+    y_tot = y_B + y_B_D
 
-    z_A_C = vektor_A_C[2]
-    z_tot = z_A + z_A_C
+    z_B_D = vektor_B_D[2]
+    z_tot = z_B + z_B_D
 
     #   ----------------------------------------------------------------------
     #   FELSÖKNING
     #   ---------------------------------------------------------------------
 
-    print(f'tot: {np.array([[x_tot], [y_tot], [z_tot]])}')
-
-    print(f'\nresult: \n{vektor_A_C}\nenhets_vektorer_B: \n{enhets_vektorer_B}')
-
-    print(
-        f'\ndot product x ({enhets_vektorer_B[0:3, 0]}), y ({enhets_vektorer_B[0:3, 1]}): {np.dot(enhets_vektorer_B[0:3, 0], enhets_vektorer_B[0:3, 1])}')
-    print(
-        f'dot product y ({enhets_vektorer_B[0:3, 1]}), z ({enhets_vektorer_B[0:3, 2]}): {np.dot(enhets_vektorer_B[0:3, 1], enhets_vektorer_B[0:3, 2])}')
-    print(
-        f'dot product x ({enhets_vektorer_B[0:3, 0]}), z ({enhets_vektorer_B[0:3, 2]}): {np.dot(enhets_vektorer_B[0:3, 0], enhets_vektorer_B[0:3, 2])}')
+    # print(f'tot: {np.array([[x_tot], [y_tot], [z_tot]])}')
+    #
+    # print(f'\nresult: \n{vektor_A_C}\nenhets_vektorer_B: \n{enhets_vektorer_B}')
+    #
+    # print(
+    #     f'\ndot product x ({enhets_vektorer_B[0:3, 0]}), y ({enhets_vektorer_B[0:3, 1]}): {np.dot(enhets_vektorer_B[0:3, 0], enhets_vektorer_B[0:3, 1])}')
+    # print(
+    #     f'dot product y ({enhets_vektorer_B[0:3, 1]}), z ({enhets_vektorer_B[0:3, 2]}): {np.dot(enhets_vektorer_B[0:3, 1], enhets_vektorer_B[0:3, 2])}')
+    # print(
+    #     f'dot product x ({enhets_vektorer_B[0:3, 0]}), z ({enhets_vektorer_B[0:3, 2]}): {np.dot(enhets_vektorer_B[0:3, 0], enhets_vektorer_B[0:3, 2])}')
 
     #   ----------------------------------------------------------------------
     #   PLOTTNING
@@ -464,25 +439,25 @@ if __name__ == "__main__":
     ax.set_ylim([0, 6])
     ax.set_zlim([0, 6])
 
-    ax.scatter(x_A, y_A, z_A, label='A', color='black', s=100)
-    ax.scatter(x_A + dx_A_B, y_A + dy_A_B, z_A + dz_A_B, label='B', color='grey', s=100)
-    ax.scatter(x_A + x_A_C, y_A + y_A_C, z_A + z_A_C, label='C', color='purple', s=100)
+    ax.scatter(x_B, y_B, z_B, label='B', color='black', s=100)
+    ax.scatter(x_B + dx_B_C, y_B + dy_B_C, z_B + dz_B_C, label='C', color='grey', s=100)
+    ax.scatter(x_B + x_B_D, y_B + y_B_D, z_B + z_B_D, label='D', color='purple', s=100)
 
-    ax.quiver(x_A + dx_A_B, y_A + dy_A_B, z_A + dz_A_B, enhets_vektorer_B[0, 0], enhets_vektorer_B[1, 0],
-              enhets_vektorer_B[2, 0],
+    ax.quiver(x_B + dx_B_C, y_B + dy_B_C, z_B + dz_B_C, enhets_vektorer_C[0, 0], enhets_vektorer_C[1, 0],
+              enhets_vektorer_C[2, 0],
               color='orange')
-    ax.quiver(x_A + dx_A_B, y_A + dy_A_B, z_A + dz_A_B, enhets_vektorer_B[0, 1], enhets_vektorer_B[1, 1],
-              enhets_vektorer_B[2, 1],
+    ax.quiver(x_B + dx_B_C, y_B + dy_B_C, z_B + dz_B_C, enhets_vektorer_C[0, 1], enhets_vektorer_C[1, 1],
+              enhets_vektorer_C[2, 1],
               color='brown')
-    ax.quiver(x_A + dx_A_B, y_A + dy_A_B, z_A + dz_A_B, enhets_vektorer_B[0, 2], enhets_vektorer_B[1, 2],
-              enhets_vektorer_B[2, 2],
+    ax.quiver(x_B + dx_B_C, y_B + dy_B_C, z_B + dz_B_C, enhets_vektorer_C[0, 2], enhets_vektorer_C[1, 2],
+              enhets_vektorer_C[2, 2],
               color='green')
 
-    ax.quiver(x_A, y_A, z_A, dx_A_B, dy_A_B, dz_A_B, color='blue', label='första steget, A-> B')
-    ax.quiver(x_A + dx_A_B, y_A + dy_A_B, z_A + dz_A_B, (x_A_C - dx_A_B), (y_A_C - dy_A_B), (z_A_C - dz_A_B),
+    ax.quiver(x_B, y_B, z_B, dx_B_C, dy_B_C, dz_B_C, color='blue', label='första steget, B -> C')
+    ax.quiver(x_B + dx_B_C, y_B + dy_B_C, z_B + dz_B_C, (x_B_D - dx_B_C), (y_B_D - dy_B_C), (z_B_D - dz_B_C),
               color='magenta',
-              label='andra steget, B->C')
-    ax.quiver(x_A, y_A, z_A, x_A_C, y_A_C, z_A_C, color='red')
+              label='andra steget, C -> D')
+    ax.quiver(x_B, y_B, z_B, x_B_D, y_B_D, z_B_D, color='red')
     ax.quiver(0, 0, 0, x_tot, y_tot, z_tot, color='black')
 
     ax.set_xlabel('x')

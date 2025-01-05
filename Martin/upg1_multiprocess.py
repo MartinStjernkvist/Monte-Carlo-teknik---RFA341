@@ -268,15 +268,16 @@ if __name__ == "__main__":
     #   ----------------------------------------------------------------------
     #   Riktig körning.
     #   ----------------------------------------------------------------------
-
     print(
         '\n----------------------------------------------------------------------\nACTUAL RUN\n----------------------------------------------------------------------\n')
     start = time.time()
 
+    # Samma multiprocess-kod som ovan.
     chunk_storlek = iterationer_tot // antal_cores
     chunk_ranges = [(i * chunk_storlek, (i + 1) * chunk_storlek) for i in range(antal_cores)]
     chunk_ranges[-1] = (chunk_ranges[-1][0], iterationer_tot)
 
+    # Samma argument, skillnaden är antalet iterationer (fotoner).
     args_packed = [(start, end, tvärsnitt_file, attenueringsdata_file, anatomidefinitioner_file, slicad_fantom_matris,
                     slicad_njure_matris, slicad_benmärg_matris, voxel_sidlängd, radionuklid_energi,
                     radionuklid_intensitet, radionuklid_sannolikhet) for start, end in chunk_ranges]
@@ -284,8 +285,10 @@ if __name__ == "__main__":
     with mp.Pool(antal_cores) as pool:
         partial_results = pool.map(run_MC_multiprocess, args_packed)
 
+    # Summera resultatmatriserna från respektive process.
     benmärg_matris_deponerad_energi = np.sum(partial_results, axis=0)
 
     end_time(start)
 
+    # Spara resultatmatrisen i en numpy fil, som sedan går att visualisera i en separat fil.
     np.save('resultat_multiprocess.npy', benmärg_matris_deponerad_energi)
