@@ -7,5 +7,5 @@ iterationer_dummy = 2 * 10 ** 2
 iterationer_tot = 10 ** 5
 
 # Antal kärnor i processorn som arbetet ska fördelas på.
-antal_cores = 8
+antal_cores = 1 #Skriv 1 eller 2
 

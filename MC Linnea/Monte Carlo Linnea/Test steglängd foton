@@ -52,6 +52,7 @@ def Steglängd_foton(Foton_energi,start_position,riktning):
 
         #Ta fram vilken voxel fotoner kommer till efter att gått steglängden i en riktning
         #Attenueringskoefficienten för voxeln
+        
         mu_voxel= 1 #test voxel, sampla fram vilken voxel det blir 
 
         if R<= mu_voxel/my_m:
