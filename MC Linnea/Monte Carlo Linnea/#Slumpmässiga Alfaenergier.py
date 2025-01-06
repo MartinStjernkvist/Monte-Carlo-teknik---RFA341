@@ -1,6 +1,5 @@
 #Slumpmässiga Alfaenergier
-
-#Kan annars anta att energin är bara 5869 keV p.g.a högst sannolikhet
+#Samplar på samma sätt som foton energin eller kan annars anta att energin är bara 5869 keV p.g.a högst sannolikhet
 
 import random as rand
 rand.random() # ger slumptal mellan 0 till 1

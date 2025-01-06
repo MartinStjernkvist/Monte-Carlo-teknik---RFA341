@@ -75,6 +75,8 @@ def run_MC_multiprocess(args):
 
         attenuerad, utanför_fantom = bestäm_om_attenuerad(x_round, y_round, z_round, x_size, y_size, z_size,
                                                           utanför_fantom, slicad_fantom_matris, foton_energi)
+        #Kanske kolla om den fortsätter eller vxv?
+        
         if attenuerad == 1:
             i += 1
 
