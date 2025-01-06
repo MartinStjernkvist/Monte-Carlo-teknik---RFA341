@@ -52,7 +52,8 @@ def ny_steg_transformera_koordinatsystem_3d(steg_A_B, phi_A, theta_A, steg_B_C, 
         ], dtype=np.float64)
 
     # först rotation i theta (y-axeln), sedan rotation i phi (z-axeln)
-    R = R_z @ R_y
+    # R = R_z @ R_y
+    R = np.dot(R_z, R_y)
 
     # Homogenous_matrix = np.array(
     #     [
@@ -64,7 +65,7 @@ def ny_steg_transformera_koordinatsystem_3d(steg_A_B, phi_A, theta_A, steg_B_C, 
 
     Homogenous_matrix = np.eye(4, dtype=np.float64)
     Homogenous_matrix[:3, :3] = R
-    Homogenous_matrix[:3, 3] = np.array([dx_A_B, dy_A_B, dz_A_B])
+    Homogenous_matrix[:3, 3] = np.array([dx_A_B, dy_A_B, dz_A_B], dtype=np.float64)
 
     # vektor_A_C = Homogenous_matrix @ np.array(
     #     [
@@ -74,7 +75,7 @@ def ny_steg_transformera_koordinatsystem_3d(steg_A_B, phi_A, theta_A, steg_B_C, 
     #         [1]   # nödvändigt för beräkningen
     #     ], dtype=np.float64)
 
-    vektor_A_C = np.dot(Homogenous_matrix, np.array([dx_B_C, dy_B_C, dz_B_C, 1.0]))
+    vektor_A_C = np.dot(Homogenous_matrix, np.array([dx_B_C, dy_B_C, dz_B_C, 1.0], dtype=np.float64))
 
     # vektor_A_B = np.array([
     #     [dx_A_B],
@@ -83,7 +84,7 @@ def ny_steg_transformera_koordinatsystem_3d(steg_A_B, phi_A, theta_A, steg_B_C, 
     #     [1]  # nödvändigt för beräkningen
     # ], dtype=np.float64)
 
-    vektor_A_B = np.array([dx_A_B, dy_A_B, dz_A_B, 1.0])
+    vektor_A_B = np.array([dx_A_B, dy_A_B, dz_A_B, 1.0], dtype=np.float64)
 
     # Vill ha vektor B->C
     vektor = vektor_A_C - vektor_A_B

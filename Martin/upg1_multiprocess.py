@@ -168,10 +168,10 @@ def run_MC_multiprocess(args):
                     steglängd_compton = medelvägslängd(mu)
 
                     # Koordinattransformation, eftersom spridningsvinklarna för Comptonspridning inte kan samplas uniformt.
-                    dx_compton, dy_compton, dz_compton = steg_transformera_koordinatsystem_3d(steglängd, phi, theta,
-                                                                                              steglängd_compton,
-                                                                                              phi_compton,
-                                                                                              theta_compton)
+                    dx_compton, dy_compton, dz_compton = ny_steg_transformera_koordinatsystem_3d(steglängd, phi, theta,
+                                                                                                 steglängd_compton,
+                                                                                                 phi_compton,
+                                                                                                 theta_compton)
 
                     # Ta ett nytt steg.
                     x = x + dx_compton
@@ -206,7 +206,7 @@ def run_MC_multiprocess(args):
                     steglängd_rayleigh = medelvägslängd(mu)
 
                     # Koordinattransformation, eftersom spridningsvinklarna för Rayleighspridning inte kan samplas uniformt.
-                    dx_rayleigh, dy_rayleigh, dz_rayleigh = steg_transformera_koordinatsystem_3d(
+                    dx_rayleigh, dy_rayleigh, dz_rayleigh = ny_steg_transformera_koordinatsystem_3d(
                         steglängd,
                         phi,
                         theta,
