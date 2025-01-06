@@ -1,4 +1,5 @@
 from imports import *
+
 #Slumpa ut energi på betakällan
 
 
@@ -37,13 +38,28 @@ plt.show()
 
 
 f_max=np.max(polynom_funktion(olika_energier,*params)) 
-print(f_max) #Test om det stämmer
+#print(f_max) #Test om det stämmer
 
 
 #Använd Rejektionsmetoden för att sampla elektronenergi
 
-#Sampla ett x värde mellan 0 och skärningspunkten
-Skärpunkt_0=2.206882599192 #Enligt Wolfram alfa när den skär x-axeln
+
+#Få skärningspunkten
+def Närmast(lista,tal):
+        lista=np.array(lista)
+        närmsta_index=(np.abs(lista-tal)).argmin()
+        return lista[närmsta_index], närmsta_index
+
+close,_=Närmast(polynom_funktion(olika_energier,*params),0)
+
+for i in range(len(olika_energier)):
+    if polynom_funktion(olika_energier[i],*params)==close:
+        Skärpunkt_0=olika_energier[i]
+    else:
+        continue
+
+#Sampla ett x värde mellan 0 och skärningspunkten för att få elektronens energi
+
 def Elektron_startenergi():
     while True:
         x_sampel=np.random.random()*Skärpunkt_0
