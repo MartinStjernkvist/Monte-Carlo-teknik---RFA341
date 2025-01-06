@@ -281,6 +281,18 @@ if __name__ == "__main__":
 
     antal_cores, iterationer_dummy, iterationer_tot = inputs_riktig_körning()
 
+    dictionary = {
+        "antal_cores": antal_cores,
+        "iterationer_dummy": iterationer_dummy,
+        "iterationer_tot": iterationer_tot
+    }
+
+    json_object = json.dumps(dictionary)
+
+    with open('inputs_upg1_multiprocess.json', 'w') as f:
+        f.write(json_object)
+        f.close()
+
     #   ----------------------------------------------------------------------
     #   Dummy run - för att snabba på den riktiga körningen av koden.
     #   ----------------------------------------------------------------------

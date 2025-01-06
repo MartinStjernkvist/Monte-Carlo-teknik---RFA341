@@ -1,11 +1,15 @@
 from imports import *
 from visualisera_bin_fil import visualisera_matris
-from input_upg1_multiprocess import iterationer_tot
 
 #   ----------------------------------------------------------------------
 #   VISUALISERA RESULTATEN FRÅN upg1_sammanställt
 #   ----------------------------------------------------------------------
 if __name__ == "__main__":
+    with (open('inputs_upg1_multiprocess.json', 'r') as f):
+        json_object = json.load(f)
+        iterationer_tot = json_object['iterationer_tot']
+        print('iterationer_tot: ', iterationer_tot)
+        f.close()
 
     # Visualisera matrisen med registrerad energideponering.
     benmärg_matris_deponerad_energi = np.load('resultat_multiprocess.npy')
@@ -27,4 +31,4 @@ if __name__ == "__main__":
     visualisera = visualisera_matris(resultat_5_E6, visa_något=True)
     visualisera.show()
 
-    print(f'ryggrad benmärg eV / decay: ', np.sum(resultat_5_E6) / iterationer_tot)
+    print(f'ryggrad benmärg eV / decay: ', np.sum(resultat_5_E6) / (5 * 10 ** 6))
