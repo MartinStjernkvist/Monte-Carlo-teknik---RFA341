@@ -6,21 +6,14 @@ from imports import *
 #Hittar filen och ta info från excelfilen
 #Läser en Excel fil
 
-
 file_Y90=pd.read_excel(r'given_data/Y90_Spektrum.xlsx')
-
-#För att se att tabellen stämmer:
-# print(file)
 
 #Ta ut värderna på energin och intensiteten betakällan
 Energi_Y90= file_Y90['Energy (MeV)'] #MeV
 Intensitet_Y90=file_Y90['#/nt']
-#Plottar ut värdena
-plt.figure(1)
-plt.scatter(Energi_Y90, Intensitet_Y90)
-#Visa figuren
+#Plottar ut värdena från excel filen
 
-#Anta att tumören är i en vävnad alltså se på vatten för tvärsnitten
+plt.scatter(Energi_Y90, Intensitet_Y90)
 
 #Plottar ut punkterna i excelfilen och gör en kurvanpassning
 
@@ -34,6 +27,7 @@ olika_energier=np.linspace(np.min(Energi_Y90), np.max(Energi_Y90),1000)
 
 plt.plot(olika_energier,polynom_funktion(olika_energier,*params))
 
+#Visa figuren
 plt.show()
 
 
@@ -44,7 +38,7 @@ f_max=np.max(polynom_funktion(olika_energier,*params))
 #Använd Rejektionsmetoden för att sampla elektronenergi
 
 
-#Få skärningspunkten
+#Tar fram värdet närmast skärningspunkten i x-axeln
 def Närmast(lista,tal):
         lista=np.array(lista)
         närmsta_index=(np.abs(lista-tal)).argmin()

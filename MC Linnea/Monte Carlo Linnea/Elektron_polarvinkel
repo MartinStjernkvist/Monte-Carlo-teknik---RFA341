@@ -3,25 +3,30 @@ from imports import *
 
 def Närmast(lista,tal):
         lista=np.array(lista)
-        närmsta_index=(np.abs(lista-tal)).argmin()
-        return lista[närmsta_index], närmsta_index
+        närmsta_indexer=np.argsort(lista-tal)[:2]
+        return närmsta_indexer
 
 def Elektron_riktning(Elektron_energi): #Energi i elektron i tabell är i eV
     R=np.random.random() #Slumpmässig tal mellan 0-1
-    
+
+    #Anta att tumören är i en vävnad alltså se på vatten för tvärsnitten
+
     #Läser in excel filen och tar ut koloumn med energi och scatter power
-    file_scatter=pd.read_excel(r'MC Linnea/Monte Carlo, test.xlsx') #Behövde skriva av en egen Excel fil från ICRU 35
+    file_scatter=pd.read_excel(r'MC Linnea/Monte Carlo Linnea/Monte Carlo, test.xlsx') #Behövde skriva av en egen Excel fil från ICRU 35
     Energi_data=file_scatter['E(eV)'].to_list()
-    Scatterpower_list=file_scatter['Scatter power Water'].to_list() #T/rho för vatten
+    Mass_Scatterpower_list=file_scatter['Scatter power Water'].to_list() #T/rho för vatten
 
     #Hittar närmast energi som liknar elektron energin och ta fram scatter power:
     rho=0.998 #densitet på vatten i g/cm^3
 
     #Tar index för närmaste energi på elektronen
-    _,index=Närmast(Energi_data,Elektron_energi) 
+    indexer=Närmast(Energi_data,Elektron_energi) 
+
     #Hitta ett sätt att få scattering power och därmed theata_s
-    theata_s=Scatterpower_list[index]*rho 
-    
+    T=Mass_Scatterpower_list[indexer]*rho #Nära theata_s 
+
+    #Linjär interpolera och få fram theata_s
+    theata_s=...
 
     return np.sqrt(-theata_s*np.log(1-R))
 print(Elektron_riktning(511)) # Kunde inte hitta coloumn med E(eV)?

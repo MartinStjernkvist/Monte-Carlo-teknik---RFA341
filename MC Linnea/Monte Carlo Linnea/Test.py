@@ -6,7 +6,8 @@ from imports import *
 #Testar att filerna fungerar:
 file_scatter=pd.read_excel(r'MC Linnea/Monte Carlo Linnea/Monte Carlo, test.xlsx',sheet_name='Scattering power') 
 
-
+#Fråga Jens om detta:
+#Elektron energin som samplas är i eV men värdet på scattering power är i MeV
 Energi_data=file_scatter['E(eV)'].to_list() #Hittar inte kolumnerna i xlsx filen
 Scatterpower_list=file_scatter['Scatter power Water'].to_list() #T/rho för vatten
 
