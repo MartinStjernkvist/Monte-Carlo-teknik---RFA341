@@ -1,9 +1,9 @@
-from ..imports import *
-from ..attenueringsdata import attenueringsdata
-from ..visualisera_bin_fil import fantom_matris
+from imports import *
+from upg1_attenueringsdata import attenueringsdata
+from upg1_visualisera_bin_fil import fantom_matris
 
-df_attenueringsdata = pd.read(attenueringsdata_file)
-df_anatomidefinitioner = pd.read(anatomidefinitioner_file)
+df_attenueringsdata = pd.read_excel(attenueringsdata_file, index_col=None)
+df_anatomidefinitioner = pd.read_excel(anatomidefinitioner_file, index_col=None)
 
 
 class Partikel:
@@ -28,8 +28,10 @@ def laddad_partikel_väg(partikel, max_antal_steg, matris):
     x_round, y_round, z_round = round(x), round(y), round(z)
 
     voxelvärde = matris[x_round, y_round, z_round]
-    start_medium = attenueringsdata().voxelvärde_till_material(voxelvärde, partikel.energi, df_attenueringsdata,
-                                                               df_anatomidefinitioner)
+
+    instans = attenueringsdata(voxelvärde, partikel.energi, df_attenueringsdata, df_anatomidefinitioner)
+    start_medium = instans.voxelvärde_till_material()
+
     nuvarande_medium = start_medium
 
     trajectory = [tuple(partikel.position)]
@@ -40,8 +42,8 @@ def laddad_partikel_väg(partikel, max_antal_steg, matris):
             print(f'partikeln har slut på energi')
             break
 
-        nuvarande_medium = attenueringsdata().voxelvärde_till_material(voxelvärde, partikel.energi, df_attenueringsdata,
-                                                                       df_anatomidefinitioner)
+        instans = attenueringsdata(voxelvärde, partikel.energi, df_attenueringsdata, df_anatomidefinitioner)
+        nuvarande_medium = instans.voxelvärde_till_material()
 
         medelvägslängd = partikel.energi / (voxelvärde * 0.01)  # bara för att ha något
         steg_storlek = min(medelvägslängd, 1)
@@ -59,6 +61,9 @@ def laddad_partikel_väg(partikel, max_antal_steg, matris):
 
 
 if __name__ == "__main__":
-    partikel = Partikel((1, 1, 1), 10.0)
+    partikel = Partikel((1.0, 1.0, 1.0), 10.0)
 
-    trajectory = laddad_partikel_väg(partikel, fantom_matris)
+    trajectory = laddad_partikel_väg(partikel, 100, fantom_matris)
+
+    for step, pos in enumerate(trajectory):
+        print(f"Step {step}: Position {pos}")
