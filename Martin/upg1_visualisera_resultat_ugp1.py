@@ -1,5 +1,5 @@
 from imports import *
-from visualisera_bin_fil import visualisera_matris
+from upg1_visualisera_bin_fil import visualisera_matris
 
 #   ----------------------------------------------------------------------
 #   VISUALISERA RESULTATEN FRÅN upg1_sammanställt

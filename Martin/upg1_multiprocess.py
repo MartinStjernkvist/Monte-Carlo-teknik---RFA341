@@ -1,18 +1,18 @@
 from imports import *
 
-from sampla_energi_start import energi_start
-from matriser import slicad_fantom_matris, slicad_njure_matris, slicad_benmärg_matris
-from sampla_position_start import position_start
-from sampla_riktning_och_steg_start import riktning_uniform, steg
-from sampla_steglängd import medelvägslängd
-from sampla_växelverkan import växelverkan
-from transformation_3d import steg_transformera_koordinatsystem_3d
-from attenueringsdata import attenueringsdata
-from sampla_compton import compton_vinkel_och_energiförlust
-from sampla_foto_vxv import foto_vxv
-from bestäm_om_attenuerad import bestäm_om_attenuerad
-from steg_transformation import ny_steg_transformera_koordinatsystem_3d
-from förflyttning import förflyttning
+from upg1_sampla_energi_start import energi_start
+from upg1_matriser import slicad_fantom_matris, slicad_njure_matris, slicad_benmärg_matris
+from upg1_sampla_position_start import position_start
+from upg1_sampla_riktning_och_steg_start import riktning_uniform, steg
+from upg1_sampla_steglängd import medelvägslängd
+from upg1_sampla_växelverkan import växelverkan
+from upg1_transformation_3d import steg_transformera_koordinatsystem_3d
+from upg1_attenueringsdata import attenueringsdata
+from upg1_sampla_compton import compton_vinkel_och_energiförlust
+from upg1_sampla_foto_vxv import foto_vxv
+from upg1_bestäm_om_attenuerad import bestäm_om_attenuerad
+from upg12_steg_transformation import ny_steg_transformera_koordinatsystem_3d
+from upg12_förflyttning import förflyttning
 
 
 # from input_upg1_multiprocess import iterationer_tot, antal_cores, iterationer_dummy
