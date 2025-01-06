@@ -3,10 +3,10 @@
 #   ----------------------------------------------------------------------
 
 # Antalet fotoner för en första körning, i syfte att göra den riktiga körningen snabbare.
-iterationer_dummy = 10 ** 3
-iterationer_tot = 5 * 10 ** 6
+# iterationer_dummy = 10 ** 3
+# iterationer_tot = 5 * 10 ** 6
 
 # Antal kärnor i processorn som arbetet ska fördelas på.
-antal_cores = 8
+# antal_cores = 8
 
 

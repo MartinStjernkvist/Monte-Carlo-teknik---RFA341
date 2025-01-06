@@ -11,7 +11,9 @@ from attenueringsdata import attenueringsdata
 from sampla_compton import compton_vinkel_och_energiförlust
 from sampla_foto_vxv import foto_vxv
 from bestäm_om_attenuerad import bestäm_om_attenuerad
-from input_upg1_multiprocess import iterationer_tot, antal_cores, iterationer_dummy
+
+
+# from input_upg1_multiprocess import iterationer_tot, antal_cores, iterationer_dummy
 
 
 def run_MC_multiprocess(args):
@@ -242,6 +244,40 @@ if __name__ == "__main__":
     radionuklid_energi = Lu177_energi
     radionuklid_intensitet = Lu177_intensitet
     radionuklid_sannolikhet = Lu177_sannolikhet
+
+
+    def inputs_riktig_körning():
+
+        print('\n----------------------------------------------------------------------\nVIKTIGT:\n----------------------------------------------------------------------\nAnge antal processor kärnor')
+        input_antal_cores = input('Antal kärnor: ')
+
+        if eval(input_antal_cores) > 8:
+            antal_cores = 1
+        else:
+            antal_cores = eval(input_antal_cores)
+
+        print('\n----------------------------------------------------------------------\nDUMMY:\n----------------------------------------------------------------------\nAnge magnitud: ex 3 -> 10^3 iterationer')
+        input_dummy_magnitud_iterationer = input('Magnitud: ')
+
+        if eval(input_dummy_magnitud_iterationer) > 4:
+            iterationer_dummy = 10 ** 3
+        else:
+            iterationer_dummy = 10 ** (eval(input_dummy_magnitud_iterationer))
+
+        print('\n----------------------------------------------------------------------\nRIKTIG:\n----------------------------------------------------------------------\nAnge skalär och magnitud: ex 5 och 5 -> 5 * 10^5 iterationer')
+        input_riktig_skalär_iterationer = input('Skalär: ')
+        input_riktig_magnitud_iterationer = input('Magnitud: ')
+
+        if eval(input_riktig_magnitud_iterationer) >= 8:
+            iterationer_tot = 10 ** 3
+        else:
+            iterationer_tot = eval(input_riktig_skalär_iterationer) * 10 ** (eval(input_riktig_magnitud_iterationer))
+
+        print('antal_cores, iterationer_dummy, iterationer_tot: ', antal_cores, iterationer_dummy, iterationer_tot)
+        return antal_cores, iterationer_dummy, iterationer_tot
+
+
+    antal_cores, iterationer_dummy, iterationer_tot = inputs_riktig_körning()
 
     #   ----------------------------------------------------------------------
     #   Dummy run - för att snabba på den riktiga körningen av koden.
