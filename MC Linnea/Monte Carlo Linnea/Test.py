@@ -1,14 +1,15 @@
 #Monte Carlo Slumpa tal
 
 from imports import *
+
 #from Elektron_energi import Närmast #VARFÖÖÖÖR???!!!! AHHHHHHHHHHHHHH
 
 #Testar att filerna fungerar:
-file_scatter=pd.read_excel(r'MC Linnea/Monte Carlo Linnea/Monte Carlo, test.xlsx',sheet_name='Scattering power') 
+file_scatter=pd.read_excel(r'MC Linnea/Monte Carlo, test.xlsx',sheet_name='Scattering power') 
 
 #Fråga Jens om detta:
 #Elektron energin som samplas är i eV men värdet på scattering power är i MeV
-Energi_data=file_scatter['E(eV)'].to_list() #Hittar inte kolumnerna i xlsx filen
+Energi_data=file_scatter['E(eV)'].to_list() #Hittar inte kolumnerna i xlsx filen, kanske flytta tabellen i vänstrahörnet??
 Scatterpower_list=file_scatter['Scatter power Water'].to_list() #T/rho för vatten
 
 
