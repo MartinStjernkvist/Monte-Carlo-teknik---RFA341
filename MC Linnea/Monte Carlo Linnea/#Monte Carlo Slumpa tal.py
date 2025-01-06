@@ -15,6 +15,7 @@ Energi_data=file_tvärsnitt['Energy(eV)'].to_list()
 #nope..
 
 
+#kanske inte relevant att ha Rayleight spridning för det verkar som att majoriteten av vxv är antingen compton eller fotovxv
 """
 #Artikel från Persliden, 1983 
 #Vinkeln i Coherentspridning

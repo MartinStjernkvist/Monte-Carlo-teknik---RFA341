@@ -3,20 +3,23 @@ import pandas as pd
 def Närmast(lista,tal):
         lista=np.array(lista)
         närmsta_index=(np.abs(lista-tal)).argmin()
-        return lista[närmsta_index]
+        return lista[närmsta_index], närmsta_index
 
 def Elektron_riktning(Elektron_energi): #Energi i elektron i tabell är i eV
     R=np.random.random() #Slumpmässig tal mellan 0-1
-    theata_s= 1 #Test , teata_s är från tabellen
-    #Läser in excel filen och tar ut koloumn med energi
-    file_tvärsnitt=pd.read_excel('C:\Users\Admin\Documents\GitHub\Monte-Carlo-teknik---RFA341\given_data\Tvärsnittstabell_Elektroner.xlsx')
-    Energi_data=file_tvärsnitt['Energy(eV)'].to_list()
-    Range=file_tvärsnitt['Range (g/cm^2)']
-    #Hittar närmast energi som liknar elektron energin och ta fram scatter power:
+    
+    #Läser in excel filen och tar ut koloumn med energi och scatter power
+    file_scatter=pd.read_excel(r'../MC Linnea/Monte Carlo Linnea/Monte Carlo, test.xlsx')
+    Energi_data=file_scatter['E(eV)'].to_list()
+    Scatterpower_list=file_scatter['Scatter power Water'].to_list() #T/rho för vatten
 
-    theata_2=(np.random.random(0,2*np.pi))**2 #Slumpar ut theata till scattering power?
-        #theata_s= derivata (theata_2)/ derivata (range)
-    Närmast(Energi_data,Elektron_energi) #Hitta ett sätt att få scattering power och därmet theata_s
+    #Hittar närmast energi som liknar elektron energin och ta fram scatter power:
+    rho=0.998 #densitet på vatten i g/cm^3
+
+    #Tar index för närmaste energi på elektronen
+    _,index=Närmast(Energi_data,Elektron_energi) 
+    #Hitta ett sätt att få scattering power och därmed theata_s
+    theata_s=Scatterpower_list[index]*rho 
 
 
     """
