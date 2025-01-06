@@ -1,0 +1,58 @@
+from imports import *
+#Slumpa ut energi på betakällan
+
+
+#Hittar filen och ta info från excelfilen
+#Läser en Excel fil
+file_Y90=pd.read_excel(r"C:\Users\Admin\Documents\GitHub\Monte Carlo Linnea\Y90_Spektrum.xlsx" )
+
+file_Y90=pd.read_excel(r'..\given_data\Y90_Spektrum.xlsx')#Testa om det funkar 
+
+#För att se att tabellen stämmer:
+# print(file)
+
+#Ta ut värderna på energin och intensiteten betakällan
+Energi_Y90= file_Y90['Energy (MeV)'] #MeV
+Intensitet_Y90=file_Y90['#/nt']
+#Plottar ut värdena
+plt.figure(1)
+plt.scatter(Energi_Y90, Intensitet_Y90)
+#Visa figuren
+
+#Anta att tumören är i en vävnad alltså se på vatten för tvärsnitten
+
+#Plottar ut punkterna i excelfilen och gör en kurvanpassning
+
+def polynom_funktion(x,a,b,c,d):
+    return a*x**3+b*x**2+c*x+d
+
+params, cv= curve_fit (polynom_funktion,Energi_Y90, Intensitet_Y90)
+#print(*params)
+a,b,c,d=params
+olika_energier=np.linspace(np.min(Energi_Y90), np.max(Energi_Y90))
+
+plt.plot(olika_energier,polynom_funktion(olika_energier,*params))
+
+#plt.show()
+
+def PQ_formeln(a,p,q): #För ax^2+bx+c=0
+    return -p/(2*a)+((p/(2*a))**2-q/a)**0.5  #, -p/(2*a)+((p/(2*a))**2-q/a)**0.5 för andra roten 
+#Ta reda på största punkten i kurvanpassningen
+print(PQ_formeln(3*a,2*b,c))#En maxi punkt 
+
+f_max=np.max(polynom_funktion(olika_energier,*params)) #test om det stämmer
+print(f_max)
+
+
+#Använd Rejektionsmetoden för att sampla elektronenergi
+
+#Sampla ett x värde mellan 0 och skärningspunkten
+Skärpunkt_0=2.206882599192 #Enligt Wolfram alfa när den skär x-axeln
+def Elektron_startenergi():
+    while True:
+        x_sampel=np.random.random()*Skärpunkt_0
+        if np.random.random()<=polynom_funktion(x_sampel,*params)/f_max:
+            Elektron_energi=x_sampel
+            return Elektron_energi
+        else:
+            continue
