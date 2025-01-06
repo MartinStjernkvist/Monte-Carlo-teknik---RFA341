@@ -189,7 +189,7 @@ def transformera_koordinatsystem_extended(steg_A_B, phi_A, theta_A, steg_B_C, ph
 
 
 # @jit(nopython=True)
-def ny_transformera_koordinatsystem(steg_A_B, phi_A, theta_A, steg_B_C, phi_B, theta_B):
+def steg_transformera_koordinatsystem_3d(steg_A_B, phi_A, theta_A, steg_B_C, phi_B, theta_B):
     """
     - Börjar på position A[x,y,z]- kalla detta koordinatsystem A.
     - Tar ett steg med steglängd steg_A_B, riktning (phi_A, theta_A), enligt koordinatsystemet i A.
@@ -266,7 +266,7 @@ def ny_transformera_koordinatsystem(steg_A_B, phi_A, theta_A, steg_B_C, phi_B, t
 
     # Vill ha vektor B->C
     vektor = np.subtract(vektor_A_C, vektor_A_B)
-    dx, dy, dz = vektor[0][0] / voxel_sidlängd, vektor[2][0] / voxel_sidlängd, vektor[3][0] / voxel_sidlängd
+    dx, dy, dz = vektor[0][0] / voxel_sidlängd, vektor[1][0] / voxel_sidlängd, vektor[2][0] / voxel_sidlängd
 
     return dx, dy, dz
 

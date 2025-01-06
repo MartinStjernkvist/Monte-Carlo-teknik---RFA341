@@ -37,3 +37,5 @@ def steg(theta, phi, steglängd, x, y, z):
     z = z + dz
 
     return x, y, z
+
+
