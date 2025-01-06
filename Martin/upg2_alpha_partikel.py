@@ -22,7 +22,8 @@ class Partikel:
             self.energi = 0
 
 
-def laddad_partikel_väg(partikel, max_antal_steg, matris):
+def laddad_partikel_väg(start_position, steglängd, phi, theta, matris, df_attenueringsdata, df_anatomidefinitioner,
+                 max_antal_steg=100):
     position_vektor = partikel.position
     x, y, z = position_vektor[0], position_vektor[1], position_vektor[2]
     x_round, y_round, z_round = round(x), round(y), round(z)

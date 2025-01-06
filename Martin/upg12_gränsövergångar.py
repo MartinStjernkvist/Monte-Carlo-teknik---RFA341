@@ -64,6 +64,6 @@ if __name__ == "__main__":
                               df_anatomidefinitioner, max_antal_steg=100)
 
     for step, pos in enumerate(trajectory):
-        print(f"Step {step}: Position {pos}")
+        print(f"steg {step}: position {pos}")
 
     print(material_set)
