@@ -9,7 +9,7 @@ def Elektron_riktning(Elektron_energi): #Energi i elektron i tabell är i eV
     R=np.random.random() #Slumpmässig tal mellan 0-1
     
     #Läser in excel filen och tar ut koloumn med energi och scatter power
-    file_scatter=pd.read_excel(r'../MC Linnea/Monte Carlo Linnea/Monte Carlo, test.xlsx')
+    file_scatter=pd.read_excel(r'MC Linnea/Monte Carlo, test.xlsx') #Behövde skriva av en egen Excel fil från ICRU 35
     Energi_data=file_scatter['E(eV)'].to_list()
     Scatterpower_list=file_scatter['Scatter power Water'].to_list() #T/rho för vatten
 
