@@ -30,7 +30,8 @@ def bestäm_om_attenuerad(x_round, y_round, z_round, x_size, y_size, z_size, uta
 
     # Om voxelvärdet för positionen är innanför matrisen, men befinner sig i luft (voxelvärde = 0)
     # eller
-    # fotonenergin är mindre än gränsenergin för fotoabsorption -> indikera att fotonen ska sluta följas.
+    # fotonenergin är mindre än gränsenergin för fotoabsorption
+    # -> indikera att fotonen ska sluta följas.
     elif slicad_fantom_matris[x_round, y_round, z_round] == 0 or foton_energi < foton_energi_threshhold:
         utanför_fantom += 1
         attenuerad = 1

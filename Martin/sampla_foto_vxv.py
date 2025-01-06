@@ -7,10 +7,9 @@ def foto_vxv(foton_energi):
     Antingen sker fluorescens eller inte, Augerelektroner antas deponera energi lokalt.
     :return: Energideponeringen som konsekvens av växelverkan, samt ifall fotonen slutar existera.
     """
-    R = np.random.rand()
 
     # Fluorescens.
-    if R < fluorescence_yield:
+    if np.random.rand() < fluorescence_yield:
         # X-ray
         energi_deponering = foton_energi - K_alpha
         attenuerad = 0

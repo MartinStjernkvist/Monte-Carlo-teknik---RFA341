@@ -12,6 +12,7 @@ class attenueringsdata:
 
         self.voxelvärde = voxelvärde
         self.energi = energi
+
         self.energi_list = self.df_attenueringsdata['E'].to_list()
 
     def voxelvärde_till_material(self):

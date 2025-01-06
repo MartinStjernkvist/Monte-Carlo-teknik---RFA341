@@ -27,16 +27,27 @@ r_e = np.sqrt(0.07941)  # sqrt(b): re2 = e4/Ee2 ≈ 0.07941 b, https://en.wikipe
 a_0 = 5.29177210903 * 10 ** (-11) * 10 ** (14)  # sqrt(b), bohr radius of hydrogen
 c = 3 * 10 ** 8
 
-massa_H = 1
-massa_C = 6
-massa_N = 7
-massa_O = 8
-massa_Na = 11
-massa_Mg = 12
-massa_P = 15
-massa_S = 16
-massa_K = 19
-massa_Ca = 20
+
+# Neutroner???
+massa_H = 1 # enhet u
+# massa_C = 6
+# massa_N = 7
+# massa_O = 8
+# massa_Na = 11
+# massa_Mg = 12
+# massa_P = 15
+# massa_S = 16
+# massa_K = 19
+# massa_Ca = 20
+massa_C = 12
+massa_N = 14
+massa_O = 16
+massa_Na = 23
+massa_Mg = 24.3
+massa_P = 31
+massa_S = 32
+massa_K = 39
+massa_Ca = 40
 
 # Sammansättning av vävnad, sida 71 tabeller radiofysik del 1 canvas RFA331.
 vävnad_sammansättning_vektor = np.array(
@@ -87,8 +98,9 @@ fluorescence_yield = (1 / np.sum(
 # Sidlängd på voxlarna i matriserna.
 voxel_sidlängd = 0.15  # cm
 
+
 Lu177_energi = [208_366, 112_950, 321_316, 249_674, 71_642, 136_725]  # Sönderfallsenergierna för Lu-177.
-Lu177_intensitet = [10.38, 6.2, 0.216, 0.2012, 0.1726, 0.047]  # Sönderfallsintensitet i % för respektive energi.
+Lu177_intensitet = [10.38, 6.2, 0.216, 0.2012, 0.1726, 0.047]  # Sönderfallsintensitet i % för respektive energi. Från laraweb.
 Lu177_sannolikhet = np.cumsum(Lu177_intensitet) / np.sum(Lu177_intensitet)  # Kumulativa sannolikheten för sönderfall.
 
 #   ----------------------------------------------------------------------
@@ -99,11 +111,15 @@ tvärsnitt_file = '../given_data/Tvärsnittstabeller_Fotoner.xlsx'
 attenueringsdata_file = '../given_data/Attenueringsdata.xlsx'
 anatomidefinitioner_file = '../given_data/Anatomidefinitioner.xlsx'
 
+mat_file = 'phantom_data.mat'
 """
+
 tvärsnitt_file = r'C:/Users/Admin/Documents/GitHub/Monte Carlo Linnea/Tvärsnittstabeller_Fotoner.xlsx'
 attenueringsdata_file = r"C:/Users/Admin/Documents/GitHub/Monte Carlo Linnea/Attenueringsdata.xlsx"
 anatomidefinitioner_file = r"C:\Users\Admin\Documents\GitHub\Monte Carlo Linnea/Anatomidefinitioner.xlsx"
 mat_file = r"C:\Users\Admin\Documents\GitHub\Monte Carlo Linnea\phantom_data.mat"
+
+
 
 
 #   ----------------------------------------------------------------------
