@@ -12,6 +12,7 @@ from sampla_compton import compton_vinkel_och_energiförlust
 from sampla_foto_vxv import foto_vxv
 from bestäm_om_attenuerad import bestäm_om_attenuerad
 from steg_transformation import ny_steg_transformera_koordinatsystem_3d
+from förflyttning import förflyttning
 
 
 # from input_upg1_multiprocess import iterationer_tot, antal_cores, iterationer_dummy
@@ -65,9 +66,9 @@ def run_MC_multiprocess(args):
         # print(f'steglängd: {steglängd}')
 
         # Gå steget till ny position från startpositionen i startriktningen.
-        x, y, z = steg(theta, phi, steglängd, x_start, y_start, z_start)
         # Eftersom voxlarna har diskreta positioner måste avrundning till närmaste heltal göras.
-        x_round, y_round, z_round = round(x), round(y), round(z)
+        dx, dy, dz = steg(theta, phi, steglängd)
+        x, y, z, x_round, y_round, z_round = förflyttning(x_start, y_start, z_start, dx, dy, dz)
 
         #   ----------------------------------------------------------------------
         #   Om foton hamnar utanför fantommatrisen -> kasta ut foton ur loopen
@@ -123,19 +124,10 @@ def run_MC_multiprocess(args):
                         # Sampla spridningsvinklar (uniformt samplade).
                         theta_foto, phi_foto = riktning_uniform()
 
-                        """
-                        # Identifiera vilken voxel fotonen befinner sig i.
-                        voxel_värde = slicad_fantom_matris[x_round, y_round, z_round]
-                        instans = attenueringsdata(voxel_värde, foton_energi, df_attenueringsdata,
-                                                   df_anatomidefinitioner)
-                        mu = instans.mu_max()
-                        """
-
                         # Ta ett nytt steg.
                         steglängd_foto = medelvägslängd(mu)
-                        x, y, z = steg(theta, phi, steglängd, x, y, z)
-                        # x, y, z = steg(theta, phi, steglängd, x_round, y_round, z_round) # fel? borde vara arg = x,y,z
-                        x_round, y_round, z_round = round(x), round(y), round(z)
+                        dx, dy, dz = steg(theta, phi, steglängd)
+                        x, y, z, x_round, y_round, z_round = förflyttning(x_start, y_start, z_start, dx, dy, dz)
 
                         # Om foton hamnar utanför fantommatrisen -> kasta ut foton ur loopen.
                         attenuerad, utanför_fantom = bestäm_om_attenuerad(x_round, y_round, z_round, x_size, y_size,
@@ -174,10 +166,7 @@ def run_MC_multiprocess(args):
                                                                                                  theta_compton)
 
                     # Ta ett nytt steg.
-                    x = x + dx_compton
-                    y = y + dy_compton
-                    z = z + dz_compton
-                    x_round, y_round, z_round = round(x), round(y), round(z)
+                    x, y, z, x_round, y_round, z_round = förflyttning(x, y, z, dx_compton, dy_compton, dz_compton)
 
                     # Om foton hamnar utanför fantommatrisen -> kasta ut foton ur loopen.
                     attenuerad, utanför_fantom = bestäm_om_attenuerad(x_round, y_round, z_round, x_size, y_size, z_size,
@@ -192,13 +181,6 @@ def run_MC_multiprocess(args):
                 #   Rayleighspridning.
                 #   ----------------------------------------------------------------------
                 elif vxv == 'rayleigh':
-
-                    """
-                    voxel_värde = slicad_fantom_matris[x_round, y_round, z_round]
-                    instans = attenueringsdata(voxel_värde, foton_energi, df_attenueringsdata,
-                                               df_anatomidefinitioner)
-                    mu = instans.mu_max()
-                    """
 
                     # Sampla spridningsvinklar och steglängd.
                     theta_rayleigh = np.arccos(-1 + 2 * np.random.rand())  # ERSÄTT MED THOMSON TVÄRSNITT
@@ -215,21 +197,12 @@ def run_MC_multiprocess(args):
                         theta_rayleigh)
 
                     # Ta ett nytt steg.
-                    x = x + dx_rayleigh
-                    y = y + dy_rayleigh
-                    z = z + dz_rayleigh
-                    x_round, y_round, z_round = round(x), round(y), round(z)
+                    x, y, z, x_round, y_round, z_round = förflyttning(x, y, z, dx_rayleigh, dy_rayleigh, dz_rayleigh)
 
                     # Om foton hamnar utanför fantommatrisen -> kasta ut foton ur loopen.
                     attenuerad, utanför_fantom = bestäm_om_attenuerad(x_round, y_round, z_round, x_size, y_size, z_size,
                                                                       utanför_fantom, slicad_fantom_matris,
                                                                       foton_energi)
-                    """
-                    voxel_värde = slicad_fantom_matris[x_round, y_round, z_round]
-                    instans = attenueringsdata(voxel_värde, foton_energi, df_attenueringsdata,
-                                               df_anatomidefinitioner)
-                    mu = instans.mu_max()
-                    """
 
                     # Ingångsvärden till koordinat-transformeringen (om nästa växelverkan är Comptonspridning eller Rayleighspridning).
                     theta, phi = theta_rayleigh, phi_rayleigh
@@ -326,9 +299,6 @@ if __name__ == "__main__":
 
     with mp.Pool(antal_cores) as pool:
         partial_results = pool.map(run_MC_multiprocess, args_packed)
-
-    # Kör funktionen
-    benmärg_matris_deponerad_energi = np.sum(partial_results, axis=0)
 
     end_time(start)
 

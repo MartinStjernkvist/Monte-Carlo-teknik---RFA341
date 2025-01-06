@@ -1,5 +1,6 @@
 from imports import *
 
+
 @jit(nopython=True)
 def position_start(slicad_njure_matris):
     """
@@ -18,10 +19,22 @@ def position_start(slicad_njure_matris):
         if slicad_njure_matris[x, y, z] != 0:
             break
 
-    return x, y, z
+        # x = np.random.rand(0, x_size)
+        # y = np.random.rand(0, y_size)
+        # z = np.random.rand(0, z_size)
+        #
+        # x_round = float(round(x))
+        # y_round = float(round(y))
+        # z_round = float(round(z))
+        #
+        # if slicad_njure_matris[x_round, y_round, z_round] != 0:
+        #     break
+
+    return x, y, z  # , x_round, y_round, z_round
+
 
 if __name__ == "__main__":
     from matriser import slicad_njure_matris
 
-    x,y,z = position_start(slicad_njure_matris)
-    print(x,y,z)
+    x, y, z = position_start(slicad_njure_matris)
+    print(x, y, z)
