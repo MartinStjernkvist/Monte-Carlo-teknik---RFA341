@@ -1,5 +1,6 @@
-import numpy as np
-import pandas as pd
+from imports import *
+
+
 def Närmast(lista,tal):
         lista=np.array(lista)
         närmsta_index=(np.abs(lista-tal)).argmin()
@@ -21,10 +22,6 @@ def Elektron_riktning(Elektron_energi): #Energi i elektron i tabell är i eV
     #Hitta ett sätt att få scattering power och därmed theata_s
     theata_s=Scatterpower_list[index]*rho 
     
-    """
-    Energi_data=np.array(Energi_data)
-    differens=np.abs(Energi_data-Elektron_energi)
-    närmast_energi=np.arg
-    """
+
     return np.sqrt(-theata_s*np.log(1-R))
 print(Elektron_riktning(511)) # Kunde inte hitta coloumn med E(eV)?
