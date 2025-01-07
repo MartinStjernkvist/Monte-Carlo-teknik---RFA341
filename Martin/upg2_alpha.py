@@ -102,14 +102,24 @@ def run_MC_alpha(iterationer, df_stopping_power, position_start_alpha, start_ene
     energideponering_summa = 0
     utanför = 0
 
-    for i in range(iterationer):
-        theta, phi = riktning_alpha()
+    if position_start_alpha == position_start_alpha_skal:
 
-        if not pi / 2 < phi < 3 * pi / 2:
-            # print('Utanför')
-            utanför += 1
-            energideponering = 0
-        else:
+        for i in range(iterationer):
+            theta, phi = riktning_alpha()
+
+            if not pi / 2 < phi < 3 * pi / 2:
+                # print('Utanför')
+                utanför += 1
+                energideponering = 0
+            else:
+                start_position = position_start_alpha(radie, phi, theta)
+                steglängd = steglängd_alpha(start_position, df_stopping_power)
+                energideponering = laddad_partikel_väg(start_energi, start_position, phi, theta, steglängd, radie,
+                                                       max_antal_steg)
+
+    else:
+        for i in range(iterationer):
+            theta, phi = riktning_alpha()
             start_position = position_start_alpha(radie, phi, theta)
             steglängd = steglängd_alpha(start_position, df_stopping_power)
             energideponering = laddad_partikel_väg(start_energi, start_position, phi, theta, steglängd, radie,
@@ -191,6 +201,6 @@ if __name__ == "__main__":
     print(
         '\n----------------------------------------------------------------------\nRESULTAT\n----------------------------------------------------------------------\n')
 
-    print(f'\n Skal: Energideponering per partikel: {energideponering_tot_skal / iterationer:.2f} eV / partikel')
+    print(f'\nSkal: Energideponering per partikel: {energideponering_tot_skal / iterationer:.2f} eV / partikel')
     print(f'Innanför: Energideponering per partikel: {energideponering_tot_innanför / iterationer:.2f} eV / partikel')
 
