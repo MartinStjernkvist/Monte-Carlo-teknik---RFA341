@@ -2,6 +2,109 @@ from imports import *
 from upg1_attenueringsdata import attenueringsdata
 from upg1_visualisera_bin_fil import fantom_matris
 
+
+class Partikel:
+    def __init__(self, start_position, start_energi, df_stopping_power):
+        self.position = np.array(start_position)
+        self.energi = start_energi
+        self.df_stopping_power = df_stopping_power
+
+    def riktning_alpha(self):
+        theta = np.arccos(-1 + 2 * np.random.rand())
+        phi = 2 * pi * np.random.rand()
+        return theta, phi
+
+    def steglängd_alpha(self):
+        print('WIP')
+        medelvägslängd = 100
+        return medelvägslängd
+
+    def förflyttning(self, steg_vektor):
+        self.position += steg_vektor
+
+    def energiförlust_alpha(self, steg):
+        print('WIP')
+
+        energiförlust = self.energi * 0.1
+        self.energi -= energiförlust
+
+        if self.energi <= 0:
+            self.energi = 0
+
+    def return_energi(self):
+        energi = self.energi
+        return energi
+
+# @jit(nopython=True)
+def laddad_partikel_väg(partikel, radie, max_antal_steg=100):
+
+    start_energi = partikel.energi
+    position_vektor = partikel.position
+    steglängd = partikel.steglängd_alpha()
+    theta, phi = partikel.riktning_alpha()
+
+    print('start energi', start_energi)
+    print('position_vektor', position_vektor)
+    print('steglängd', steglängd)
+    print('theta, phi', theta, phi)
+
+    trajectory = [tuple(position_vektor)]
+
+    steg_storlek = steglängd / max_antal_steg
+
+    riktning = np.array([np.sin(theta) * np.cos(phi), np.sin(theta) * np.cos(phi), np.cos(theta)])
+    riktning /= np.linalg.norm(riktning)
+    steg_vektor = riktning * steg_storlek
+
+    innanför = True
+    summa_steglängd = 0
+
+    sista_energi = partikel.return_energi()
+
+    # Under tiden som partikeln fortfarnade inte tagit hela sitt steg.
+    for i in range(max_antal_steg):
+
+        # Medan partikeln fortfarande är innanför tumörcellen.
+        while innanför == True:
+
+            sista_energi = partikel.return_energi()  # Det sista värdet kommer sparas, resterande är irrelevanta.
+
+            partikel.förflyttning(steg_vektor)
+            partikel.energiförlust_alpha(steg_storlek)
+
+            if np.dot(partikel.position, partikel.position) <= radie:
+                innanför = True
+                trajectory.append(tuple(partikel.position))
+                print(f'Energideponering i position [{partikel.position}].')
+            else:
+                innanför = False
+                print('Partikel utanför sfär!')
+
+    energideponering = start_energi - sista_energi
+
+    return trajectory, energideponering
+
+
+if __name__ == "__main__":
+    # Alpha partikel.
+    df_stopping_power = pd.read_excel(attenueringsdata_file)
+
+    partikel = Partikel((1.0, 1.0, 1.0), 10.0, df_stopping_power)
+
+    radie = 4 # byt
+    trajectory, energideponering = laddad_partikel_väg(partikel, radie, max_antal_steg=10000)
+
+    # for step, pos in enumerate(trajectory):
+    #     print(f"Step {step}: Position {pos}")
+    print(f'\nTotal energideponering i sfär: {energideponering:.2f}.')
+
+"""
+Gammal fil: 
+
+from imports import *
+from upg1_attenueringsdata import attenueringsdata
+from upg1_visualisera_bin_fil import fantom_matris
+
 df_attenueringsdata = pd.read_excel(attenueringsdata_file, index_col=None)
 df_anatomidefinitioner = pd.read_excel(anatomidefinitioner_file, index_col=None)
 
@@ -68,3 +171,4 @@ if __name__ == "__main__":
 
     for step, pos in enumerate(trajectory):
         print(f"Step {step}: Position {pos}")
+"""
