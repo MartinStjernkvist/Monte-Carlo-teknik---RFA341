@@ -16,7 +16,7 @@ def Compton_vinkel_och_energiförlust(foton_energin):
         if R_1<=(2*foton_energin+1)/(2*foton_energin+9):
             nu=2*foton_energin*R_2
             if R_3<=4*(nu**-1-nu**-2):
-                theata=ma.acos(1-2*R_2)
+                theata=np.arccos(1-2*R_2)
                 sprid_foton_energin=foton_energin/nu
                 energi_förlust=foton_energin-sprid_foton_energin
                 break
@@ -24,7 +24,7 @@ def Compton_vinkel_och_energiförlust(foton_energin):
         
         elif R_1> (2*foton_energin+1)/(2*foton_energin+9):
             nu=(2*foton_energin+1)/(2*R_2*foton_energin+1)
-            theata=ma.acos(1-(nu-1)/foton_energin)
+            theata=np.arccos(1-(nu-1)/foton_energin)
             
             if R_3<=0.5*(ma.cos(theata)**2+nu**-1):
                 sprid_foton_energin=foton_energin/nu

@@ -64,7 +64,7 @@ if __name__ == "__main__":
         f.close()
 
     # Visualisera matrisen med registrerad energideponering.
-    benmärg_matris_deponerad_energi = np.load('resultat_multiprocess.npy')
+    benmärg_matris_deponerad_energi = np.load('Martin/resultat_multiprocess.npy') #resultat_multiprocess.npy
     visualisera = visualisera_matris(benmärg_matris_deponerad_energi, visa_något=True)
     visualisera.show()
 
@@ -80,7 +80,6 @@ if __name__ == "__main__":
 
     # np.save('resultat_5_E6', ryggrad_matris_deponerad)
 
-    """
     resultat_5_E6 = np.load('resultat_5_E6.npy')
     visualisera = visualisera_matris(resultat_5_E6, visa_något=True)
     visualisera.show()
