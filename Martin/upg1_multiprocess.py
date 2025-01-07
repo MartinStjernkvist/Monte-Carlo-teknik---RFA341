@@ -275,8 +275,9 @@ if __name__ == "__main__":
 
 
     def inputs_riktig_körning():
+        print('\n----------------------------------------------------------------------\nDags att ange parametrar.\n----------------------------------------------------------------------\n')
         print('Standard eller inte?')
-        input_standard = input('Om standard: s, Annars: vad som helst: ')
+        input_standard = input('\nOm standard: s, Annars: vad som helst: ')
 
         if input_standard == 's':
             antal_cores = 8
@@ -316,6 +317,32 @@ if __name__ == "__main__":
         print('antal_cores, iterationer_dummy, iterationer_tot: ', antal_cores, iterationer_dummy, iterationer_tot)
         return antal_cores, iterationer_dummy, iterationer_tot
 
+    def spara_resultat(matris, json_object):
+        print('\n----------------------------------------------------------------------\nDags att sparan resultaten i en matris.\n----------------------------------------------------------------------\n')
+        print('Om du anger namn: skriver du "text" utan citattecken kommer filerna \n[text_resultat.npy] och [inputs_text_resultat.json] \nskapas.')
+        input_spara_resultat = input('\nVar vill du spara matrisen? Om standard: s, Annars: ange namn: ')
+
+        if input_spara_resultat == 's':
+            fil_namn_npy = 'resultat_multiprocess.npy'
+            # Spara resultatmatrisen i en numpy fil, som sedan går att visualisera i en separat fil.
+            np.save(fil_namn_npy, matris)
+
+            fil_namn_json = 'inputs_resultat_multiprocess.json'
+            with open(fil_namn_json, 'w') as f:
+                f.write(json_object)
+                f.close()
+        else:
+            fil_namn_npy = input_spara_resultat + '_resultat.npy'
+            np.save(fil_namn_npy, matris)
+
+            fil_namn_json = 'inputs_' + input_spara_resultat + '_resultat.json'
+            with open(fil_namn_json, 'w') as f:
+                f.write(json_object)
+                f.close()
+
+        return print(f'Resultat sparade i filerna [{fil_namn_npy}] och [{fil_namn_json}]')
+
+
 
     antal_cores, iterationer_dummy, iterationer_tot = inputs_riktig_körning()
 
@@ -326,10 +353,6 @@ if __name__ == "__main__":
     }
 
     json_object = json.dumps(dictionary)
-
-    with open('inputs_upg1_multiprocess.json', 'w') as f:
-        f.write(json_object)
-        f.close()
 
     #   ----------------------------------------------------------------------
     #   Dummy run - för att snabba på den riktiga körningen av koden.
@@ -378,5 +401,4 @@ if __name__ == "__main__":
 
     end_time(start)
 
-    # Spara resultatmatrisen i en numpy fil, som sedan går att visualisera i en separat fil.
-    np.save('resultat_multiprocess.npy', benmärg_matris_deponerad_energi)
+    spara_resultat(benmärg_matris_deponerad_energi, json_object)

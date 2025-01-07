@@ -18,6 +18,8 @@ from tkinter import simpledialog
 from numba import jit
 import json
 
+from collections import deque
+
 #   ----------------------------------------------------------------------
 #   KONSTANTER
 #   ----------------------------------------------------------------------
