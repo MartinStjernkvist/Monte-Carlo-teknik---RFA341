@@ -1,5 +1,5 @@
 from imports import *
-def Stopping_power_alfa(Alfa_energi): #i MeV för alfa energin, stp i MeV cm2/g
+def Stopping_power_och_steglängd(Alfa_energi): #i MeV för alfa energin, stp i MeV cm2/g
     #Öppnar text filen och läser in varje koloumn
     Data_energi=np.loadtxt('MC_Linnea/Stoppingpower_data')[:,0]
     Data_stoppingpower=np.loadtxt('MC_Linnea/Stoppingpower_data')[:,1]
@@ -12,16 +12,21 @@ def Stopping_power_alfa(Alfa_energi): #i MeV för alfa energin, stp i MeV cm2/g
     #Närmsta värdena:
     energi_close = Data_energi[closest_indices]
     Stopping_power_close=Data_stoppingpower[closest_indices]
+    Range_close=Data_range[closest_indices]
 
-    #Linjär interpolera och få fram stoppingpower
+
+    #Linjär interpolera och få fram stoppingpower och slumpmässig steglängd
     if energi_close[1] - energi_close[0] < 10 ** (-15):
         STP= Stopping_power_close[0]
-        
+        Steglängd=np.random.random()*Range_close[0]
 
     else:
         STP = Stopping_power_close[0] + (Alfa_energi - energi_close[0]) * (
                     Stopping_power_close[1] - Stopping_power_close[0]) / (
                                     energi_close[1] - energi_close[0])
-
-    return STP
-print(Stopping_power_alfa(4))
+        
+        Steglängd=Range_close[0] + (Alfa_energi - energi_close[0]) * (
+                    Range_close[1] - Range_close[0]) / (
+                                    energi_close[1] - energi_close[0])
+    return STP, Steglängd
+print(Stopping_power_och_steglängd(4))
