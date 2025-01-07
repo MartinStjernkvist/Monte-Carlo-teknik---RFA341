@@ -1,0 +1,27 @@
+from imports import *
+def Stopping_power_alfa(Alfa_energi): #i MeV för alfa energin, stp i MeV cm2/g
+    #Öppnar text filen och läser in varje koloumn
+    Data_energi=np.loadtxt('MC_Linnea/Stoppingpower_data')[:,0]
+    Data_stoppingpower=np.loadtxt('MC_Linnea/Stoppingpower_data')[:,1]
+    Data_range=(np.loadtxt('MC_Linnea/Stoppingpower_data')[:,2])
+
+    #Tar index för närmaste energi på alfapartikeln
+    diff = np.abs(Data_energi - Alfa_energi)
+    closest_indices = np.argsort(diff)[:2]
+    
+    #Närmsta värdena:
+    energi_close = Data_energi[closest_indices]
+    Stopping_power_close=Data_stoppingpower[closest_indices]
+
+    #Linjär interpolera och få fram stoppingpower
+    if energi_close[1] - energi_close[0] < 10 ** (-15):
+        STP= Stopping_power_close[0]
+        
+
+    else:
+        STP = Stopping_power_close[0] + (Alfa_energi - energi_close[0]) * (
+                    Stopping_power_close[1] - Stopping_power_close[0]) / (
+                                    energi_close[1] - energi_close[0])
+
+    return STP
+print(Stopping_power_alfa(4))

@@ -31,8 +31,7 @@ def Elektron_riktning(Elektron_energi): #Energi i elektron i tabell är i eV
     #Linjär interpolera och få fram theata_s
     if energi_close[1] - energi_close[0] < 10 ** (-15):
         theata_s= T_close[0]
-        
-    #Problem! om elektron energin är mindre än minsta värdet, behöver man sätta fram 0 i båda listorna som minska och linjär interpolera mellan där???
+
     else:
         theata_s = T_close[0] + (Elektron_energi - energi_close[0]) * (
                     T_close[1] - T_close[0]) / (

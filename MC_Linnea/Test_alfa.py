@@ -8,7 +8,12 @@ from Martin.upg1_sampla_energi_start import energi_start
 S=1*10**(-6) #1 um, hitta steglängden för energin 
 steglängd=np.random.random()*S
 
-Energi=energi_start(At211_energi,At211_sannolikhet) #Samplar på samma sätt alfa energin som fotonerna
+Energi=energi_start(At211_energi,At211_sannolikhet) #Samplar på samma sätt alfa energin som fotonerna, är i MeV
+
+#Öppnar text filen och läser in varje koloumn
+Data_energi=np.loadtxt('MC_Linnea/Stoppingpower_data')[:,0]
+Data_stoppingpower=np.loadtxt('MC_Linnea/Stoppingpower_data')[:,1]
+Data_range=np.loadtxt('MC_Linnea/Stoppingpower_data')[:,2]
 
 
 
