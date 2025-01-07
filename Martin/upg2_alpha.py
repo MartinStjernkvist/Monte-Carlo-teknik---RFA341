@@ -106,7 +106,7 @@ def laddad_partikel_väg(start_energi, start_position, phi, theta, steglängd, r
     return energideponering  # , trajectory
 
 
-def run_MC_alpha_skal(iterationer, df_stopping_power, start_energi, radie, max_antal_steg):
+def run_MC_alpha(iterationer, df_stopping_power, position_start_alpha, start_energi, radie, max_antal_steg):
     energideponering_summa = 0
     utanför = 0
 
@@ -118,7 +118,7 @@ def run_MC_alpha_skal(iterationer, df_stopping_power, start_energi, radie, max_a
             utanför += 1
             energideponering = 0
         else:
-            start_position = position_start_alpha_skal(radie, phi, theta)
+            start_position = position_start_alpha(radie, phi, theta)
             steglängd = steglängd_alpha(start_position, df_stopping_power)
             energideponering = laddad_partikel_väg(start_energi, start_position, phi, theta, steglängd, radie,
                                                    max_antal_steg)
@@ -130,69 +130,75 @@ def run_MC_alpha_skal(iterationer, df_stopping_power, start_energi, radie, max_a
     print(f'\nEnergideponering per partikel: {energideponering_summa / iterationer:.2f} eV / partikel')
     return energideponering_summa
 
-
-def run_MC_alpha_innanför(iterationer, df_stopping_power, start_energi, radie, max_antal_steg):
-    energideponering_summa = 0
-    utanför = 0
-
-    for i in range(iterationer):
-        theta, phi = riktning_alpha()
-
-        if not pi / 2 < phi < 3 * pi / 2:
-            # print('Utanför')
-            utanför += 1
-            energideponering = 0
-        else:
-            start_position = position_start_alpha_innanför(radie, phi, theta)
-            steglängd = steglängd_alpha(start_position, df_stopping_power)
-            energideponering = laddad_partikel_väg(start_energi, start_position, phi, theta, steglängd, radie,
-                                                   max_antal_steg)
-
-        energideponering_summa += energideponering
-
-    print('antal utanför: ', utanför)
-    print('total energideponering: ', energideponering_summa)
-    print(f'\nEnergideponering per partikel: {energideponering_summa / iterationer:.2f} eV / partikel')
-    return energideponering_summa
+#
+# def run_MC_alpha_innanför(iterationer, df_stopping_power, start_energi, radie, max_antal_steg):
+#     energideponering_summa = 0
+#     utanför = 0
+#
+#     for i in range(iterationer):
+#         theta, phi = riktning_alpha()
+#
+#         if not pi / 2 < phi < 3 * pi / 2:
+#             # print('Utanför')
+#             utanför += 1
+#             energideponering = 0
+#         else:
+#             start_position = position_start_alpha_innanför(radie, phi, theta)
+#             steglängd = steglängd_alpha(start_position, df_stopping_power)
+#             energideponering = laddad_partikel_väg(start_energi, start_position, phi, theta, steglängd, radie,
+#                                                    max_antal_steg)
+#
+#         energideponering_summa += energideponering
+#
+#     print('antal utanför: ', utanför)
+#     print('total energideponering: ', energideponering_summa)
+#     print(f'\nEnergideponering per partikel: {energideponering_summa / iterationer:.2f} eV / partikel')
+#     return energideponering_summa
 
 
 if __name__ == "__main__":
     iterationer = 10 ** 5
     dummy_iterationer = 10**3
-    max_antal_steg = 10**5
+    max_antal_steg = 10**4
 
     df_stopping_power = pd.read_excel(attenueringsdata_file)
 
-    radie_sfär = 300 * 10 ** (-6)  # byt
-    start_energi = 1_000_000
+    radie_sfär = 300 * 10 ** (-6)
+    start_energi = 10**4
 
     print(
         '\n----------------------------------------------------------------------\nDUMMY\n----------------------------------------------------------------------\n')
 
-    energideponering_tot = run_MC_alpha_skal(dummy_iterationer, df_stopping_power, start_energi, radie_sfär,
-                                             max_antal_steg)
+    _ = run_MC_alpha(dummy_iterationer, df_stopping_power, position_start_alpha_skal, start_energi, radie_sfär,
+                                        max_antal_steg)
 
     start = time.time()
 
     print(
         '\n----------------------------------------------------------------------\nRIKTIG\n----------------------------------------------------------------------\n')
-    energideponering_tot = run_MC_alpha_skal(iterationer, df_stopping_power, start_energi, radie_sfär, max_antal_steg)
+    energideponering_tot_skal = run_MC_alpha(iterationer, df_stopping_power, position_start_alpha_skal, start_energi, radie_sfär, max_antal_steg)
 
     end_time(start)
 
-    radie_sfär = 10 ** (-3)  # byt
-    start_energi = 1_000_000
+    radie_sfär = 1 * 10 ** (-3)
 
     print(
         '\n----------------------------------------------------------------------\nDUMMY\n----------------------------------------------------------------------\n')
 
-    energideponering_tot = run_MC_alpha_innanför(dummy_iterationer, df_stopping_power, start_energi, radie_sfär,
+    _ = run_MC_alpha(dummy_iterationer, df_stopping_power, position_start_alpha_innanför, start_energi, radie_sfär,
                                                  max_antal_steg)
 
     start = time.time()
     print(
         '\n----------------------------------------------------------------------\nRIKTIG\n----------------------------------------------------------------------\n')
-    energideponering_tot = run_MC_alpha_innanför(iterationer, df_stopping_power, start_energi, radie_sfär,
+    energideponering_tot_innanför = run_MC_alpha(iterationer, df_stopping_power, position_start_alpha_innanför, start_energi, radie_sfär,
                                                  max_antal_steg)
 
     end_time(start)
+
+    print(
+        '\n----------------------------------------------------------------------\nRESULTAT\n----------------------------------------------------------------------\n')
+
+    print(f'\n Skal: Energideponering per partikel: {energideponering_tot_skal / iterationer:.2f} eV / partikel')
+    print(f'Innanför: Energideponering per partikel: {energideponering_tot_innanför / iterationer:.2f} eV / partikel')
+
