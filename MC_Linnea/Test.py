@@ -2,7 +2,7 @@
 
 from imports import *
 
-#from Monte_Carlo_Linnea.Elektron_energi import Närmast #VARFÖÖÖÖR???!!!! AHHHHHHHHHHHHHH
+#from Elektron_energi import Närmast #VARFÖÖÖÖR???!!!! AHHHHHHHHHHHHHH
 
 
 from Martin.upg1_sampla_energi_start import energi_start #Kolla varför det inte går att importera in
