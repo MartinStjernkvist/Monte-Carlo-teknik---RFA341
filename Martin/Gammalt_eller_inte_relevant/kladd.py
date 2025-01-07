@@ -1,6 +1,7 @@
 import numpy as np
 
-print(np.random.normal(size=3))
+vec = np.array([1,1,1])
 
-position_vektor = np.array([1,2,3])
-print(*position_vektor)
+print(vec[1])
+
+print(type(vec[1]))
