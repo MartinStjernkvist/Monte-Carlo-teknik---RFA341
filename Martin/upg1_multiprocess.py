@@ -319,7 +319,7 @@ if __name__ == "__main__":
 
     def spara_resultat(matris, json_object):
         print('\n----------------------------------------------------------------------\nDags att sparan resultaten i en matris.\n----------------------------------------------------------------------\n')
-        print('Om du anger namn: skriver du "text" utan citattecken kommer filerna \n[text_resultat.npy] och [inputs_text_resultat.json] \nskapas.')
+        print('Om du anger namn: skriver du "text" utan citattecken kommer filerna \n[resultat_text.npy] och [inputs_text.json] \nskapas.')
         input_spara_resultat = input('\nVar vill du spara matrisen? Om standard: s, Annars: ange namn: ')
 
         if input_spara_resultat == 's':
@@ -332,10 +332,10 @@ if __name__ == "__main__":
                 f.write(json_object)
                 f.close()
         else:
-            fil_namn_npy = input_spara_resultat + '_resultat.npy'
+            fil_namn_npy = 'resultat_' + input_spara_resultat + '.npy'
             np.save(fil_namn_npy, matris)
 
-            fil_namn_json = 'inputs_' + input_spara_resultat + '_resultat.json'
+            fil_namn_json = 'inputs_' + input_spara_resultat + '.json'
             with open(fil_namn_json, 'w') as f:
                 f.write(json_object)
                 f.close()
