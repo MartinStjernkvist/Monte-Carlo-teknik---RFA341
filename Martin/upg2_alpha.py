@@ -11,7 +11,7 @@ def riktning_alpha():
 def steglängd_alpha(energi, df_stopping_power):
     # Avstånd till braggtopp
     # print('WIP')
-    medelvägslängd = 100
+    medelvägslängd = 10**(-6)
     return medelvägslängd
 
 
@@ -77,29 +77,21 @@ def laddad_partikel_väg(start_energi, start_position, phi, theta, steglängd, r
     riktning /= np.linalg.norm(riktning)
     steg_vektor = riktning * steg_storlek
 
-    innanför = True
-    summa_steglängd = 0
 
     # Under tiden som partikeln fortfarnade inte tagit hela sitt steg.
     for i in range(max_antal_steg):
 
-        # Medan partikeln fortfarande är innanför tumörcellen.
-        while innanför == True:
+        # print('steg_vektor', steg_vektor)
+        position_vektor += steg_vektor
+        energi = energi - energiförlust_alpha(energi, steg_storlek)
 
-            # Det sista värdet kommer sparas, resterande är irrelevanta.
-
-            # print('steg_vektor', steg_vektor)
-            position_vektor += steg_vektor
-            energi = energi - energiförlust_alpha(energi, steg_storlek)
-
-            if np.dot(position_vektor, position_vektor) <= radie:
-                innanför = True
-                # trajectory.append(tuple(position_vektor))
-                x, y, z = position_vektor[0], position_vektor[1], position_vektor[2]
-                print(f'Energideponering i position [{x, y, z}].')
-            else:
-                innanför = False
-                # print('Partikel utanför sfär!')
+        if np.dot(position_vektor, position_vektor) <= radie:
+            innanför = True
+            # trajectory.append(tuple(position_vektor))
+            print(f'Energideponering i position ', position_vektor)
+        else:
+            break
+            # print('Partikel utanför sfär!')
 
     energideponering = start_energi - energi
 
@@ -157,9 +149,9 @@ def run_MC_alpha(iterationer, df_stopping_power, position_start_alpha, start_ene
 
 
 if __name__ == "__main__":
-    iterationer = 10 ** 5
-    dummy_iterationer = 10**3
-    max_antal_steg = 10**4
+    iterationer = 10 ** 2
+    dummy_iterationer = 10**2
+    max_antal_steg = 10**3
 
     df_stopping_power = pd.read_excel(attenueringsdata_file)
 
