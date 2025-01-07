@@ -1,12 +1,11 @@
 #Steglängden på fotonerna, Wendy ska göra detta
 
 #Ta reda på majortiteta attenuerigskoefficienten för varje matris/slice
-
+#Eller var det riktning? Fråga för att dubbelkolla
 #Läser en Excel fil
-import pandas as pd
-import math as ma
-import numpy as np
-import random as rand
+
+from imports import *
+
 
 
 def Steglängd_foton(Foton_energi,start_position,riktning):
@@ -44,8 +43,8 @@ def Steglängd_foton(Foton_energi,start_position,riktning):
         #ta reda på my_m genom att ta max för alla voxlar attenueringskoefficient
         my_m=np.max(attenueringskoefficienter)
         #Steglängden på fotonerna
-        R=rand.random()
-        steglängd=-ma.log(R)/my_m
+        R=np.random.random()
+        steglängd=-np.log(R)/my_m
 
 
 

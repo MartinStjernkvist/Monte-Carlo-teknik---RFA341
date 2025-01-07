@@ -40,4 +40,13 @@ def Elektron_riktning(Elektron_energi): #Energi i elektron i tabell är i eV
  
 
     return np.sqrt(-theata_s*np.log(1-R))
-print(Elektron_riktning(511)) # Kunde inte hitta coloumn med E(eV)?
+
+if __name__ == "__main__":
+     #Testar att filerna fungerar:
+    file_scatter=pd.read_excel(r'MC_Linnea/Monte Carlo, test.xlsx',sheet_name='Scattering power') 
+
+    #Fråga Jens om detta:
+    #Elektron energin som samplas är i eV men värdet på scattering power är i MeV
+    Energi_data=file_scatter['E(eV)'].to_list() #Hittar inte kolumnerna i xlsx filen, kanske flytta tabellen i vänstrahörnet??
+    Scatterpower_list=file_scatter['Scatter power Water'].to_list() #T/rho för vatten
+    print(Elektron_riktning(511)) # Kunde inte hitta coloumn med E(eV)?
