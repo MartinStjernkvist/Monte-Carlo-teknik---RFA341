@@ -15,7 +15,7 @@ def riktning_uniform():
     return theta, phi
 
 @jit(nopython=True)
-def steg(theta, phi, steglängd, x, y, z):
+def steg(theta, phi, steglängd):
     """
     Funktion som tar ett steg i en specificerad riktning.
     :param theta: Spridningsvinkel.
@@ -26,14 +26,11 @@ def steg(theta, phi, steglängd, x, y, z):
     :return: Ny position.
     """
 
-    # Steg.
+    # Steg, i termer av voxelsidlängd.
     dx = steglängd * np.sin(theta) * np.cos(phi) / voxel_sidlängd
     dy = steglängd * np.sin(theta) * np.sin(phi) / voxel_sidlängd
     dz = steglängd * np.cos(theta) / voxel_sidlängd
 
-    # Tar steget.
-    x = x + dx
-    y = y + dy
-    z = z + dz
+    return dx, dy, dz
 
-    return x, y, z
+

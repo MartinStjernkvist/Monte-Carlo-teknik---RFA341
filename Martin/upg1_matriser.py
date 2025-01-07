@@ -1,5 +1,5 @@
 from imports import *
-from visualisera_bin_fil import fantom_matris, visualisera_matris
+from upg1_visualisera_bin_fil import fantom_matris, visualisera_matris
 
 #   ----------------------------------------------------------------------
 #   Skapa kapade matriser, utifrån fantommatrisen.
