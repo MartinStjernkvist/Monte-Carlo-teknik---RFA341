@@ -36,7 +36,7 @@ class Partikel:
         return energi
 
 # @jit(nopython=True)
-def laddad_partikel_väg(partikel, radie, max_antal_steg=100):
+def laddad_partikel_väg_class(partikel, radie, max_antal_steg=100):
 
     start_energi = partikel.energi
     position_vektor = partikel.position
@@ -92,7 +92,7 @@ if __name__ == "__main__":
     partikel = Partikel((1.0, 1.0, 1.0), 10.0, df_stopping_power)
 
     radie = 4 # byt
-    trajectory, energideponering = laddad_partikel_väg(partikel, radie, max_antal_steg=10000)
+    trajectory, energideponering = laddad_partikel_väg_class(partikel, radie, max_antal_steg=10000)
 
     # for step, pos in enumerate(trajectory):
     #     print(f"Step {step}: Position {pos}")

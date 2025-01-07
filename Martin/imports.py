@@ -30,9 +30,10 @@ r_e = np.sqrt(0.07941)  # sqrt(b): re2 = e4/Ee2 ≈ 0.07941 b, https://en.wikipe
 a_0 = 5.29177210903 * 10 ** (-11) * 10 ** (14)  # sqrt(b), bohr radius of hydrogen
 c = 3 * 10 ** 8
 
+radie_alpha = 1.9 * 10 ** (-15)  # m
 
 # Neutroner???
-massa_H = 1 # enhet u
+massa_H = 1  # enhet u
 # massa_C = 6
 # massa_N = 7
 # massa_O = 8
@@ -101,9 +102,9 @@ fluorescence_yield = (1 / np.sum(
 # Sidlängd på voxlarna i matriserna.
 voxel_sidlängd = 0.15  # cm
 
-
 Lu177_energi = [208_366, 112_950, 321_316, 249_674, 71_642, 136_725]  # Sönderfallsenergierna för Lu-177.
-Lu177_intensitet = [10.38, 6.2, 0.216, 0.2012, 0.1726, 0.047]  # Sönderfallsintensitet i % för respektive energi. Från laraweb.
+Lu177_intensitet = [10.38, 6.2, 0.216, 0.2012, 0.1726,
+                    0.047]  # Sönderfallsintensitet i % för respektive energi. Från laraweb.
 Lu177_sannolikhet = np.cumsum(Lu177_intensitet) / np.sum(Lu177_intensitet)  # Kumulativa sannolikheten för sönderfall.
 
 #   ----------------------------------------------------------------------
@@ -121,8 +122,6 @@ mat_file = 'phantom_data.mat'
 # attenueringsdata_file = r"C:/Users/Admin/Documents/GitHub/Monte Carlo Linnea/Attenueringsdata.xlsx"
 # anatomidefinitioner_file = r"C:\Users\Admin\Documents\GitHub\Monte Carlo Linnea/Anatomidefinitioner.xlsx"
 # mat_file = r"C:\Users\Admin\Documents\GitHub\Monte Carlo Linnea\phantom_data.mat"
-
-
 
 
 #   ----------------------------------------------------------------------
