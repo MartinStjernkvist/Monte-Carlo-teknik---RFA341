@@ -3,7 +3,8 @@ from upg1_visualisera_bin_fil import visualisera_matris
 
 
 def visualisera_resultat():
-    print('\n----------------------------------------------------------------------\nVilka resultat vill du visualisera?\n----------------------------------------------------------------------\n')
+    print(
+        '\n----------------------------------------------------------------------\nVilka resultat vill du visualisera?\n----------------------------------------------------------------------\n')
     print(
         'Om du anger namn: skriver du "text" utan citattecken kommer filerna \n[resultat_text.npy] och [inputs_text.json] \nvisualiseras.')
     input_resultat = input('\nOm senaste körning: s, Annars ange namn på filerna: ')
@@ -50,15 +51,41 @@ def visualisera_resultat():
             print('\niterationer_tot: ', iterationer_tot)
             f.close()
 
-    return print(f'BENMÄRG: Energideponering per foton (eV / sönderfall): {np.sum(resultat_matris) / iterationer_tot:.1f} \nRYGGRAD: Energideponering per fotoN (eV / sönderfall): {np.sum(slicad_resultat_matris) / iterationer_tot:.1f}')
+    return print(
+        f'BENMÄRG: Energideponering per foton (eV / sönderfall): {np.sum(resultat_matris) / iterationer_tot:.1f} \nRYGGRAD: Energideponering per fotoN (eV / sönderfall): {np.sum(slicad_resultat_matris) / iterationer_tot:.1f}')
+
+
+def visualisera_resultat_slicade():
+    print(
+        '\n----------------------------------------------------------------------\nVilka slicade resultat vill du visualisera?\n----------------------------------------------------------------------\n')
+    print(
+        'Om du anger namn: skriver du "text" utan citattecken kommer filerna \n[resultat_text_slicade.npy] och [inputs_text.json] \nvisualiseras.')
+    input_resultat = input('\nAnge namn på filerna: ')
+
+    fil_namn_npy = 'resultat_' + input_resultat + '_slicad.npy'
+
+    resultat_matris = np.load(fil_namn_npy)
+    visualisera = visualisera_matris(resultat_matris, visa_något=True)
+    visualisera.show()
+
+    fil_namn_json = 'inputs_' + input_resultat + '.json'
+
+    with (open(fil_namn_json, 'r') as f):
+        json_object = json.load(f)
+        iterationer_tot = json_object['iterationer_tot']
+        print('\niterationer_tot: ', iterationer_tot)
+        f.close()
+
+    return print(
+        f'BENMÄRG: Energideponering per foton (eV / sönderfall): {np.sum(resultat_matris) / iterationer_tot:.1f} \nRYGGRAD: Energideponering per fotoN (eV / sönderfall): {np.sum(resultat_matris) / iterationer_tot:.1f}')
 
 
 #   ----------------------------------------------------------------------
 #   VISUALISERA RESULTATEN FRÅN upg1_sammanställt
 #   ----------------------------------------------------------------------
 if __name__ == "__main__":
-
-    visualisera_resultat()
+    # visualisera_resultat()
+    visualisera_resultat_slicade()
 
     """
     with (open('inputs_upg1_multiprocess.json', 'r') as f):
