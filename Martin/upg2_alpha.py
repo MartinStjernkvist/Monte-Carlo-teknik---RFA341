@@ -1,5 +1,6 @@
 from imports import *
 from upg1_sampla_energi_start import energi_start
+from MC_Linnea.Alfa_stp_och_RCSDA import Stopping_power_och_steglängd
 
 @jit(nopython=True)
 def riktning_alpha():
