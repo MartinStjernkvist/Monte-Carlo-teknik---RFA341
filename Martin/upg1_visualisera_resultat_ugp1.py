@@ -38,6 +38,10 @@ def visualisera_resultat():
         visualisera = visualisera_matris(slicad_resultat_matris, visa_något=True)
         visualisera.show()
 
+        fil_namn_slicad_npy = 'resultat_' + input_resultat + '_slicad.npy'
+
+        np.save(fil_namn_slicad_npy, slicad_resultat_matris)
+
         fil_namn_json = 'inputs_' + input_resultat + '.json'
 
         with (open(fil_namn_json, 'r') as f):
