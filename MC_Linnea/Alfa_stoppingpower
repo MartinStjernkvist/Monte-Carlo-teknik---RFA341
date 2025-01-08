@@ -18,7 +18,7 @@ def Stopping_power_och_steglängd(Alfa_energi): #i MeV för alfa energin
     #Linjär interpolera och få fram stoppingpower och slumpmässig steglängd
     if energi_close[1] - energi_close[0] < 10 ** (-15):
         STP= Stopping_power_close[0]*rho
-        Steglängd=np.random.random()*Range_close[0]/rho
+        Steglängd=Range_close[0]/rho
 
     else:
         STP = (Stopping_power_close[0] + (Alfa_energi - energi_close[0]) * (
