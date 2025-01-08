@@ -110,10 +110,14 @@ anatomidefinitioner_file = '../given_data/Anatomidefinitioner.xlsx'
 mat_file = 'phantom_data.mat'
 
 
-# tvärsnitt_file = r'C:/Users/Admin/Documents/GitHub/Monte Carlo Linnea/Tvärsnittstabeller_Fotoner.xlsx'
-# attenueringsdata_file = r"C:/Users/Admin/Documents/GitHub/Monte Carlo Linnea/Attenueringsdata.xlsx"
-# anatomidefinitioner_file = r"C:\Users\Admin\Documents\GitHub\Monte Carlo Linnea/Anatomidefinitioner.xlsx"
-# mat_file = r"C:\Users\Admin\Documents\GitHub\Monte Carlo Linnea\phantom_data.mat"
+#Inläsning för vscode:
+"""
+tvärsnitt_file = r'given_data/Tvärsnittstabeller_Fotoner.xlsx'
+attenueringsdata_file = r"given_data/Attenueringsdata.xlsx"
+anatomidefinitioner_file = r"given_data/Anatomidefinitioner.xlsx"
+
+mat_file = r"Martin/phantom_data.mat"
+"""
 
 
 #   ----------------------------------------------------------------------
