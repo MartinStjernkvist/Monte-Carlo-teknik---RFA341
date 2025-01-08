@@ -18,8 +18,6 @@ from tkinter import simpledialog
 from numba import jit
 import json
 
-from collections import deque
-
 #   ----------------------------------------------------------------------
 #   KONSTANTER
 #   ----------------------------------------------------------------------
@@ -32,17 +30,7 @@ c = 3 * 10 ** 8
 
 radie_alpha = 1.9 * 10 ** (-15)  # m
 
-# Neutroner???
 massa_H = 1  # enhet u
-# massa_C = 6
-# massa_N = 7
-# massa_O = 8
-# massa_Na = 11
-# massa_Mg = 12
-# massa_P = 15
-# massa_S = 16
-# massa_K = 19
-# massa_Ca = 20
 massa_C = 12
 massa_N = 14
 massa_O = 16
@@ -107,9 +95,10 @@ Lu177_intensitet = [10.38, 6.2, 0.216, 0.2012, 0.1726,
                     0.047]  # Sönderfallsintensitet i % för respektive energi. Från laraweb.
 Lu177_sannolikhet = np.cumsum(Lu177_intensitet) / np.sum(Lu177_intensitet)  # Kumulativa sannolikheten för sönderfall.
 
-At211_energi=[5.869, 5.2119,5.1403, 4.9934,4.895] #Energi i MeV 
-At211_intensitet=[41.78, 0.0039, 0.0011, 0.0004, 0.00004] #Intensitet i % för energierna
-At211_sannolikhet=np.cumsum(At211_intensitet/np.sum(At211_intensitet))
+At211_energi = [5.869, 5.2119, 5.1403, 4.9934, 4.895]  # Energi i MeV
+At211_intensitet = [41.78, 0.0039, 0.0011, 0.0004, 0.00004]  # Intensitet i % för energierna
+At211_sannolikhet = np.cumsum(At211_intensitet / np.sum(At211_intensitet))
+
 #   ----------------------------------------------------------------------
 #   Filer med Data
 #   ----------------------------------------------------------------------

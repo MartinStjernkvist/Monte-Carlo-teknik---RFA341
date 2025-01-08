@@ -12,7 +12,7 @@ from upg1_visualisera_bin_fil import fantom_matris, visualisera_matris
 
 # slicad_fantom_matris = fantom_matris[50:-50, 50:200, 650:1050]  # samma som ovan, fast har endast med intervallet varvid 10**5 iterationer ger något utslag
 
-slicad_fantom_matris = fantom_matris[:, 34:212, 450:1182] # inkluderar fantom, avskuret vid benen
+slicad_fantom_matris = fantom_matris[:, 34:212, 450:1182]  # inkluderar fantom, avskuret vid benen
 
 x, y, z = slicad_fantom_matris.shape
 
