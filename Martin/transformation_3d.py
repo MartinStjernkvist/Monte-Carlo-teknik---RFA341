@@ -371,7 +371,7 @@ if __name__ == "__main__":
     ax.set_zlabel('z')
 
     ax.legend()
-    plt.show()
+    # plt.show()
 
     #   ----------------------------------------------------------------------
     #   INPUT - iteration 2
@@ -460,7 +460,7 @@ if __name__ == "__main__":
     ax.quiver(x_B, y_B, z_B, x_B_D, y_B_D, z_B_D, color='red')
     ax.quiver(0, 0, 0, x_tot, y_tot, z_tot, color='black')
 
-    ax.scatter(x_start, y_A, z_A, label='A', color='black', s=100)
+    ax.scatter(x_A, y_A, z_A, label='A', color='black', s=100)
 
     ax.quiver(x_A + dx_A_B, y_A + dy_A_B, z_A + dz_A_B, enhets_vektorer_B[0, 0], enhets_vektorer_B[1, 0],
               enhets_vektorer_B[2, 0],
@@ -471,6 +471,10 @@ if __name__ == "__main__":
     ax.quiver(x_A + dx_A_B, y_A + dy_A_B, z_A + dz_A_B, enhets_vektorer_B[0, 2], enhets_vektorer_B[1, 2],
               enhets_vektorer_B[2, 2],
               color='green')
+
+    ax.quiver(x_A, y_A, z_A, 1, 0, 0, color='orange')
+    ax.quiver(x_A, y_A, z_A, 0, 1, 0, color='brown')
+    ax.quiver(x_A, y_A, z_A, 0, 0, 1, color='green')
 
     ax.quiver(x_A, y_A, z_A, dx_A_B, dy_A_B, dz_A_B, color='blue', label='första steget, A-> B')
 
