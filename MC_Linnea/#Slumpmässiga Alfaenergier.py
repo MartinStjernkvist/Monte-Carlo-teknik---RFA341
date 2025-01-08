@@ -8,7 +8,7 @@ np.random.rand( )# ger slumptal mellan 0 till 1)
 import math as ma
 
 #Ursprungsenergier från nukliden
-At211_energ=[5869, 5211.9,5140.3, 4993.4,4895.4] #keV
+At211_energ=[5.869, 5.2119,5.1403, 4.9934,4.8954] #MeV
 
 #Intensitet i % för energierna
 At211_intens=[41.78, 0.0039, 0.0011, 0.0004, 0.00004]
