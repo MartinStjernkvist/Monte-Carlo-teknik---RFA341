@@ -449,6 +449,29 @@ def steg(theta, phi, steglängd):
 """
 ----------------------------------------------------------------------
 ----------------------------------------------------------------------
+FÖRFLYTTNING
+Ta ett steg, samt erhåll voxelkoordinater.
+----------------------------------------------------------------------
+----------------------------------------------------------------------
+"""
+
+
+@jit(nopython=True)
+def förflyttning(x, y, z, dx, dy, dz):
+    x = x + dx
+    y = y + dy
+    z = z + dz
+
+    x_round = round(x)
+    y_round = round(y)
+    z_round = round(z)
+
+    return x, y, z, x_round, y_round, z_round
+
+
+"""
+----------------------------------------------------------------------
+----------------------------------------------------------------------
 SAMPLA STEGLÄNGD
 Sampla steglängd.
 ----------------------------------------------------------------------
@@ -473,6 +496,137 @@ def medelvägslängd(mu):
     """
     medelvägslängd = invers_funktion(np.random.rand(), mu) / voxel_sidlängd  # LÄGG TILL VOXELLÄNGD
     return medelvägslängd
+
+
+"""
+----------------------------------------------------------------------
+----------------------------------------------------------------------
+TRANSFORMATION - HOMOGEN MATRIS
+Translation och rotation i tre dimensioner.
+----------------------------------------------------------------------
+----------------------------------------------------------------------
+"""
+
+
+def ny_steg_transformera_koordinatsystem_3d(steg_A_B, phi_A, theta_A, steg_B_C, phi_B, theta_B):
+    """
+    - Börjar på position A[x,y,z]- kalla detta koordinatsystem A.
+    - Tar ett steg med steglängd steg_A_B, riktning (phi_A, theta_A), enligt koordinatsystemet i A.
+            (exempelvis kommer phi_A att vara relativt enhetsvektorn i x-led för koord-syst A)
+    - Tar ett steg till ny punkt - kalla denna punkt B.
+    - Transformerar koordinatsystemet så att riktningsvektorn sammandfaller med
+    nya koordinatsystemet.
+            (nya enhetsvektorn i x-led, i B's koord-syst, ska ha samma riktning som fotonen
+            hade när den tog steget)
+    - Detta görs för att kunna sampla en ny riktning i nästa växelverkanprocess,
+    då behövs nämligen ett koordinatsystem i B.
+
+    :param steg_A_B: magnitud på steg från A till B
+    :param phi_A: vinkel för steget mellan A och B
+    :param theta_A: vinkel för steget mellan A och B
+
+    :param steg_B_C: magnitud på steg från B till C
+    :param phi_B: vinkel för steget mellan B och C
+    :param theta_B: vinkel för steget mellan B och C
+
+    :return: 3 värden är förflyttningen från B till C, enligt A's koord-syst
+    """
+
+    dx_A_B = steg_A_B * np.sin(theta_A) * np.cos(phi_A)
+    dy_A_B = steg_A_B * np.sin(theta_A) * np.sin(phi_A)
+    dz_A_B = steg_A_B * np.cos(theta_A)
+
+    dx_B_C = steg_B_C * np.sin(theta_B) * np.cos(phi_B)
+    dy_B_C = steg_B_C * np.sin(theta_B) * np.sin(phi_B)
+    dz_B_C = steg_B_C * np.cos(theta_B)
+
+    # transformera med rotation i z-led (phi)
+    R_z = np.array(
+        [
+            [np.cos(phi_A), -np.sin(phi_A), 0],
+            [np.sin(phi_A), np.cos(phi_A), 0],
+            [0, 0, 1]
+        ], dtype=np.float64)
+
+    # för att x-axeln ska sammanfalla med riktningsvektorn måste rotationsvinkeln vara pi/2 - theta
+    angle = -(pi / 2 - theta_A)
+    R_y = np.array(
+        [
+            [np.cos(angle), 0, np.sin(angle)],
+            [0, 1, 0],
+            [-np.sin(angle), 0, np.cos(angle)],
+        ], dtype=np.float64)
+
+    # först rotation i theta (y-axeln), sedan rotation i phi (z-axeln)
+    R = np.dot(R_z, R_y)
+
+    Homogenous_matrix = np.eye(4, dtype=np.float64)
+    Homogenous_matrix[:3, :3] = R
+    Homogenous_matrix[:3, 3] = np.array([dx_A_B, dy_A_B, dz_A_B], dtype=np.float64)
+
+    vektor_A_C = np.dot(Homogenous_matrix, np.array([dx_B_C, dy_B_C, dz_B_C, 1.0], dtype=np.float64))
+
+    vektor_A_B = np.array([dx_A_B, dy_A_B, dz_A_B, 1.0], dtype=np.float64)
+
+    # Vill ha vektor B->C
+    vektor = vektor_A_C - vektor_A_B
+    vektor_voxel = (1 / voxel_sidlängd) * vektor
+    dx, dy, dz = vektor_voxel[0], vektor_voxel[1], vektor_voxel[2]
+
+    return dx, dy, dz
+
+
+"""
+----------------------------------------------------------------------
+----------------------------------------------------------------------
+BESTÄM OM INNANFÖR MATRIS
+Bestäm om fotonen ska fortsätta följas eller inte.
+----------------------------------------------------------------------
+----------------------------------------------------------------------
+"""
+
+
+@jit(nopython=True)
+def bestäm_om_attenuerad(x_round, y_round, z_round, x_size, y_size, z_size, utanför_fantom, slicad_fantom_matris,
+                         foton_energi):
+    """
+    Funktion som bestämmer om en foton ska fortsätta följas eller inte.
+    Termen "attenuerad" i koden kan även vara att fotonen rymt från fantommatrisen.
+    :param x_round: voxelposition x
+    :param y_round: voxelposition y
+    :param z_round: voxelposition z
+    :param x_size: storlek matris x
+    :param y_size: storlek matris y
+    :param z_size: storlek matris z
+    :param utanför_fantom: värde som ökar med 1, för att hålla reda på vad som händer när koden körs
+    :param slicad_fantom_matris: fantommatrisen
+    :return: om attenuerad = 1 kommer fotonen att sluta följas
+    """
+
+    # Om positionen för fotonen är utanför fantommatrisen, indikera att fotonen ska sluta följas.
+    if (
+            x_round < 0
+            or x_round >= x_size
+            or y_round < 0
+            or y_round >= y_size
+            or z_round < 0
+            or z_round >= z_size
+    ):
+        utanför_fantom += 1
+        attenuerad = 1
+
+    # Om voxelvärdet för positionen är innanför matrisen, men befinner sig i luft (voxelvärde = 0)
+    # eller
+    # fotonenergin är mindre än gränsenergin för fotoabsorption
+    # -> indikera att fotonen ska sluta följas.
+    elif slicad_fantom_matris[x_round, y_round, z_round] == 0 or foton_energi < foton_energi_threshhold:
+        utanför_fantom += 1
+        attenuerad = 1
+
+    else:
+        attenuerad = 0
+
+    return attenuerad, utanför_fantom
 
 
 """
@@ -642,6 +796,28 @@ class attenueringsdata:
                     energi_close[1] - energi_close[0])
 
         return mu_max
+
+
+"""
+----------------------------------------------------------------------
+----------------------------------------------------------------------
+BESTÄM OM VÄXELVERKAN
+Bestäm om växelverkan sker vid en position, efter ett steg.
+----------------------------------------------------------------------
+----------------------------------------------------------------------
+"""
+
+
+def bestäm_om_vxv(voxelvärde, energi, mu_max, df_attenueringsdata, df_anatomidefinitioner):
+    instans = attenueringsdata(voxelvärde, energi, df_attenueringsdata, df_anatomidefinitioner)
+    mu = instans.mu()
+
+    if np.random.rand() <= mu / mu_max:
+        vxv_sker = True
+    else:
+        vxv_sker = False
+
+    return vxv_sker
 
 
 """
@@ -830,8 +1006,492 @@ def compton_vinkel_och_energiförlust(foton_energi):
 """
 ----------------------------------------------------------------------
 ----------------------------------------------------------------------
-
-
+SIMULERING
+Simuleringskod som sammanställer alla ovan nämnda avsnitt.
 ----------------------------------------------------------------------
 ----------------------------------------------------------------------
 """
+
+
+def run_MC_multiprocess(args):
+    (start, end, tvärsnitt_file, attenueringsdata_file, anatomidefinitioner_file, slicad_fantom_matris,
+     slicad_njure_matris, slicad_benmärg_matris, voxel_sidlängd, radionuklid_energi, radionuklid_intensitet,
+     radionuklid_sannolikhet) = args
+
+    #   ----------------------------------------------------------------------
+    #   Läs in data
+    #   ----------------------------------------------------------------------
+    df_attenueringsdata = pd.read_excel(attenueringsdata_file, index_col=None)
+    df_anatomidefinitioner = pd.read_excel(anatomidefinitioner_file, index_col=None)
+    df_tvärsnitt = pd.read_excel(tvärsnitt_file, index_col=None)
+
+    # Matrisdimensionerna, viktigt för att bedöma ifall fotonen är innanför matrisen eller inte.
+    x_size, y_size, z_size = slicad_fantom_matris.shape
+
+    # Skapa tom matris, för att sedan fylla på med energideponering i voxklarna.
+    benmärg_matris_deponerad_energi = np.zeros((x_size, y_size, z_size))
+
+    #   ----------------------------------------------------------------------
+    #   Håll reda på vad som händer när koden körs
+    #   ----------------------------------------------------------------------
+    utanför_fantom = 0
+    vxv_foto = 0
+    träff_benmärg = 0
+
+    #   ----------------------------------------------------------------------
+    #   Loopar igenom alla iterationer
+    #   ----------------------------------------------------------------------
+    for i in range(start, end):
+
+        # Initiera loopen med att attenuerad = 0.
+        attenuerad = 0
+        # print(i)
+
+        # Start: sampla position, riktning och energi
+        foton_energi = energi_start(radionuklid_energi, radionuklid_sannolikhet)
+        x_start, y_start, z_start = position_start(slicad_njure_matris)
+        theta, phi = riktning_uniform()
+
+        voxelvärde = slicad_fantom_matris[x_start, y_start, z_start]
+        instans = attenueringsdata(voxelvärde, foton_energi, df_attenueringsdata, df_anatomidefinitioner)
+        mu_max = instans.mu_max()
+
+        vxv_sker = False
+        while vxv_sker == False:
+            # Sampla medelvägslängden från inverstransformerad attenueringsfunktion.
+            steglängd = medelvägslängd(mu_max)
+            # print(f'steglängd: {steglängd}')
+
+            # Gå steget till ny position från startpositionen i startriktningen.
+            # Eftersom voxlarna har diskreta positioner måste avrundning till närmaste heltal göras.
+            dx, dy, dz = steg(theta, phi, steglängd)
+            x, y, z, x_round, y_round, z_round = förflyttning(x_start, y_start, z_start, dx, dy, dz)
+
+            #   ----------------------------------------------------------------------
+            #   Om foton hamnar utanför fantommatrisen -> kasta ut foton ur loopen
+            #   Ekvationen förekommer nedan efter varje nytt steg tas, dock utan if-statement.
+            #   ----------------------------------------------------------------------
+
+            attenuerad, utanför_fantom = bestäm_om_attenuerad(x_round, y_round, z_round, x_size, y_size, z_size,
+                                                              utanför_fantom, slicad_fantom_matris, foton_energi)
+
+            if attenuerad == 0:
+                voxelvärde = slicad_fantom_matris[x_round, y_round, z_round]
+
+                vxv_sker = bestäm_om_vxv(voxelvärde, foton_energi, mu_max, df_attenueringsdata,
+                                         df_anatomidefinitioner)
+            else:
+                # utanför matris
+                vxv_sker = True
+
+        # Kanske kolla om den fortsätter eller vxv?
+
+        if attenuerad == 1:
+            i += 1
+
+        else:
+
+            #   ----------------------------------------------------------------------
+            #   Loopa under tiden som fotonen inte attenuerats och fortfarande är i matrisen.
+            #   ----------------------------------------------------------------------
+            while attenuerad == 0:
+                # print('steglängd: ', steglängd)
+
+                # Identifiera vilken voxel fotonen befinner sig i.
+                voxelvärde = slicad_fantom_matris[x_round, y_round, z_round]
+                instans = attenueringsdata(voxelvärde, foton_energi, df_attenueringsdata, df_anatomidefinitioner)
+                mu_max = instans.mu_max()
+
+                # Bestäm vilken typ av växelverkan som sker vid nya positionen.
+                instans = växelverkan(foton_energi, df_tvärsnitt)
+                vxv = instans.bestäm_växelverkan()
+                # print(f'energi: {foton_energi * 10 ** (-3)} keV, vxv: {vxv}')
+
+                #   ----------------------------------------------------------------------
+                #   Fotoabsorption.
+                #   ----------------------------------------------------------------------
+                if vxv == 'foto':
+                    vxv_foto += 1
+
+                    # Bestäm om fluorescens sker eller inte.
+                    energi_deponering, attenuerad = foto_vxv(foton_energi)
+                    foton_energi = foton_energi - energi_deponering
+
+                    # Registrera energideponering ifall fotonen växelverkar i en voxel med benmärg.
+                    if slicad_benmärg_matris[x_round, y_round, z_round] != 0:
+                        träff_benmärg += 1
+
+                        benmärg_matris_deponerad_energi[x_round, y_round, z_round] += energi_deponering
+
+                        print(
+                            f'foto: {energi_deponering:.0f} eV i voxel [{x_round, y_round, z_round}]')
+
+                    # Om fluorescens sker -> följ ny foton.
+                    if attenuerad == 0:
+                        # Sampla spridningsvinklar (uniformt samplade).
+                        theta_foto, phi_foto = riktning_uniform()
+
+                        vxv_sker = False
+                        while vxv_sker == False:
+                            # Sampla medelvägslängden från inverstransformerad attenueringsfunktion.
+                            steglängd_foto = medelvägslängd(mu_max)
+
+                            dx, dy, dz = steg(theta, phi, steglängd_foto)
+                            x, y, z, x_round, y_round, z_round = förflyttning(x, y, z, dx, dy, dz)
+
+                            # Om foton hamnar utanför fantommatrisen -> kasta ut foton ur loopen.
+                            attenuerad, utanför_fantom = bestäm_om_attenuerad(x_round, y_round, z_round, x_size, y_size,
+                                                                              z_size, utanför_fantom,
+                                                                              slicad_fantom_matris,
+                                                                              foton_energi)
+
+                            if attenuerad == 0:
+                                voxelvärde = slicad_fantom_matris[x_round, y_round, z_round]
+
+                                vxv_sker = bestäm_om_vxv(voxelvärde, foton_energi, mu_max, df_attenueringsdata,
+                                                         df_anatomidefinitioner)
+                            else:
+                                vxv_sker = True
+
+                        # Ingångsvärden till koordinat-transformeringen som behöver genomföras ifall växelverkan = compton eller rayleigh.
+                        theta, phi = theta_foto, phi_foto
+                        steglängd = steglängd_foto
+
+                #   ----------------------------------------------------------------------
+                #   Comptonspridning.
+                #   ----------------------------------------------------------------------
+                elif vxv == 'compton':
+
+                    # Sampla spridningsvinklar, samt energideponeringen vid Comptonväxelverkan.
+                    theta_compton, foton_energi, energideponering_compton = compton_vinkel_och_energiförlust(
+                        foton_energi)
+                    phi_compton = 2 * pi * np.random.rand()
+
+                    # Registrera energideponering ifall fotonen växelverkar i en voxel med benmärg.
+                    if slicad_benmärg_matris[x_round, y_round, z_round] != 0:
+                        träff_benmärg += 1
+
+                        benmärg_matris_deponerad_energi[x_round, y_round, z_round] += energideponering_compton
+
+                        print(
+                            f'compton: {energideponering_compton:.0f} eV i voxel [{x_round, y_round, z_round}]')
+
+                    vxv_sker = False
+                    while vxv_sker == False:
+                        # Sampla medelvägslängden från inverstransformerad attenueringsfunktion.
+                        steglängd_compton = medelvägslängd(mu_max)
+
+                        # Koordinattransformation, eftersom spridningsvinklarna för Comptonspridning inte kan samplas uniformt.
+                        dx_compton, dy_compton, dz_compton = ny_steg_transformera_koordinatsystem_3d(steglängd, phi,
+                                                                                                     theta,
+                                                                                                     steglängd_compton,
+                                                                                                     phi_compton,
+                                                                                                     theta_compton)
+
+                        # Ta ett nytt steg.
+                        x, y, z, x_round, y_round, z_round = förflyttning(x, y, z, dx_compton, dy_compton, dz_compton)
+
+                        # Om foton hamnar utanför fantommatrisen -> kasta ut foton ur loopen.
+                        attenuerad, utanför_fantom = bestäm_om_attenuerad(x_round, y_round, z_round, x_size, y_size,
+                                                                          z_size,
+                                                                          utanför_fantom, slicad_fantom_matris,
+                                                                          foton_energi)
+
+                        if attenuerad == 0:
+                            voxelvärde = slicad_fantom_matris[x_round, y_round, z_round]
+
+                            vxv_sker = bestäm_om_vxv(voxelvärde, foton_energi, mu_max, df_attenueringsdata,
+                                                     df_anatomidefinitioner)
+                        else:
+                            vxv_sker = True
+
+                    # Ingångsvärden till koordinat-transformeringen (om nästa växelverkan är Comptonspridning eller Rayleighspridning).
+                    theta, phi = theta_compton, phi_compton
+                    steglängd = steglängd_compton
+
+                #   ----------------------------------------------------------------------
+                #   Rayleighspridning.
+                #   ----------------------------------------------------------------------
+                elif vxv == 'rayleigh':
+
+                    # Sampla spridningsvinklar och steglängd.
+                    theta_rayleigh = np.arccos(-1 + 2 * np.random.rand())  # ERSÄTT MED THOMSON TVÄRSNITT
+                    phi_rayleigh = 2 * pi * np.random.rand()
+
+                    vxv_sker = False
+                    while vxv_sker == False:
+                        # Sampla medelvägslängden från inverstransformerad attenueringsfunktion.
+                        steglängd_rayleigh = medelvägslängd(mu_max)
+
+                        # Koordinattransformation, eftersom spridningsvinklarna för Rayleighspridning inte kan samplas uniformt.
+                        dx_rayleigh, dy_rayleigh, dz_rayleigh = ny_steg_transformera_koordinatsystem_3d(
+                            steglängd,
+                            phi,
+                            theta,
+                            steglängd_rayleigh,
+                            phi_rayleigh,
+                            theta_rayleigh)
+
+                        # Ta ett nytt steg.
+                        x, y, z, x_round, y_round, z_round = förflyttning(x, y, z, dx_rayleigh, dy_rayleigh,
+                                                                          dz_rayleigh)
+
+                        # Om foton hamnar utanför fantommatrisen -> kasta ut foton ur loopen.
+                        attenuerad, utanför_fantom = bestäm_om_attenuerad(x_round, y_round, z_round, x_size, y_size,
+                                                                          z_size,
+                                                                          utanför_fantom, slicad_fantom_matris,
+                                                                          foton_energi)
+
+                        if attenuerad == 0:
+                            voxelvärde = slicad_fantom_matris[x_round, y_round, z_round]
+
+                            vxv_sker = bestäm_om_vxv(voxelvärde, foton_energi, mu_max, df_attenueringsdata,
+                                                     df_anatomidefinitioner)
+                        else:
+                            vxv_sker = True
+
+                    # Ingångsvärden till koordinat-transformeringen (om nästa växelverkan är Comptonspridning eller Rayleighspridning).
+                    theta, phi = theta_rayleigh, phi_rayleigh
+                    steglängd = steglängd_rayleigh
+
+    # Några print statements, för att hålla reda på vad som händer när koden kör.
+    print(f'max värdet av matrisen: {np.max(benmärg_matris_deponerad_energi)}')
+    print(f'utanför: {utanför_fantom}')
+    print(f'foto: {vxv_foto}')
+    print(f'träffar: {träff_benmärg}')
+
+    return benmärg_matris_deponerad_energi
+
+
+def inputs_riktig_körning():
+    print(
+        '\n----------------------------------------------------------------------\nDags att ange parametrar.\n----------------------------------------------------------------------\n')
+    print('Standard eller inte?')
+    input_standard = input('\nOm standard: s, Annars: vad som helst: ')
+
+    if input_standard == 's':
+        antal_cores = 8
+        iterationer_dummy = 10 ** 3
+        iterationer_tot = 10 ** 5
+
+    else:
+        print(
+            '\n----------------------------------------------------------------------\nVIKTIGT:\n----------------------------------------------------------------------\nAnge antal processor kärnor')
+        input_antal_cores = input('Antal kärnor: ')
+
+        if eval(input_antal_cores) > 8:
+            antal_cores = 1
+        else:
+            antal_cores = eval(input_antal_cores)
+
+        print(
+            '\n----------------------------------------------------------------------\nDUMMY:\n----------------------------------------------------------------------\nAnge magnitud: ex 3 -> 10^3 iterationer')
+        input_dummy_magnitud_iterationer = input('Magnitud: ')
+
+        if eval(input_dummy_magnitud_iterationer) > 4:
+            iterationer_dummy = 10 ** 3
+        else:
+            iterationer_dummy = 10 ** (eval(input_dummy_magnitud_iterationer))
+
+        print(
+            '\n----------------------------------------------------------------------\nRIKTIG:\n----------------------------------------------------------------------\nAnge skalär och magnitud: ex 5 och 5 -> 5 * 10^5 iterationer')
+        input_riktig_skalär_iterationer = input('Skalär: ')
+        input_riktig_magnitud_iterationer = input('Magnitud: ')
+
+        if eval(input_riktig_magnitud_iterationer) >= 8:
+            iterationer_tot = 10 ** 3
+        else:
+            iterationer_tot = eval(input_riktig_skalär_iterationer) * 10 ** (
+                eval(input_riktig_magnitud_iterationer))
+
+    print('antal_cores, iterationer_dummy, iterationer_tot: ', antal_cores, iterationer_dummy, iterationer_tot)
+    return antal_cores, iterationer_dummy, iterationer_tot
+
+
+def spara_resultat(matris, json_object):
+    print(
+        '\n----------------------------------------------------------------------\nDags att sparan resultaten i en matris.\n----------------------------------------------------------------------\n')
+    print(
+        'Om du anger namn: skriver du "text" utan citattecken kommer filerna \n[resultat_text.npy] och [inputs_text.json] \nskapas.')
+    input_spara_resultat = input('\nVar vill du spara matrisen? Om standard: s, Annars: ange namn: ')
+
+    if input_spara_resultat == 's':
+        fil_namn_npy = 'resultat_multiprocess.npy'
+        # Spara resultatmatrisen i en numpy fil, som sedan går att visualisera i en separat fil.
+        np.save(fil_namn_npy, matris)
+
+        fil_namn_json = 'inputs_resultat_multiprocess.json'
+        with open(fil_namn_json, 'w') as f:
+            f.write(json_object)
+            f.close()
+    else:
+        fil_namn_npy = 'resultat_' + input_spara_resultat + '.npy'
+        np.save(fil_namn_npy, matris)
+
+        fil_namn_json = 'inputs_' + input_spara_resultat + '.json'
+        with open(fil_namn_json, 'w') as f:
+            f.write(json_object)
+            f.close()
+
+    return print(f'Resultat sparade i filerna [{fil_namn_npy}] och [{fil_namn_json}]')
+
+
+if __name__ == "__main__":
+    radionuklid_energi = Lu177_energi
+    radionuklid_intensitet = Lu177_intensitet
+    radionuklid_sannolikhet = Lu177_sannolikhet
+
+    antal_cores, iterationer_dummy, iterationer_tot = inputs_riktig_körning()
+
+    dictionary = {
+        "antal_cores": antal_cores,
+        "iterationer_dummy": iterationer_dummy,
+        "iterationer_tot": iterationer_tot
+    }
+
+    json_object = json.dumps(dictionary)
+
+    #   ----------------------------------------------------------------------
+    #   Dummy run - för att snabba på den riktiga körningen av koden.
+    #   ----------------------------------------------------------------------
+    print(
+        '\n----------------------------------------------------------------------\nDUMMY RUN\n----------------------------------------------------------------------\n')
+    start = time.time()
+
+    # Lite kod för att dela upp arbetet i flera processer, fördelat på olika processor-kärnor.
+    chunk_storlek = iterationer_dummy // antal_cores
+    chunk_ranges = [(i * chunk_storlek, (i + 1) * chunk_storlek) for i in range(antal_cores)]
+    chunk_ranges[-1] = (chunk_ranges[-1][0], iterationer_dummy)
+
+    # Inbakade argument för funktionen.
+    args_packed = [(start, end, tvärsnitt_file, attenueringsdata_file, anatomidefinitioner_file, slicad_fantom_matris,
+                    slicad_njure_matris, slicad_benmärg_matris, voxel_sidlängd, radionuklid_energi,
+                    radionuklid_intensitet, radionuklid_sannolikhet) for start, end in chunk_ranges]
+
+    with mp.Pool(antal_cores) as pool:
+        partial_results = pool.map(run_MC_multiprocess, args_packed)
+
+    end_time(start)
+
+    #   ----------------------------------------------------------------------
+    #   Riktig körning.
+    #   ----------------------------------------------------------------------
+    print(
+        '\n----------------------------------------------------------------------\nACTUAL RUN\n----------------------------------------------------------------------\n')
+    start = time.time()
+
+    # Samma multiprocess-kod som ovan.
+    chunk_storlek = iterationer_tot // antal_cores
+    chunk_ranges = [(i * chunk_storlek, (i + 1) * chunk_storlek) for i in range(antal_cores)]
+    chunk_ranges[-1] = (chunk_ranges[-1][0], iterationer_tot)
+
+    # Samma argument, skillnaden är antalet iterationer (fotoner).
+    args_packed = [(start, end, tvärsnitt_file, attenueringsdata_file, anatomidefinitioner_file, slicad_fantom_matris,
+                    slicad_njure_matris, slicad_benmärg_matris, voxel_sidlängd, radionuklid_energi,
+                    radionuklid_intensitet, radionuklid_sannolikhet) for start, end in chunk_ranges]
+
+    with mp.Pool(antal_cores) as pool:
+        partial_results = pool.map(run_MC_multiprocess, args_packed)
+
+    # Summera resultatmatriserna från respektive process.
+    benmärg_matris_deponerad_energi = np.sum(partial_results, axis=0)
+
+    end_time(start)
+
+    spara_resultat(benmärg_matris_deponerad_energi, json_object)
+
+"""
+----------------------------------------------------------------------
+----------------------------------------------------------------------
+VISUALISERING AV RESULTATEN
+Visualiserar resultatmatrin, samt skapar en kapad resultatmatris.
+Beräknar absorberad dos per sönderfall.
+----------------------------------------------------------------------
+----------------------------------------------------------------------
+"""
+
+
+def visualisera_resultat():
+    print(
+        '\n----------------------------------------------------------------------\nVilka resultat vill du visualisera?\n----------------------------------------------------------------------\n')
+    print(
+        'Om du anger namn: skriver du "text" utan citattecken kommer filerna \n[resultat_text.npy] och [inputs_text.json] \nvisualiseras.')
+    input_resultat = input('\nOm senaste körning: s, Annars ange namn på filerna: ')
+
+    if input_resultat == 's':
+        fil_namn_npy = 'resultat_multiprocess.npy'
+
+        resultat_matris = np.load(fil_namn_npy)
+        visualisera = visualisera_matris(resultat_matris, visa_något=True)
+        visualisera.show()
+
+        slicad_resultat_matris = resultat_matris[105:160, 80:, 140:630]
+        visualisera = visualisera_matris(slicad_resultat_matris, visa_något=True)
+        visualisera.show()
+
+        fil_namn_json = 'inputs_upg1_multiprocess.json'
+
+        with (open(fil_namn_json, 'r') as f):
+            json_object = json.load(f)
+            iterationer_tot = json_object['iterationer_tot']
+            print('\niterationer_tot: ', iterationer_tot)
+            f.close()
+
+    else:
+        fil_namn_npy = 'resultat_' + input_resultat + '.npy'
+
+        resultat_matris = np.load(fil_namn_npy)
+        visualisera = visualisera_matris(resultat_matris, visa_något=True)
+        visualisera.show()
+
+        slicad_resultat_matris = resultat_matris[105:160, 80:, 140:630]
+        visualisera = visualisera_matris(slicad_resultat_matris, visa_något=True)
+        visualisera.show()
+
+        fil_namn_slicad_npy = 'resultat_' + input_resultat + '_slicad.npy'
+
+        np.save(fil_namn_slicad_npy, slicad_resultat_matris)
+
+        fil_namn_json = 'inputs_' + input_resultat + '.json'
+
+        with (open(fil_namn_json, 'r') as f):
+            json_object = json.load(f)
+            iterationer_tot = json_object['iterationer_tot']
+            print('\niterationer_tot: ', iterationer_tot)
+            f.close()
+
+    return print(
+        f'BENMÄRG: Energideponering per foton (eV / sönderfall): {np.sum(resultat_matris) / iterationer_tot:.1f} \nRYGGRAD: Energideponering per fotoN (eV / sönderfall): {np.sum(slicad_resultat_matris) / iterationer_tot:.1f}')
+
+
+def visualisera_resultat_slicade():
+    print(
+        '\n----------------------------------------------------------------------\nVilka slicade resultat vill du visualisera?\n----------------------------------------------------------------------\n')
+    print(
+        'Om du anger namn: skriver du "text" utan citattecken kommer filerna \n[resultat_text_slicade.npy] och [inputs_text.json] \nvisualiseras.')
+    input_resultat = input('\nAnge namn på filerna: ')
+
+    fil_namn_npy = 'resultat_' + input_resultat + '_slicad.npy'
+
+    resultat_matris = np.load(fil_namn_npy)
+    visualisera = visualisera_matris(resultat_matris, visa_något=True)
+    visualisera.show()
+
+    fil_namn_json = 'inputs_' + input_resultat + '.json'
+
+    with (open(fil_namn_json, 'r') as f):
+        json_object = json.load(f)
+        iterationer_tot = json_object['iterationer_tot']
+        print('\niterationer_tot: ', iterationer_tot)
+        f.close()
+
+    return print(
+        f'BENMÄRG: Energideponering per foton (eV / sönderfall): {np.sum(resultat_matris) / iterationer_tot:.1f} \nRYGGRAD: Energideponering per fotoN (eV / sönderfall): {np.sum(resultat_matris) / iterationer_tot:.1f}')
+
+
+#   ----------------------------------------------------------------------
+#   VISUALISERA RESULTATEN FRÅN upg1_sammanställt
+#   ----------------------------------------------------------------------
+if __name__ == "__main__":
+    # visualisera_resultat()
+    visualisera_resultat_slicade()
