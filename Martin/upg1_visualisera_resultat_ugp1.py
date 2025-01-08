@@ -78,6 +78,7 @@ if __name__ == "__main__":
     print(f'ryggrad benmärg eV / decay: ', np.sum(ryggrad_matris_deponerad) / iterationer_tot)
     """
 
+    """
     # np.save('resultat_5_E6', ryggrad_matris_deponerad)
 
     resultat_5_E6 = np.load('resultat_5_E6.npy')

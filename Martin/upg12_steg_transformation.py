@@ -43,12 +43,12 @@ def ny_steg_transformera_koordinatsystem_3d(steg_A_B, phi_A, theta_A, steg_B_C, 
         ], dtype=np.float64)
 
     # för att x-axeln ska sammanfalla med riktningsvektorn måste rotationsvinkeln vara pi/2 - theta
-    angle = pi / 2 - theta_A
+    angle = -(pi / 2 - theta_A)
     R_y = np.array(
         [
-            [np.cos(angle), 0, -np.sin(angle)],
+            [np.cos(angle), 0, np.sin(angle)],
             [0, 1, 0],
-            [np.sin(angle), 0, np.cos(angle)],
+            [-np.sin(angle), 0, np.cos(angle)],
         ], dtype=np.float64)
 
     # först rotation i theta (y-axeln), sedan rotation i phi (z-axeln)

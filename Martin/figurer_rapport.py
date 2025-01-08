@@ -148,12 +148,12 @@ def transformera_koordinatsystem_extended(steg_A_B, phi_A, theta_A, steg_B_C, ph
     #     ])
 
     # för att x-axeln ska sammanfalla med riktningsvektorn måste rotationsvinkeln vara pi/2 - theta
-    angle = pi / 2 - theta_A
+    angle = -(pi / 2 - theta_A)
     R_y = np.array(
         [
-            [np.cos(angle), 0, -np.sin(angle)],
+            [np.cos(angle), 0, np.sin(angle)],
             [0, 1, 0],
-            [np.sin(angle), 0, np.cos(angle)],
+            [-np.sin(angle), 0, np.cos(angle)],
         ])
 
     # R_y = np.identity(3)
@@ -287,8 +287,8 @@ if __name__ == "__main__":
 
     # steg 1: från A till B
     theta_A = 3 * pi / 8
-    phi_A = 1 * pi / 8
-    steg_A_B = 3
+    phi_A = 1.5 * pi / 8
+    steg_A_B = 1.5
 
     # steg 2: Från B till C, enligt koordinatsystemet för B
     theta_B = pi / 3
@@ -338,6 +338,7 @@ if __name__ == "__main__":
 
     font_size = 15
 
+    """
     fig = plt.figure(figsize=(10, 10))
     ax = plt.axes(projection='3d')
     ax.set_xlim([0.5, 5])
@@ -422,6 +423,114 @@ if __name__ == "__main__":
     ax.legend(fontsize=font_size)
     plt.savefig('3d_fig_2')
     plt.show()
+
+    """
+    # KOPIA FÖR ATT GÖRA FIGUR
+    fig = plt.figure(figsize=(10, 10))
+    ax = plt.axes(projection='3d')
+    ax.set_xlim([0.5, 2])
+    ax.set_ylim([0.5, 2])
+    ax.set_zlim([0.5, 2])
+
+    ax.scatter(x_start, y_A, z_A, label='A', color='black', s=100)
+    # ax.scatter(x_start + dx_A_B, y_A + dy_A_B, z_A + dz_A_B, label='B', color='dimgrey', s=100)
+    # ax.scatter(x_A + x_A_C, y_A + y_A_C, z_A + z_A_C, label='C', color='slategrey', s=100)
+
+    # Enhetsvektorer
+    ax.quiver(x_A, y_A, z_A, 1, 0, 0, color='red')
+    ax.quiver(x_A, y_A, z_A, 0, 1, 0, color='lightcoral')
+    ax.quiver(x_A, y_A, z_A, 0, 0, 1, color='brown')
+
+    # ax.quiver(x_A + dx_A_B, y_A + dy_A_B, z_A + dz_A_B, enhets_vektorer_B[0, 0], enhets_vektorer_B[1, 0],
+    #           enhets_vektorer_B[2, 0],
+    #           color='red')
+    # ax.quiver(x_A + dx_A_B, y_A + dy_A_B, z_A + dz_A_B, enhets_vektorer_B[0, 1], enhets_vektorer_B[1, 1],
+    #           enhets_vektorer_B[2, 1],
+    #           color='lightcoral')
+    # ax.quiver(x_A + dx_A_B, y_A + dy_A_B, z_A + dz_A_B, enhets_vektorer_B[0, 2], enhets_vektorer_B[1, 2],
+    #           enhets_vektorer_B[2, 2],
+    #           color='brown')
+
+    # ax.quiver(x_A, y_A, z_A, enhets_vektorer_B[0, 0], enhets_vektorer_B[1, 0],
+    #           enhets_vektorer_B[2, 0],
+    #           color='blue')
+    # ax.quiver(x_A, y_A, z_A, enhets_vektorer_B[0, 1], enhets_vektorer_B[1, 1],
+    #           enhets_vektorer_B[2, 1],
+    #           color='mediumslateblue')
+    # ax.quiver(x_A, y_A, z_A, enhets_vektorer_B[0, 2], enhets_vektorer_B[1, 2],
+    #           enhets_vektorer_B[2, 2],
+    #           color='royalblue')
+
+    ax.quiver(x_A, y_A, z_A, dx_A_B, dy_A_B, dz_A_B, color='blue', label='första steget, A-> B')
+    # ax.quiver(x_A + dx_A_B, y_A + dy_A_B, z_A + dz_A_B, (x_A_C - dx_A_B), (y_A_C - dy_A_B), (z_A_C - dz_A_B),
+    #           color='darkviolet',
+    #           label='andra steget, B->C (steg tas utifrån B\'s koordinatsystem')
+    # ax.quiver(x_A, y_A, z_A, x_A_C, y_A_C, z_A_C, color='magenta', label='steg A -> C i A\'s koordinatsystem')
+
+    ax.set_xlabel('x')
+    ax.set_ylabel('y')
+    ax.set_zlabel('z')
+
+    ax.azim, ax.elev = -115, 30
+
+    plt.tight_layout()
+    ax.legend(fontsize=font_size)
+    plt.savefig('3d_fig_rotation_0')
+    plt.show()
+
+    fig = plt.figure(figsize=(10, 10))
+    ax = plt.axes(projection='3d')
+    ax.set_xlim([0.5, 2])
+    ax.set_ylim([0.5, 2])
+    ax.set_zlim([0.5, 2])
+
+    ax.scatter(x_start, y_A, z_A, label='A', color='black', s=100)
+    # ax.scatter(x_start + dx_A_B, y_A + dy_A_B, z_A + dz_A_B, label='B', color='dimgrey', s=100)
+    # ax.scatter(x_A + x_A_C, y_A + y_A_C, z_A + z_A_C, label='C', color='slategrey', s=100)
+
+    # Enhetsvektorer
+    # ax.quiver(x_A, y_A, z_A, 1, 0, 0, color='red')
+    # ax.quiver(x_A, y_A, z_A, 0, 1, 0, color='lightcoral')
+    # ax.quiver(x_A, y_A, z_A, 0, 0, 1, color='brown')
+
+    # ax.quiver(x_A + dx_A_B, y_A + dy_A_B, z_A + dz_A_B, enhets_vektorer_B[0, 0], enhets_vektorer_B[1, 0],
+    #           enhets_vektorer_B[2, 0],
+    #           color='red')
+    # ax.quiver(x_A + dx_A_B, y_A + dy_A_B, z_A + dz_A_B, enhets_vektorer_B[0, 1], enhets_vektorer_B[1, 1],
+    #           enhets_vektorer_B[2, 1],
+    #           color='lightcoral')
+    # ax.quiver(x_A + dx_A_B, y_A + dy_A_B, z_A + dz_A_B, enhets_vektorer_B[0, 2], enhets_vektorer_B[1, 2],
+    #           enhets_vektorer_B[2, 2],
+    #           color='brown')
+
+    ax.quiver(x_A, y_A, z_A, enhets_vektorer_B[0, 0], enhets_vektorer_B[1, 0],
+              enhets_vektorer_B[2, 0],
+              color='red')
+    ax.quiver(x_A, y_A, z_A, enhets_vektorer_B[0, 1], enhets_vektorer_B[1, 1],
+              enhets_vektorer_B[2, 1],
+              color='lightcoral')
+    ax.quiver(x_A, y_A, z_A, enhets_vektorer_B[0, 2], enhets_vektorer_B[1, 2],
+              enhets_vektorer_B[2, 2],
+              color='brown')
+
+    ax.quiver(x_A, y_A, z_A, dx_A_B, dy_A_B, dz_A_B, color='blue', label='första steget, A-> B')
+    # ax.quiver(x_A + dx_A_B, y_A + dy_A_B, z_A + dz_A_B, (x_A_C - dx_A_B), (y_A_C - dy_A_B), (z_A_C - dz_A_B),
+    #           color='darkviolet',
+    #           label='andra steget, B->C (steg tas utifrån B\'s koordinatsystem')
+    # ax.quiver(x_A, y_A, z_A, x_A_C, y_A_C, z_A_C, color='magenta', label='steg A -> C i A\'s koordinatsystem')
+
+    ax.set_xlabel('x')
+    ax.set_ylabel('y')
+    ax.set_zlabel('z')
+
+    ax.azim, ax.elev = -115, 30
+
+    plt.tight_layout()
+    ax.legend(fontsize=font_size)
+    plt.savefig('3d_fig')
+    plt.show()
+
+
 
 
 
