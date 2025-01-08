@@ -1,6 +1,6 @@
 from imports import *
 
-def Stopping_power_elektron(Elektron_energi): #i MeV för alfa energin
+def Stopping_power_elektron(Elektron_energi): #i MeV för elektron energin
     #Öppnar text filen och läser in varje koloumn
     Data_energi=np.loadtxt('MC_Linnea/Elekt_stoppingpower_data')[:,0]
     Data_stoppingpower=np.loadtxt('MC_Linnea/Elekt_stoppingpower_data')[:,1]
