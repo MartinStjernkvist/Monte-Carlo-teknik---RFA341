@@ -1,0 +1,32 @@
+from imports import *
+
+def Stopping_power_elektron(Elektron_energi): #i MeV för alfa energin
+    #Öppnar text filen och läser in varje koloumn
+    Data_energi=np.loadtxt('MC_Linnea/Elekt_stoppingpower_data')[:,0]
+    Data_stoppingpower=np.loadtxt('MC_Linnea/Elekt_stoppingpower_data')[:,1]
+
+
+    #Tar index för närmaste energi på alfapartikeln
+    diff = np.abs(Data_energi - Elektron_energi)
+    closest_indices = np.argsort(diff)[:2]
+    
+    #Närmsta värdena:
+    energi_close = Data_energi[closest_indices]
+    Stopping_power_close=Data_stoppingpower[closest_indices]
+    
+
+    rho= 0.998 #vattens densitet i g/cm^3
+    #Linjär interpolera och få fram stoppingpower och slumpmässig steglängd
+    if energi_close[1] - energi_close[0] < 10 ** (-15):
+        STP= Stopping_power_close[0]*rho
+        
+
+    else:
+        STP = (Stopping_power_close[0] + (Elektron_energi - energi_close[0]) * (
+                    Stopping_power_close[1] - Stopping_power_close[0]) / (
+                                    energi_close[1] - energi_close[0]))*rho
+        
+  
+    return STP #stp i MeV/cm 
+
+print(Stopping_power_elektron(4))

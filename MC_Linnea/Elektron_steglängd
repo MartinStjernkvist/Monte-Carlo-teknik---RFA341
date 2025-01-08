@@ -36,7 +36,6 @@ def Steglängd_elektron(Elektron_energi): #Energi i MeV
                                     Energi_close[1] - Energi_close[0])
         Tau=np.random.random()*Steglängd
  
-    return Steglängd,Tau
+    return Steglängd-Tau
     
 
-Steglängd_elektron(511)

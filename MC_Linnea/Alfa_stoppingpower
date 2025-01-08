@@ -1,9 +1,9 @@
 from imports import *
 def Stopping_power_och_steglängd(Alfa_energi): #i MeV för alfa energin
     #Öppnar text filen och läser in varje koloumn
-    Data_energi=np.loadtxt('MC_Linnea/Stoppingpower_data')[:,0]
-    Data_stoppingpower=np.loadtxt('MC_Linnea/Stoppingpower_data')[:,1]
-    Data_range=(np.loadtxt('MC_Linnea/Stoppingpower_data')[:,2])
+    Data_energi=np.loadtxt('MC_Linnea/Stoppingpower_data_alfa')[:,0]
+    Data_stoppingpower=np.loadtxt('MC_Linnea/Stoppingpower_data_alfa')[:,1]
+    Data_range=(np.loadtxt('MC_Linnea/Stoppingpower_data_alfa')[:,2])
 
     #Tar index för närmaste energi på alfapartikeln
     diff = np.abs(Data_energi - Alfa_energi)
