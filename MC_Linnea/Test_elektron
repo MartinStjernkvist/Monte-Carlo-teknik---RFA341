@@ -1,0 +1,13 @@
+from imports import *
+#from Elektron_polarvinkel import Elektron_riktning #Ta reda på varför det inte fungerar, är i samma mapp 
+
+#Läser in excelfil med data 
+Data=pd.read_excel(r'given_data/Tvärsnittstabell_Elektroner.xlsx')
+
+#Tar ut varje koloumn med data
+Energi_data=Data['Energy (eV)'].to_list()
+Range_data=Data['Range (g/cm^2)'].to_list()
+
+S=1*10**(-6) #1 um, hitta steglängden för energin i elektronen
+steglängd=np.random.random()*S
+
