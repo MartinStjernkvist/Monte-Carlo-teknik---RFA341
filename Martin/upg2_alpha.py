@@ -37,7 +37,7 @@ def energiförlust_alpha(energi, steg):
 
 @jit(nopython=True)
 def position_start_alpha_innanför(radie_sfär, phi, theta):
-    r = radie_sfär - 0.5 * radie_alpha  # För att inte endast theta = pi ska ge utslag
+    r = radie_sfär * np.random.rand()
 
     x = r * np.sin(theta) * np.cos(phi)
     # y = r * np.sin(theta) * np.sin(phi)
@@ -51,7 +51,8 @@ def position_start_alpha_innanför(radie_sfär, phi, theta):
 
 @jit(nopython=True)
 def position_start_alpha_skal(radie_sfär, phi, theta):
-    r = radie_sfär * np.random.rand()
+    radie_alpha=1.2*10**(-15)*4**(1/3) #radie i meter enligt Physics Handbook
+    r = radie_sfär - 0.5 * radie_alpha  # För att inte endast theta = pi ska ge utslag
 
     x = r * np.sin(theta) * np.cos(phi)
     # y = r * np.sin(theta) * np.sin(phi)
