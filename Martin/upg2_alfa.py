@@ -125,7 +125,7 @@ def run_MC_alpha(iterationer, df_stopping_power, position_start_alpha, radie, ma
     :param max_antal_steg: Maximalt antal steg som steglängden ska delas upp i.
     :return: Summeringen av energideponeringen innanför sfären.
     """
-    
+
     energideponering_summa = 0
     utanför = 0
     start_energi = energi_start(At211_energi, At211_sannolikhet)
