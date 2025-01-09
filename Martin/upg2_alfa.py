@@ -127,7 +127,6 @@ def run_MC_alpha(iterationer, df_stopping_power, position_start_alpha, radie, ma
     """
 
     energideponering_summa = 0
-    utanför = 0
     start_energi = energi_start(At211_energi, At211_sannolikhet)
 
     if position_start_alpha == position_start_alpha_skal:
@@ -151,8 +150,6 @@ def run_MC_alpha(iterationer, df_stopping_power, position_start_alpha, radie, ma
 
         energideponering_summa += energideponering
 
-    print('antal utanför: ', utanför)
-    print('total energideponering: ', energideponering_summa)
     print(f'\nEnergideponering per partikel: {energideponering_summa / iterationer:.2f} eV / partikel')
     return energideponering_summa
 
