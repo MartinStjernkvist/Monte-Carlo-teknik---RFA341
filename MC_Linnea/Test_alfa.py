@@ -1,12 +1,7 @@
-#Monte Carlo Slumpa tal
-
 from imports import *
 #Riktning är uniform för alfa, och kommer gå i samm riktning utan att ändra på vinkeln efter varje kollision
 #from Martin.upg1_sampla_riktning_och_steg_start import riktning_uniform # Går inte att få upp VARFÖÖÖÖR???!!!! AHHHHHHHHHHHHHH
 #from Martin.upg1_sampla_energi_start import energi_start
-
-S=1*10**(-6) #1 um, hitta steglängden för energin i elektronen
-steglängd=np.random.random()*S
 
 #Energi=energi_start(At211_energi,At211_sannolikhet) #Samplar på samma sätt alfa energin som fotonerna, är i MeV
 

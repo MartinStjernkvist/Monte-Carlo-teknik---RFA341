@@ -6,14 +6,12 @@ from upg1_sampla_position_start import position_start
 from upg1_sampla_riktning_och_steg_start import riktning_uniform, steg
 from upg1_sampla_steglängd import medelvägslängd
 from upg1_sampla_växelverkan import växelverkan
-# from upg1_transformation_3d import steg_transformera_koordinatsystem_3d
 from upg1_attenueringsdata import attenueringsdata
 from upg1_sampla_compton import compton_vinkel_och_energiförlust
 from upg1_sampla_foto_vxv import foto_vxv
 from upg1_bestäm_om_attenuerad import bestäm_om_attenuerad
 from upg12_steg_transformation import ny_steg_transformera_koordinatsystem_3d
 from upg12_förflyttning import förflyttning
-
 from upg1_bestäm_om_vxv import bestäm_om_vxv
 
 def run_MC_multiprocess(args):
@@ -268,81 +266,79 @@ def run_MC_multiprocess(args):
     return benmärg_matris_deponerad_energi
 
 
+def inputs_riktig_körning():
+    print('\n----------------------------------------------------------------------\nDags att ange parametrar.\n----------------------------------------------------------------------\n')
+    print('Standard eller inte?')
+    input_standard = input('\nOm standard: s, Annars: vad som helst: ')
+
+    if input_standard == 's':
+        antal_cores = 8
+        iterationer_dummy = 10 ** 3
+        iterationer_tot = 10 ** 5
+
+    else:
+        print(
+            '\n----------------------------------------------------------------------\nVIKTIGT:\n----------------------------------------------------------------------\nAnge antal processor kärnor')
+        input_antal_cores = input('Antal kärnor: ')
+
+        if eval(input_antal_cores) > 8:
+            antal_cores = 1
+        else:
+            antal_cores = eval(input_antal_cores)
+
+        print(
+            '\n----------------------------------------------------------------------\nDUMMY:\n----------------------------------------------------------------------\nAnge magnitud: ex 3 -> 10^3 iterationer')
+        input_dummy_magnitud_iterationer = input('Magnitud: ')
+
+        if eval(input_dummy_magnitud_iterationer) > 4:
+            iterationer_dummy = 10 ** 3
+        else:
+            iterationer_dummy = 10 ** (eval(input_dummy_magnitud_iterationer))
+
+        print(
+            '\n----------------------------------------------------------------------\nRIKTIG:\n----------------------------------------------------------------------\nAnge skalär och magnitud: ex 5 och 5 -> 5 * 10^5 iterationer')
+        input_riktig_skalär_iterationer = input('Skalär: ')
+        input_riktig_magnitud_iterationer = input('Magnitud: ')
+
+        if eval(input_riktig_magnitud_iterationer) >= 8:
+            iterationer_tot = 10 ** 3
+        else:
+            iterationer_tot = eval(input_riktig_skalär_iterationer) * 10 ** (
+                eval(input_riktig_magnitud_iterationer))
+
+    print('antal_cores, iterationer_dummy, iterationer_tot: ', antal_cores, iterationer_dummy, iterationer_tot)
+    return antal_cores, iterationer_dummy, iterationer_tot
+
+def spara_resultat(matris, json_object):
+    print('\n----------------------------------------------------------------------\nDags att sparan resultaten i en matris.\n----------------------------------------------------------------------\n')
+    print('Om du anger namn: skriver du "text" utan citattecken kommer filerna \n[resultat_text.npy] och [inputs_text.json] \nskapas.')
+    input_spara_resultat = input('\nVar vill du spara matrisen? Om standard: s, Annars: ange namn: ')
+
+    if input_spara_resultat == 's':
+        fil_namn_npy = 'resultat_multiprocess.npy'
+        # Spara resultatmatrisen i en numpy fil, som sedan går att visualisera i en separat fil.
+        np.save(fil_namn_npy, matris)
+
+        fil_namn_json = 'inputs_resultat_multiprocess.json'
+        with open(fil_namn_json, 'w') as f:
+            f.write(json_object)
+            f.close()
+    else:
+        fil_namn_npy = 'resultat_' + input_spara_resultat + '.npy'
+        np.save(fil_namn_npy, matris)
+
+        fil_namn_json = 'inputs_' + input_spara_resultat + '.json'
+        with open(fil_namn_json, 'w') as f:
+            f.write(json_object)
+            f.close()
+
+    return print(f'Resultat sparade i filerna [{fil_namn_npy}] och [{fil_namn_json}]')
+
+
 if __name__ == "__main__":
     radionuklid_energi = Lu177_energi
     radionuklid_intensitet = Lu177_intensitet
     radionuklid_sannolikhet = Lu177_sannolikhet
-
-
-    def inputs_riktig_körning():
-        print('\n----------------------------------------------------------------------\nDags att ange parametrar.\n----------------------------------------------------------------------\n')
-        print('Standard eller inte?')
-        input_standard = input('\nOm standard: s, Annars: vad som helst: ')
-
-        if input_standard == 's':
-            antal_cores = 8
-            iterationer_dummy = 10 ** 3
-            iterationer_tot = 10 ** 5
-
-        else:
-            print(
-                '\n----------------------------------------------------------------------\nVIKTIGT:\n----------------------------------------------------------------------\nAnge antal processor kärnor')
-            input_antal_cores = input('Antal kärnor: ')
-
-            if eval(input_antal_cores) > 8:
-                antal_cores = 1
-            else:
-                antal_cores = eval(input_antal_cores)
-
-            print(
-                '\n----------------------------------------------------------------------\nDUMMY:\n----------------------------------------------------------------------\nAnge magnitud: ex 3 -> 10^3 iterationer')
-            input_dummy_magnitud_iterationer = input('Magnitud: ')
-
-            if eval(input_dummy_magnitud_iterationer) > 4:
-                iterationer_dummy = 10 ** 3
-            else:
-                iterationer_dummy = 10 ** (eval(input_dummy_magnitud_iterationer))
-
-            print(
-                '\n----------------------------------------------------------------------\nRIKTIG:\n----------------------------------------------------------------------\nAnge skalär och magnitud: ex 5 och 5 -> 5 * 10^5 iterationer')
-            input_riktig_skalär_iterationer = input('Skalär: ')
-            input_riktig_magnitud_iterationer = input('Magnitud: ')
-
-            if eval(input_riktig_magnitud_iterationer) >= 8:
-                iterationer_tot = 10 ** 3
-            else:
-                iterationer_tot = eval(input_riktig_skalär_iterationer) * 10 ** (
-                    eval(input_riktig_magnitud_iterationer))
-
-        print('antal_cores, iterationer_dummy, iterationer_tot: ', antal_cores, iterationer_dummy, iterationer_tot)
-        return antal_cores, iterationer_dummy, iterationer_tot
-
-    def spara_resultat(matris, json_object):
-        print('\n----------------------------------------------------------------------\nDags att sparan resultaten i en matris.\n----------------------------------------------------------------------\n')
-        print('Om du anger namn: skriver du "text" utan citattecken kommer filerna \n[resultat_text.npy] och [inputs_text.json] \nskapas.')
-        input_spara_resultat = input('\nVar vill du spara matrisen? Om standard: s, Annars: ange namn: ')
-
-        if input_spara_resultat == 's':
-            fil_namn_npy = 'resultat_multiprocess.npy'
-            # Spara resultatmatrisen i en numpy fil, som sedan går att visualisera i en separat fil.
-            np.save(fil_namn_npy, matris)
-
-            fil_namn_json = 'inputs_resultat_multiprocess.json'
-            with open(fil_namn_json, 'w') as f:
-                f.write(json_object)
-                f.close()
-        else:
-            fil_namn_npy = 'resultat_' + input_spara_resultat + '.npy'
-            np.save(fil_namn_npy, matris)
-
-            fil_namn_json = 'inputs_' + input_spara_resultat + '.json'
-            with open(fil_namn_json, 'w') as f:
-                f.write(json_object)
-                f.close()
-
-        return print(f'Resultat sparade i filerna [{fil_namn_npy}] och [{fil_namn_json}]')
-
-
 
     antal_cores, iterationer_dummy, iterationer_tot = inputs_riktig_körning()
 

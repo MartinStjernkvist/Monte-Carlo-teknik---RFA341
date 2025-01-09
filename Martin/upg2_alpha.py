@@ -1,5 +1,6 @@
 from imports import *
-
+from upg1_sampla_energi_start import energi_start
+from MC_Linnea.Alfa_stp_och_RCSDA import Stopping_power_och_steglängd
 
 @jit(nopython=True)
 def riktning_alpha():
@@ -99,9 +100,10 @@ def laddad_partikel_väg(start_energi, start_position, phi, theta, steglängd, r
     return energideponering  # , trajectory
 
 
-def run_MC_alpha(iterationer, df_stopping_power, position_start_alpha, start_energi, radie, max_antal_steg):
+def run_MC_alpha(iterationer, df_stopping_power, position_start_alpha, radie, max_antal_steg):
     energideponering_summa = 0
     utanför = 0
+    start_energi=energi_start(At211_energi,At211_sannolikhet)
 
     if position_start_alpha == position_start_alpha_skal:
 
