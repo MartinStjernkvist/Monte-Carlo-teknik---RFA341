@@ -8,7 +8,7 @@ from Alfa_stp_och_RCSDA import Stopping_power_och_steglängd
 from upg1_sampla_energi_start import energi_start
 
 
-@jit(nopython=True)
+#@jit(nopython=True)
 def riktning_alpha():
     theta = np.arccos(-1 + 2 * np.random.rand())
     phi = 2 * pi * np.random.rand()
@@ -22,13 +22,13 @@ def steglängd_alpha(energi, df_stopping_power):
     return medelvägslängd
 
 """
-@jit(nopython=True)
+#@jit(nopython=True)
 def förflyttning(position_vektor, steg_vektor):
     position_vektor += steg_vektor
     return position_vektor
 
 
-@jit(nopython=True)
+#@jit(nopython=True)
 def energiförlust_alpha(energi, steg):
     # Implementera stopping power
     # print('WIP')
@@ -43,7 +43,7 @@ def energiförlust_alpha(energi, steg):
     return energi
 
 
-@jit(nopython=True)
+#@jit(nopython=True)
 def position_start_alpha_innanför(radie_sfär, phi, theta):
     r = radie_sfär * np.random.rand()
 
@@ -57,7 +57,7 @@ def position_start_alpha_innanför(radie_sfär, phi, theta):
     return position_vektor
 
 
-@jit(nopython=True)
+#@jit(nopython=True)
 def position_start_alpha_skal(radie_sfär, phi, theta):
     radie_alpha=1.2*10**(-15)*4**(1/3) #radie i meter enligt Physics Handbook
     r = radie_sfär - 0.5 * radie_alpha  # För att inte endast theta = pi ska ge utslag
@@ -72,7 +72,7 @@ def position_start_alpha_skal(radie_sfär, phi, theta):
     return position_vektor
 
 
-@jit(nopython=True)
+#@jit(nopython=True)
 # @jit(nopython=True)
 def laddad_partikel_väg(start_energi, start_position, phi, theta, steglängd, radie, max_antal_steg=100):
     position_vektor = start_position
@@ -106,7 +106,7 @@ def laddad_partikel_väg(start_energi, start_position, phi, theta, steglängd, r
 
     return energideponering  # , trajectory
 
-@jit(nopython=True)
+#@jit(nopython=True)
 def run_MC_alpha(iterationer, position_start_alpha, radie, max_antal_steg):
     
     energideponering_summa = 0
