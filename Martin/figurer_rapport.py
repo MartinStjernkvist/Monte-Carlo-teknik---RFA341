@@ -275,7 +275,7 @@ if __name__ == "__main__":
     #   ----------------------------------------------------------------------
     #   INPUT
     #   ---------------------------------------------------------------------
-
+    """
     # startpunkt A
     x_start = 1
     y_start = 1
@@ -289,6 +289,26 @@ if __name__ == "__main__":
     theta_A = 3 * pi / 8
     phi_A = 1.5 * pi / 8
     steg_A_B = 1.5
+
+    # steg 2: Från B till C, enligt koordinatsystemet för B
+    theta_B = pi / 3
+    phi_B = pi / 3
+    steg_B_C = 2
+    """
+
+    # startpunkt A
+    x_start = 1
+    y_start = 1
+    z_start = 1
+
+    x_A = x_start
+    y_A = y_start
+    z_A = z_start
+
+    # steg 1: från A till B
+    theta_A = 3 * pi / 8
+    phi_A = 1 * pi / 8
+    steg_A_B = 3
 
     # steg 2: Från B till C, enligt koordinatsystemet för B
     theta_B = pi / 3
@@ -338,16 +358,16 @@ if __name__ == "__main__":
 
     font_size = 15
 
-    """
+
     fig = plt.figure(figsize=(10, 10))
     ax = plt.axes(projection='3d')
     ax.set_xlim([0.5, 5])
     ax.set_ylim([0.5, 4])
     ax.set_zlim([0.5, 4])
 
-    ax.scatter(x_start, y_A, z_A, label='A', color='black', s=100)
-    ax.scatter(x_start + dx_A_B, y_A + dy_A_B, z_A + dz_A_B, label='B', color='dimgrey', s=100)
-    ax.scatter(x_A + x_A_C, y_A + y_A_C, z_A + z_A_C, label='C', color='slategrey', s=100)
+    ax.scatter(x_start, y_A, z_A, label='A', color='black', s=150)
+    ax.scatter(x_start + dx_A_B, y_A + dy_A_B, z_A + dz_A_B, label='B', color='dodgerblue', s=150)
+    ax.scatter(x_A + x_A_C, y_A + y_A_C, z_A + z_A_C,label='C', color='slategrey', s=150)
 
     # Enhetsvektorer
     ax.quiver(x_A, y_A, z_A, 1, 0, 0, color='red')
@@ -367,8 +387,8 @@ if __name__ == "__main__":
     ax.quiver(x_A, y_A, z_A, dx_A_B, dy_A_B, dz_A_B, color='blue', label='första steget, A-> B')
     ax.quiver(x_A + dx_A_B, y_A + dy_A_B, z_A + dz_A_B, (x_A_C - dx_A_B), (y_A_C - dy_A_B), (z_A_C - dz_A_B),
               color='darkviolet',
-              label='andra steget, B->C (steg tas utifrån B\'s koordinatsystem)')
-    ax.quiver(x_A, y_A, z_A, x_A_C, y_A_C, z_A_C, color='magenta',label='steg A -> C i A\'s koordinatsystem)')
+              label='andra steget, B -> C')
+    ax.quiver(x_A, y_A, z_A, x_A_C, y_A_C, z_A_C, color='magenta',label='steg A -> C')
 
     ax.set_xlabel('x')
     ax.set_ylabel('y')
@@ -389,7 +409,7 @@ if __name__ == "__main__":
     ax.set_zlim([0.5, 4])
 
     ax.scatter(x_start, y_A, z_A, label='A', color='black', s=100)
-    ax.scatter(x_start + dx_A_B, y_A + dy_A_B, z_A + dz_A_B, label='B', color='dimgrey', s=100)
+    ax.scatter(x_start + dx_A_B, y_A + dy_A_B, z_A + dz_A_B, label='B', color='dodgerblue', s=100)
     ax.scatter(x_A + x_A_C, y_A + y_A_C, z_A + z_A_C, label='C', color='slategrey', s=100)
 
     # Enhetsvektorer
@@ -410,8 +430,8 @@ if __name__ == "__main__":
     ax.quiver(x_A, y_A, z_A, dx_A_B, dy_A_B, dz_A_B, color='blue', label='första steget, A-> B')
     ax.quiver(x_A + dx_A_B, y_A + dy_A_B, z_A + dz_A_B, (x_A_C - dx_A_B), (y_A_C - dy_A_B), (z_A_C - dz_A_B),
               color='darkviolet',
-              label='andra steget, B->C (steg tas utifrån B\'s koordinatsystem')
-    ax.quiver(x_A, y_A, z_A, x_A_C, y_A_C, z_A_C, color='magenta', label='steg A -> C i A\'s koordinatsystem')
+              label='andra steget, B -> C')
+    ax.quiver(x_A, y_A, z_A, x_A_C, y_A_C, z_A_C, color='magenta', label='steg A -> C')
 
     ax.set_xlabel('x')
     ax.set_ylabel('y')
@@ -529,7 +549,7 @@ if __name__ == "__main__":
     ax.legend(fontsize=font_size)
     plt.savefig('3d_fig')
     plt.show()
-
+"""
 
 
 
