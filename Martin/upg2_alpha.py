@@ -8,14 +8,14 @@ def riktning_alpha():
     phi = 2 * pi * np.random.rand()
     return theta, phi
 
-
+"""
 def steglängd_alpha(energi, df_stopping_power):
     # Avstånd till braggtopp
     # print('WIP')
     medelvägslängd = 10**(-6)
     return medelvägslängd
 
-
+"""
 @jit(nopython=True)
 def förflyttning(position_vektor, steg_vektor):
     position_vektor += steg_vektor
@@ -26,8 +26,9 @@ def förflyttning(position_vektor, steg_vektor):
 def energiförlust_alpha(energi, steg):
     # Implementera stopping power
     # print('WIP')
-
-    energiförlust = energi * 0.1
+    STP,_=Stopping_power_och_steglängd(energi)
+    energiförlust=STP*steg #i MeV
+    #energiförlust = energi * 0.1
     energi -= energiförlust
 
     if energi <= 0:
@@ -116,7 +117,7 @@ def run_MC_alpha(iterationer, df_stopping_power, position_start_alpha, radie, ma
                 energideponering = 0
             else:
                 start_position = position_start_alpha(radie, phi, theta)
-                steglängd = steglängd_alpha(start_position, df_stopping_power)
+                _,steglängd = Stopping_power_och_steglängd(start_energi) #steglängd_alpha(start_position, df_stopping_power)
                 energideponering = laddad_partikel_väg(start_energi, start_position, phi, theta, steglängd, radie,
                                                        max_antal_steg)
 
@@ -124,7 +125,7 @@ def run_MC_alpha(iterationer, df_stopping_power, position_start_alpha, radie, ma
         for i in range(iterationer):
             theta, phi = riktning_alpha()
             start_position = position_start_alpha(radie, phi, theta)
-            steglängd = steglängd_alpha(start_position, df_stopping_power)
+            _,steglängd = Stopping_power_och_steglängd(start_energi) #steglängd_alpha(start_position, df_stopping_power)
             energideponering = laddad_partikel_väg(start_energi, start_position, phi, theta, steglängd, radie,
                                                    max_antal_steg)
 
@@ -169,19 +170,20 @@ if __name__ == "__main__":
     df_stopping_power = pd.read_excel(attenueringsdata_file)
 
     radie_sfär = 300 * 10 ** (-6)
-    start_energi = 10**4
+    
 
     print(
         '\n----------------------------------------------------------------------\nDUMMY\n----------------------------------------------------------------------\n')
 
-    _ = run_MC_alpha(dummy_iterationer, df_stopping_power, position_start_alpha_skal, start_energi, radie_sfär,
+    _ = run_MC_alpha(dummy_iterationer, df_stopping_power, position_start_alpha_skal, radie_sfär,
                                         max_antal_steg)
+    
 
     start = time.time()
 
     print(
         '\n----------------------------------------------------------------------\nRIKTIG\n----------------------------------------------------------------------\n')
-    energideponering_tot_skal = run_MC_alpha(iterationer, df_stopping_power, position_start_alpha_skal, start_energi, radie_sfär, max_antal_steg)
+    energideponering_tot_skal = run_MC_alpha(iterationer, df_stopping_power, position_start_alpha_skal, radie_sfär, max_antal_steg)
 
     end_time(start)
 
@@ -190,13 +192,13 @@ if __name__ == "__main__":
     print(
         '\n----------------------------------------------------------------------\nDUMMY\n----------------------------------------------------------------------\n')
 
-    _ = run_MC_alpha(dummy_iterationer, df_stopping_power, position_start_alpha_innanför, start_energi, radie_sfär,
+    _ = run_MC_alpha(dummy_iterationer, df_stopping_power, position_start_alpha_innanför, radie_sfär,
                                                  max_antal_steg)
 
     start = time.time()
     print(
         '\n----------------------------------------------------------------------\nRIKTIG\n----------------------------------------------------------------------\n')
-    energideponering_tot_innanför = run_MC_alpha(iterationer, df_stopping_power, position_start_alpha_innanför, start_energi, radie_sfär,
+    energideponering_tot_innanför = run_MC_alpha(iterationer, df_stopping_power, position_start_alpha_innanför, radie_sfär,
                                                  max_antal_steg)
 
     end_time(start)
