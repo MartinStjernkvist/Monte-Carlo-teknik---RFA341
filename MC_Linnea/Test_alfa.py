@@ -92,17 +92,19 @@ def laddad_partikel_väg(start_energi, start_position, phi, theta, steglängd, r
 
         # print('steg_vektor', steg_vektor)
         position_vektor += steg_vektor
-        energi = energi - energiförlust_alpha(energi, steg_storlek)
+        energi = energiförlust_alpha(energi, steg_storlek)
 
         if np.dot(position_vektor, position_vektor) <= radie:
             innanför = True
             # trajectory.append(tuple(position_vektor))
-            print(f'Energideponering i position ', position_vektor)
+            #print(f'Energideponering i position ', position_vektor)
+            energideponering = start_energi - energi
+            
         else:
             break
             # print('Partikel utanför sfär!')
 
-    energideponering = start_energi - energi
+    
 
     return energideponering  # , trajectory
 
@@ -140,7 +142,7 @@ def run_MC_alpha(iterationer, position_start_alpha, radie, max_antal_steg):
 
     print('antal utanför: ', utanför)
     print('total energideponering: ', energideponering_summa)
-    print(f'\nEnergideponering per partikel: {energideponering_summa / iterationer:.2f} eV / partikel')
+    print(f'\nEnergideponering per partikel: {energideponering_summa / (iterationer*10**6):.2f} eV / partikel')
     return energideponering_summa
 
 #
@@ -170,7 +172,7 @@ def run_MC_alpha(iterationer, position_start_alpha, radie, max_antal_steg):
 
 
 if __name__ == "__main__":
-    iterationer = 10 ** 2
+    iterationer = 10 ** 3
     dummy_iterationer = 10**2
     max_antal_steg = 10**3
 
