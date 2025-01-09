@@ -30,4 +30,3 @@ def Stopping_power_och_steglängd(Alfa_energi): #i MeV för alfa energin
                                     energi_close[1] - energi_close[0]))/rho
     return STP, Steglängd #stp i MeV/cm och steglängd i cm
 
-print(Stopping_power_och_steglängd(4))

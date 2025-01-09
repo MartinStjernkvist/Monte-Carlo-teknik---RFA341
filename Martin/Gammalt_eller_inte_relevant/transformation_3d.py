@@ -189,7 +189,7 @@ def transformera_koordinatsystem_extended(steg_A_B, phi_A, theta_A, steg_B_C, ph
 
 
 # @jit(nopython=True)
-def steg_transformera_koordinatsystem_3d(steg_A_B, phi_A, theta_A, steg_B_C, phi_B, theta_B):
+def ny_transformera_koordinatsystem(steg_A_B, phi_A, theta_A, steg_B_C, phi_B, theta_B):
     """
     - Börjar på position A[x,y,z]- kalla detta koordinatsystem A.
     - Tar ett steg med steglängd steg_A_B, riktning (phi_A, theta_A), enligt koordinatsystemet i A.
@@ -266,7 +266,7 @@ def steg_transformera_koordinatsystem_3d(steg_A_B, phi_A, theta_A, steg_B_C, phi
 
     # Vill ha vektor B->C
     vektor = np.subtract(vektor_A_C, vektor_A_B)
-    dx, dy, dz = vektor[0][0] / voxel_sidlängd, vektor[1][0] / voxel_sidlängd, vektor[2][0] / voxel_sidlängd
+    dx, dy, dz = vektor[0][0] / voxel_sidlängd, vektor[2][0] / voxel_sidlängd, vektor[3][0] / voxel_sidlängd
 
     return dx, dy, dz
 
@@ -336,94 +336,42 @@ if __name__ == "__main__":
     #   PLOTTNING
     #   ---------------------------------------------------------------------
 
-    font_size = 15
-
     fig = plt.figure(figsize=(10, 10))
     ax = plt.axes(projection='3d')
-    ax.set_xlim([0.5, 5])
-    ax.set_ylim([0.5, 4])
-    ax.set_zlim([0.5, 4])
+    ax.set_xlim([0, 6])
+    ax.set_ylim([0, 6])
+    ax.set_zlim([0, 6])
 
     ax.scatter(x_start, y_A, z_A, label='A', color='black', s=100)
-    ax.scatter(x_start + dx_A_B, y_A + dy_A_B, z_A + dz_A_B, label='B', color='dimgrey', s=100)
-    ax.scatter(x_A + x_A_C, y_A + y_A_C, z_A + z_A_C, label='C', color='slategrey', s=100)
+    ax.scatter(x_start + dx_A_B, y_A + dy_A_B, z_A + dz_A_B, label='B', color='grey', s=100)
+    ax.scatter(x_A + x_A_C, y_A + y_A_C, z_A + z_A_C, label='C', color='purple', s=100)
 
-    # Enhetsvektorer
-    ax.quiver(x_A, y_A, z_A, 1, 0, 0, color='red')
-    ax.quiver(x_A, y_A, z_A, 0, 1, 0, color='lightcoral')
-    ax.quiver(x_A, y_A, z_A, 0, 0, 1, color='brown')
+    ax.quiver(x_A, y_A, z_A, 1, 0, 0, color='orange')
+    ax.quiver(x_A, y_A, z_A, 0, 1, 0, color='brown')
+    ax.quiver(x_A, y_A, z_A, 0, 0, 1, color='green')
 
     ax.quiver(x_A + dx_A_B, y_A + dy_A_B, z_A + dz_A_B, enhets_vektorer_B[0, 0], enhets_vektorer_B[1, 0],
               enhets_vektorer_B[2, 0],
-              color='red')
+              color='orange')
     ax.quiver(x_A + dx_A_B, y_A + dy_A_B, z_A + dz_A_B, enhets_vektorer_B[0, 1], enhets_vektorer_B[1, 1],
               enhets_vektorer_B[2, 1],
-              color='lightcoral')
+              color='brown')
     ax.quiver(x_A + dx_A_B, y_A + dy_A_B, z_A + dz_A_B, enhets_vektorer_B[0, 2], enhets_vektorer_B[1, 2],
               enhets_vektorer_B[2, 2],
-              color='brown')
+              color='green')
 
     ax.quiver(x_A, y_A, z_A, dx_A_B, dy_A_B, dz_A_B, color='blue', label='första steget, A-> B')
     ax.quiver(x_A + dx_A_B, y_A + dy_A_B, z_A + dz_A_B, (x_A_C - dx_A_B), (y_A_C - dy_A_B), (z_A_C - dz_A_B),
-              color='darkviolet',
-              label='andra steget, B->C (steg tas utifrån B\'s koordinatsystem)')
-    ax.quiver(x_A, y_A, z_A, x_A_C, y_A_C, z_A_C, color='magenta',label='steg A -> C i A\'s koordinatsystem)')
+              color='magenta',
+              label='andra steget, B->C')
+    ax.quiver(x_A, y_A, z_A, x_A_C, y_A_C, z_A_C, color='red')
 
     ax.set_xlabel('x')
     ax.set_ylabel('y')
     ax.set_zlabel('z')
 
-    ax.azim, ax.elev = -115, 20
-
-    plt.tight_layout()
-    ax.legend(fontsize=font_size)
-    plt.savefig('3d_fig_1')
+    ax.legend()
     plt.show()
-
-    # KOPIA FÖR ATT GÖRA FIGUR
-    fig = plt.figure(figsize=(10, 10))
-    ax = plt.axes(projection='3d')
-    ax.set_xlim([0.5, 5])
-    ax.set_ylim([0.5, 4])
-    ax.set_zlim([0.5, 4])
-
-    ax.scatter(x_start, y_A, z_A, label='A', color='black', s=100)
-    ax.scatter(x_start + dx_A_B, y_A + dy_A_B, z_A + dz_A_B, label='B', color='dimgrey', s=100)
-    ax.scatter(x_A + x_A_C, y_A + y_A_C, z_A + z_A_C, label='C', color='slategrey', s=100)
-
-    # Enhetsvektorer
-    ax.quiver(x_A, y_A, z_A, 1, 0, 0, color='red')
-    ax.quiver(x_A, y_A, z_A, 0, 1, 0, color='lightcoral')
-    ax.quiver(x_A, y_A, z_A, 0, 0, 1, color='brown')
-
-    ax.quiver(x_A + dx_A_B, y_A + dy_A_B, z_A + dz_A_B, enhets_vektorer_B[0, 0], enhets_vektorer_B[1, 0],
-              enhets_vektorer_B[2, 0],
-              color='red')
-    ax.quiver(x_A + dx_A_B, y_A + dy_A_B, z_A + dz_A_B, enhets_vektorer_B[0, 1], enhets_vektorer_B[1, 1],
-              enhets_vektorer_B[2, 1],
-              color='lightcoral')
-    ax.quiver(x_A + dx_A_B, y_A + dy_A_B, z_A + dz_A_B, enhets_vektorer_B[0, 2], enhets_vektorer_B[1, 2],
-              enhets_vektorer_B[2, 2],
-              color='brown')
-
-    ax.quiver(x_A, y_A, z_A, dx_A_B, dy_A_B, dz_A_B, color='blue', label='första steget, A-> B')
-    ax.quiver(x_A + dx_A_B, y_A + dy_A_B, z_A + dz_A_B, (x_A_C - dx_A_B), (y_A_C - dy_A_B), (z_A_C - dz_A_B),
-              color='darkviolet',
-              label='andra steget, B->C (steg tas utifrån B\'s koordinatsystem')
-    ax.quiver(x_A, y_A, z_A, x_A_C, y_A_C, z_A_C, color='magenta', label='steg A -> C i A\'s koordinatsystem')
-
-    ax.set_xlabel('x')
-    ax.set_ylabel('y')
-    ax.set_zlabel('z')
-
-    ax.azim, ax.elev = -40, 30
-
-    plt.tight_layout()
-    ax.legend(fontsize=font_size)
-    plt.savefig('3d_fig_2')
-    plt.show()
-
-
 
     #   ----------------------------------------------------------------------
     #   INPUT - iteration 2
@@ -512,7 +460,7 @@ if __name__ == "__main__":
     ax.quiver(x_B, y_B, z_B, x_B_D, y_B_D, z_B_D, color='red')
     ax.quiver(0, 0, 0, x_tot, y_tot, z_tot, color='black')
 
-    ax.scatter(x_A, y_A, z_A, label='A', color='black', s=100)
+    ax.scatter(x_start, y_A, z_A, label='A', color='black', s=100)
 
     ax.quiver(x_A + dx_A_B, y_A + dy_A_B, z_A + dz_A_B, enhets_vektorer_B[0, 0], enhets_vektorer_B[1, 0],
               enhets_vektorer_B[2, 0],
@@ -524,10 +472,6 @@ if __name__ == "__main__":
               enhets_vektorer_B[2, 2],
               color='green')
 
-    ax.quiver(x_A, y_A, z_A, 1, 0, 0, color='orange')
-    ax.quiver(x_A, y_A, z_A, 0, 1, 0, color='brown')
-    ax.quiver(x_A, y_A, z_A, 0, 0, 1, color='green')
-
     ax.quiver(x_A, y_A, z_A, dx_A_B, dy_A_B, dz_A_B, color='blue', label='första steget, A-> B')
 
     ax.set_xlabel('x')
@@ -535,4 +479,4 @@ if __name__ == "__main__":
     ax.set_zlabel('z')
 
     ax.legend()
-    # plt.show()
+    plt.show()

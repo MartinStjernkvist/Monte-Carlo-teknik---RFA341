@@ -4,9 +4,48 @@ from imports import *
 #from Martin.upg1_sampla_energi_start import energi_start
 
 #Energi=energi_start(At211_energi,At211_sannolikhet) #Samplar på samma sätt alfa energin som fotonerna, är i MeV
+from Alfa_stp_och_RCSDA import Stopping_power_och_steglängd
+from upg1_sampla_energi_start import energi_start
 
+
+#@jit(nopython=True)
+def riktning_alpha():
+    theta = np.arccos(-1 + 2 * np.random.rand())
+    phi = 2 * pi * np.random.rand()
+    return theta, phi
+
+"""
+def steglängd_alpha(energi, df_stopping_power):
+    # Avstånd till braggtopp
+    # print('WIP')
+    medelvägslängd = 10**(-6)
+    return medelvägslängd
+
+"""
+#@jit(nopython=True)
+def förflyttning(position_vektor, steg_vektor):
+    position_vektor += steg_vektor
+    return position_vektor
+
+
+#@jit(nopython=True)
+def energiförlust_alpha(energi, steg):
+    # Implementera stopping power
+    # print('WIP')
+    STP,_=Stopping_power_och_steglängd(energi)
+    energiförlust=STP*steg #i MeV
+    #energiförlust = energi * 0.1
+    energi -= energiförlust
+
+    if energi <= 0:
+        energi = 0
+
+    return energi
+
+
+#@jit(nopython=True)
 def position_start_alpha_innanför(radie_sfär, phi, theta):
-    r = radie_sfär* np.random.rand()
+    r = radie_sfär * np.random.rand()
 
     x = r * np.sin(theta) * np.cos(phi)
     # y = r * np.sin(theta) * np.sin(phi)
@@ -15,10 +54,12 @@ def position_start_alpha_innanför(radie_sfär, phi, theta):
     z = 0
 
     position_vektor = np.array([x, y, z])
-    return x,y,z # position_vektor
+    return position_vektor
 
+
+#@jit(nopython=True)
 def position_start_alpha_skal(radie_sfär, phi, theta):
-    radie_alpha=1.2*10**(-15)*4**(1/3) #radie i meter
+    radie_alpha=1.2*10**(-15)*4**(1/3) #radie i meter enligt Physics Handbook
     r = radie_sfär - 0.5 * radie_alpha  # För att inte endast theta = pi ska ge utslag
 
     x = r * np.sin(theta) * np.cos(phi)
@@ -27,36 +68,157 @@ def position_start_alpha_skal(radie_sfär, phi, theta):
     y = 0
     z = 0
 
-    #position_vektor = np.array([x, y, z])
-    return x,y,z #position_vektor
-
-import matplotlib.pyplot as plt
-from mpl_toolkits import mplot3d
-fig = plt.figure(1)
-ax = plt.axes(projection='3d')
-Antal_iterationer=100
-
-radie_stor=1*10**-3 # i meter
-radie_liten=300*10**-6 # i meter
-
-def riktning_alpha():
-    theta = np.arccos(-1 + 2 * np.random.rand())
-    phi = 2 * pi * np.random.rand()
-    return theta, phi
-
-theata,phi=riktning_alpha()
-
-for i in range(Antal_iterationer):
-    x,y,z=position_start_alpha_innanför(radie_stor,phi, theata)
-    ax.scatter(x,y,z,color='blue', s=3)
-fig2 = plt.figure(2)
-ax2 = plt.axes(projection='3d') 
-for i in range(Antal_iterationer):
-    ax2.scatter(position_start_alpha_skal(radie_liten,phi,theata),color='green', s=3)
+    position_vektor = np.array([x, y, z])
+    return position_vektor
 
 
-#Visa figur
-plt.show()
+#@jit(nopython=True)
+# @jit(nopython=True)
+def laddad_partikel_väg(start_energi, start_position, phi, theta, steglängd, radie, max_antal_steg=100):
+    position_vektor = start_position
+    energi = start_energi
+
+    # trajectory = [tuple(position_vektor)]
+
+    steg_storlek = steglängd / max_antal_steg
+
+    riktning = np.array([np.sin(theta) * np.cos(phi), np.sin(theta) * np.cos(phi), np.cos(theta)])
+    riktning /= np.linalg.norm(riktning)
+    steg_vektor = riktning * steg_storlek
+
+
+    # Under tiden som partikeln fortfarnade inte tagit hela sitt steg.
+    for i in range(max_antal_steg):
+
+        # print('steg_vektor', steg_vektor)
+        position_vektor += steg_vektor
+        energi = energiförlust_alpha(energi, steg_storlek)
+
+        if np.dot(position_vektor, position_vektor) <= radie:
+            innanför = True
+            # trajectory.append(tuple(position_vektor))
+            #print(f'Energideponering i position ', position_vektor)
+            energideponering = start_energi - energi
+            
+        else:
+            break
+            # print('Partikel utanför sfär!')
+
+    
+
+    return energideponering  # , trajectory
+
+#@jit(nopython=True)
+def run_MC_alpha(iterationer, position_start_alpha, radie, max_antal_steg):
+    
+    energideponering_summa = 0
+    utanför = 0
+    start_energi=energi_start(At211_energi,At211_sannolikhet)
+
+    if position_start_alpha == position_start_alpha_skal:
+
+        for i in range(iterationer):
+            theta, phi = riktning_alpha()
+
+            if not pi / 2 < phi < 3 * pi / 2:
+                # print('Utanför')
+                utanför += 1
+                energideponering = 0
+            else:
+                start_position = position_start_alpha(radie, phi, theta)
+                _,steglängd = Stopping_power_och_steglängd(start_energi) #steglängd_alpha(start_position, df_stopping_power)
+                energideponering = laddad_partikel_väg(start_energi, start_position, phi, theta, steglängd, radie,
+                                                       max_antal_steg)
+
+    else:
+        for i in range(iterationer):
+            theta, phi = riktning_alpha()
+            start_position = position_start_alpha(radie, phi, theta)
+            _,steglängd = Stopping_power_och_steglängd(start_energi) #steglängd_alpha(start_position, df_stopping_power)
+            energideponering = laddad_partikel_väg(start_energi, start_position, phi, theta, steglängd, radie,
+                                                   max_antal_steg)
+
+        energideponering_summa += energideponering
+
+    print('antal utanför: ', utanför)
+    print('total energideponering: ', energideponering_summa)
+    print(f'\nEnergideponering per partikel: {energideponering_summa / (iterationer*10**6):.2f} eV / partikel')
+    return energideponering_summa
+
+#
+# def run_MC_alpha_innanför(iterationer, df_stopping_power, start_energi, radie, max_antal_steg):
+#     energideponering_summa = 0
+#     utanför = 0
+#
+#     for i in range(iterationer):
+#         theta, phi = riktning_alpha()
+#
+#         if not pi / 2 < phi < 3 * pi / 2:
+#             # print('Utanför')
+#             utanför += 1
+#             energideponering = 0
+#         else:
+#             start_position = position_start_alpha_innanför(radie, phi, theta)
+#             steglängd = steglängd_alpha(start_position, df_stopping_power)
+#             energideponering = laddad_partikel_väg(start_energi, start_position, phi, theta, steglängd, radie,
+#                                                    max_antal_steg)
+#
+#         energideponering_summa += energideponering
+#
+#     print('antal utanför: ', utanför)
+#     print('total energideponering: ', energideponering_summa)
+#     print(f'\nEnergideponering per partikel: {energideponering_summa / iterationer:.2f} eV / partikel')
+#     return energideponering_summa
+
+
+if __name__ == "__main__":
+    iterationer = 10 ** 3
+    dummy_iterationer = 10**2
+    max_antal_steg = 10**3
+
+    #df_stopping_power = pd.read_excel(attenueringsdata_file)
+
+    radie_sfär = 300 * 10 ** (-6)
+    
+
+    print(
+        '\n----------------------------------------------------------------------\nDUMMY\n----------------------------------------------------------------------\n')
+
+    _ = run_MC_alpha(dummy_iterationer, position_start_alpha_skal, radie_sfär,
+                                        max_antal_steg)
+    
+
+    start = time.time()
+
+    print(
+        '\n----------------------------------------------------------------------\nRIKTIG\n----------------------------------------------------------------------\n')
+    energideponering_tot_skal = run_MC_alpha(iterationer, position_start_alpha_skal, radie_sfär, max_antal_steg)
+
+    end_time(start)
+
+    radie_sfär = 1 * 10 ** (-3)
+
+    print(
+        '\n----------------------------------------------------------------------\nDUMMY\n----------------------------------------------------------------------\n')
+
+    _ = run_MC_alpha(dummy_iterationer, position_start_alpha_innanför, radie_sfär,
+                                                 max_antal_steg)
+
+    start = time.time()
+    print(
+        '\n----------------------------------------------------------------------\nRIKTIG\n----------------------------------------------------------------------\n')
+    energideponering_tot_innanför = run_MC_alpha(iterationer, position_start_alpha_innanför, radie_sfär,
+                                                 max_antal_steg)
+
+    end_time(start)
+
+    print(
+        '\n----------------------------------------------------------------------\nRESULTAT\n----------------------------------------------------------------------\n')
+
+    print(f'\nSkal: Energideponering per partikel: {energideponering_tot_skal / iterationer:.2f} eV / partikel')
+    print(f'Innanför: Energideponering per partikel: {energideponering_tot_innanför / iterationer:.2f} eV / partikel')
+
+
 #kanske inte relevant att ha Rayleight spridning för det verkar som att majoriteten av vxv är antingen compton eller fotovxv
 """
 #Artikel från Persliden, 1983 
