@@ -28,9 +28,10 @@ r_e = np.sqrt(0.07941)  # sqrt(b): re2 = e4/Ee2 ≈ 0.07941 b, https://en.wikipe
 a_0 = 5.29177210903 * 10 ** (-11) * 10 ** (14)  # sqrt(b), bohr radius of hydrogen
 c = 3 * 10 ** 8
 
-radie_alpha = 1.9 * 10 ** (-15)  # m
+radie_alpha = 1.2 * 10 ** (-15) * 4 ** (1 / 3)  # Radie alfapartikel i meter (Physics Handbook)
 
-massa_H = 1  # enhet u
+# enhet u
+massa_H = 1
 massa_C = 12
 massa_N = 14
 massa_O = 16
