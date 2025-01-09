@@ -1,13 +1,7 @@
 from imports import *
-#Riktning är uniform för alfa, och kommer gå i samm riktning utan att ändra på vinkeln efter varje kollision
-#from Martin.upg1_sampla_riktning_och_steg_start import riktning_uniform # Går inte att få upp VARFÖÖÖÖR???!!!! AHHHHHHHHHHHHHH
-#from Martin.upg1_sampla_energi_start import energi_start
-
-#Energi=energi_start(At211_energi,At211_sannolikhet) #Samplar på samma sätt alfa energin som fotonerna, är i MeV
 from Alfa_stp_och_RCSDA import Stopping_power_och_steglängd
 from upg1_sampla_energi_start import energi_start
 
-#Visa funktioner går att sätta jit men inte alla
 @jit(nopython=True)
 def riktning_alpha():
     theta = np.arccos(-1 + 2 * np.random.rand())
@@ -15,7 +9,7 @@ def riktning_alpha():
     return theta, phi
 
 
-#@jit(nopython=True)
+@jit(nopython=True)
 def energiförlust_alpha(energi, steg):
     # Implementera stopping power
     # print('WIP')
@@ -28,6 +22,8 @@ def energiförlust_alpha(energi, steg):
         energi = 0
 
     return energi
+
+
 
 
 @jit(nopython=True)
@@ -57,87 +53,64 @@ def position_start_alpha_skal(radie_sfär, phi, theta):
 
     position_vektor = np.array([x, y, z])
     return position_vektor
-
-
-#@jit(nopython=True)
+print(position_start_alpha_innanför(2,pi,pi/2))
+"""
+@jit(nopython=True)
 def laddad_partikel_väg(start_energi, start_position, phi, theta, steglängd, radie, max_antal_steg=100):
     position_vektor = start_position
     energi = start_energi
 
-    # trajectory = [tuple(position_vektor)]
-
     steg_storlek = steglängd / max_antal_steg
-
-    riktning = np.array([np.sin(theta) * np.cos(phi), np.sin(theta) * np.cos(phi), np.cos(theta)])
-    norm=np.sqrt(np.sum(riktning**2))
+    riktning = np.array([np.sin(theta) * np.cos(phi), np.sin(theta) * np.sin(phi), np.cos(theta)])
+    
+    # Manual normalization of the direction vector
+    norm = np.sqrt(np.sum(riktning**2))
     riktning /= norm
+    
     steg_vektor = riktning * steg_storlek
 
-
-    # Under tiden som partikeln fortfarnade inte tagit hela sitt steg.
+    energideponering = 0
     for i in range(max_antal_steg):
-
-        # print('steg_vektor', steg_vektor)
         position_vektor += steg_vektor
         energi = energiförlust_alpha(energi, steg_storlek)
-        energideponering=0
+        
         if np.dot(position_vektor, position_vektor) <= radie:
-            innanför = True
-            # trajectory.append(tuple(position_vektor))
-            #print(f'Energideponering i position ', position_vektor)
             energideponering += start_energi - energi
-            
         else:
             break
-            # print('Partikel utanför sfär!')
 
-    
+    return energideponering
 
-    return energideponering  # , trajectory
-
-#@jit(nopython=True)
+@jit(nopython=True)
 def run_MC_alpha(iterationer, position_start_alpha, radie, max_antal_steg):
-    
     energideponering_summa = 0
     utanför = 0
-    start_energi=energi_start(At211_energi,At211_sannolikhet)
+    start_energi = energi_start(At211_energi, At211_sannolikhet)
 
-    if position_start_alpha == position_start_alpha_skal:
+    random_theta = np.random.rand(iterationer)
+    random_phi = np.random.rand(iterationer)
 
-        for i in range(iterationer):
-            theta, phi = riktning_alpha()
-
-            if not pi / 2 < phi < 3 * pi / 2:
-                # print('Utanför')
-                utanför += 1
-                energideponering = 0
-            else:
-                start_position = position_start_alpha(radie, phi, theta)
-                _,steglängd = Stopping_power_och_steglängd(start_energi) #steglängd_alpha(start_position, df_stopping_power)
-                energideponering = laddad_partikel_väg(start_energi, start_position, phi, theta, steglängd, radie,
-                                                       max_antal_steg)
-
-    else:
-        for i in range(iterationer):
-            theta, phi = riktning_alpha()
+    for i in range(iterationer):
+        theta, phi = riktning_alpha(random_theta[i], random_phi[i])
+        if np.pi / 2 < phi < 3 * np.pi / 2:
             start_position = position_start_alpha(radie, phi, theta)
-            _,steglängd = Stopping_power_och_steglängd(start_energi) #steglängd_alpha(start_position, df_stopping_power)
-            energideponering = laddad_partikel_väg(start_energi, start_position, phi, theta, steglängd, radie,
-                                                   max_antal_steg)
+            _, steglängd = Stopping_power_och_steglängd(start_energi)
+            energideponering = laddad_partikel_väg(start_energi, start_position, phi, theta, steglängd, radie, max_antal_steg)
+            energideponering_summa += energideponering
+        else:
+            utanför += 1
 
-        energideponering_summa += energideponering
-
-    print('antal utanför: ', utanför)
-    print('total energideponering: ', energideponering_summa)
-    print(f'\nEnergideponering per partikel: {energideponering_summa / (iterationer*10**6):.2f} eV / partikel')
+    print(f"Antal utanför: {utanför}")
+    print(f"Total energideponering: {energideponering_summa}")
     return energideponering_summa
-
-
 
 if __name__ == "__main__":
     iterationer = 10 ** 3
     dummy_iterationer = 10**2
     max_antal_steg = 10**3
+
+    #df_stopping_power = pd.read_excel(attenueringsdata_file)
+
     radie_sfär = 300 * 10 ** (-6)
     
 
@@ -178,4 +151,4 @@ if __name__ == "__main__":
     print(f'\nSkal: Energideponering per partikel: {energideponering_tot_skal / iterationer:.2f} eV / partikel')
     print(f'Innanför: Energideponering per partikel: {energideponering_tot_innanför / iterationer:.2f} eV / partikel')
 
-
+"""
