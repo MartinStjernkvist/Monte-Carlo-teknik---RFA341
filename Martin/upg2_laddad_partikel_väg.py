@@ -33,7 +33,7 @@ def laddad_partikel_väg(energi_start, position_start, phi, theta, steglängd, r
         steg_tagna += 1
         position_vektor += steg_vektor
         energi = energi_efter_energiförlust(energi, steg_storlek, rho_medium, stopping_power_data)
-        print(f'ny energi: {energi * 10 ** (-6):.2f} MeV')
+        # print(f'ny energi: {energi * 10 ** (-6):.2f} MeV')
 
         if np.sqrt(np.dot(position_vektor, position_vektor)) < radie_sfär:
             # print(f'Energideponering i position ', position_vektor)
@@ -44,5 +44,5 @@ def laddad_partikel_väg(energi_start, position_start, phi, theta, steglängd, r
         #     break
 
     energideponering = energi_start - energi
-    print(f'energideponering: {energideponering} eV')
+    # print(f'energideponering: {energideponering} eV')
     return energideponering

@@ -30,30 +30,30 @@ def run_MC_alpha(iterationer, rho_medium, radie_partikel, stopping_power_data, p
             position_start = position_start_skal(radie_sfär, radie_partikel)
 
             _, steglängd = stopping_power_och_steglängd(energi, rho_medium, stopping_power_data)
-            print(f'steglängd: {steglängd} m')
+            print(f'steglängd: {steglängd * 10 ** 6:.2f} mikrometer')
 
             energideponering = laddad_partikel_väg(energi, position_start, phi, theta, steglängd, radie_sfär,
                                                    rho_medium, stopping_power_data, max_antal_steg)
 
             energideponering_summa += energideponering
-            print(f'energideponering summa: {energideponering_summa}')
+            print(f'energideponering: {energideponering * 10 ** (-6)} MeV')
 
     else:
         for i in range(iterationer):
             energi = energi_start(At211_energi, At211_sannolikhet)
-            print(f'energi: {energi* 10 ** (-6)} MeV')
+            print(f'energi: {energi * 10 ** (-6)} MeV')
 
             theta, phi = riktning_uniform()
             position_start = position_start_innanför(radie_sfär)
 
             _, steglängd = stopping_power_och_steglängd(energi, rho_medium, stopping_power_data)
-            print(f'steglängd: {steglängd} m')
+            print(f'steglängd: {steglängd * 10 ** 6:.2f} mikrometer')
 
             energideponering = laddad_partikel_väg(energi, position_start, phi, theta, steglängd, radie_sfär,
                                                    rho_medium, stopping_power_data, max_antal_steg)
 
             energideponering_summa += energideponering
-            print(f'energideponering summa: {energideponering_summa}')
+            print(f'energideponering: {energideponering * 10 ** (-6)} MeV')
 
     # print('antal utanför: ', utanför)
     # print('total energideponering: ', energideponering_summa)
@@ -62,7 +62,7 @@ def run_MC_alpha(iterationer, rho_medium, radie_partikel, stopping_power_data, p
 
 
 def energideponering_eV_till_Gy(energideponering_eV, rho_medium, radie_sfär):
-    V = rho_medium * 4 / 3 * np.pi * radie_sfär ** 3
+    V = 4 / 3 * np.pi * radie_sfär ** 3
     massa = V * rho_medium  # kg
     energideponering_J = energideponering_eV * 1.602 * 10 ** (-19)  # J
 

@@ -12,10 +12,10 @@ def energi_efter_energiförlust(energi, steglängd, rho_medium, stopping_power_d
     """
 
     stopping_power, _ = stopping_power_och_steglängd(energi, rho_medium, stopping_power_data)
-    print(f'stopping power: {stopping_power}')
+    # print(f'stopping power: {stopping_power}')
 
     energiförlust = stopping_power * steglängd
-    print(f'energiförlust: {energiförlust * 10**(-6):.2f} MeV')
+    # print(f'energiförlust: {energiförlust * 10**(-6):.4f} MeV')
     ny_energi = energi - energiförlust
 
     if ny_energi <= 0:
