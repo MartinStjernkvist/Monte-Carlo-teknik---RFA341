@@ -78,14 +78,25 @@ def laddad_partikel_väg(start_energi, start_position, phi, theta, steglängd, r
 
         # print('steg_vektor', steg_vektor)
         position_vektor += steg_vektor
-        energi_förlust = energiförlust_alpha(energi, steg_storlek)
-        energideponering=0
+        #energi_förlust = energiförlust_alpha(energi, steg_storlek)
+        energi = energi - energiförlust_alpha(energi, steg_storlek)
+       
+       #Plottvärden
+        energideponering_list=[] #för färgen av energideponering
+        x=[]
+        y=[]
+        z=[]
         if np.dot(position_vektor, position_vektor) <= radie:
             innanför = True
             # trajectory.append(tuple(position_vektor))
             #print(f'Energideponering i position ', position_vektor)
-            energideponering += energi_förlust
-            energi=start_energi - energideponering
+            
+            #ax.scatter(position_vektor[0],position_vektor[1],position_vektor[2],c=energiförlust_alpha(energi,steg_storlek),cmap='plasma')
+            energideponering_list.append(energiförlust_alpha(energi, steg_storlek))
+            x.append(position_vektor[0])
+            y.append(position_vektor[1])
+            z.append(position_vektor[2])
+            #energi=start_energi - energideponering
 
         elif energi<=0:
             break
@@ -93,8 +104,11 @@ def laddad_partikel_väg(start_energi, start_position, phi, theta, steglängd, r
         else:
             break
             # print('Partikel utanför sfär!')
+    energideponering=start_energi-energi
+    #plt.show()
 
-    return energideponering  # , trajectory
+    #
+    return energideponering, x, y, z ,energideponering_list# , trajectory
 
 #@jit(nopython=True)
 def run_MC_alpha(iterationer, position_start_alpha, radie, max_antal_steg):
@@ -116,7 +130,7 @@ def run_MC_alpha(iterationer, position_start_alpha, radie, max_antal_steg):
                 start_position = position_start_alpha(radie, phi, theta)
                 _,Steglängd = Stopping_power_och_steglängd(start_energi) #steglängd_alpha(start_position, df_stopping_power)
                 steglängd=Steglängd*10**(-2)
-                energideponering = laddad_partikel_väg(start_energi, start_position, phi, theta, steglängd, radie,
+                energideponering, x,y,z, dos = laddad_partikel_väg(start_energi, start_position, phi, theta, steglängd, radie,
                                                        max_antal_steg)
 
     else:
@@ -125,21 +139,33 @@ def run_MC_alpha(iterationer, position_start_alpha, radie, max_antal_steg):
             start_position = position_start_alpha(radie, phi, theta)
             _,Steglängd = Stopping_power_och_steglängd(start_energi) #steglängd_alpha(start_position, df_stopping_power)
             steglängd=Steglängd*10**(-2) #Från cm till m
-            energideponering = laddad_partikel_väg(start_energi, start_position, phi, theta, steglängd, radie,
+            energideponering, x,y,z, dos  = laddad_partikel_väg(start_energi, start_position, phi, theta, steglängd, radie,
                                                    max_antal_steg)
-
+        x.extend(x)
+        y.extend(y)
+        z.extend(z)
+        dos.extend(dos)
+        print(x)
         energideponering_summa += energideponering
+    #Plotta en figur
+    fig = plt.figure()
+    ax = fig.add_subplot(projection='3d')
+    ax.scatter(x,y,z,c=dos,cmap='plasma')
 
     print('antal utanför: ', utanför)
     print('total energideponering: ', energideponering_summa)
-    print(f'\nEnergideponering per partikel: {energideponering_summa / (iterationer*10**6):.2f} eV / partikel')
+    print(f'\nEnergideponering per partikel: {energideponering_summa / (iterationer*10**6)} eV / partikel')
+
+    #Visa figur
+    #plt.colorbar()
+    plt.show()
     return energideponering_summa
 
 
 
 if __name__ == "__main__":
     iterationer = 10 ** 2
-    dummy_iterationer = 10**2
+    dummy_iterationer = 10**1
     max_antal_steg = 10**3
     radie_sfär = 300 * 10 ** (-6)
     

@@ -144,7 +144,7 @@ def run_MC_elektron(iterationer, position_start_eletron, radie):
 
     print('antal utanför: ', utanför)
     print('total energideponering: ', energideponering_summa)
-    print(f'\nEnergideponering per partikel: {energideponering_summa / (iterationer*10**6):.2f} eV / partikel')
+    print(f'\nEnergideponering per partikel: {energideponering_summa / (iterationer*10**6):.9f} eV / partikel')
     return energideponering_summa
 
 
