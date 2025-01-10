@@ -95,6 +95,10 @@ def laddad_partikel_väg(start_energi, start_position, phi, theta, steglängd, r
             energideponering += start_energi - energi
             theta=Elektron_riktning(start_energi-energideponering)
             phi=np.random.random()*2*pi
+
+        elif energi-energideponering<=0:
+            #Förlorat all sin energi
+            break
             
         else:
             break
