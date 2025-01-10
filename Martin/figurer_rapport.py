@@ -156,7 +156,7 @@ def transformera_koordinatsystem_extended(steg_A_B, phi_A, theta_A, steg_B_C, ph
             [-np.sin(angle), 0, np.cos(angle)],
         ])
 
-    # R_y = np.identity(3)
+    R_y = np.identity(3)
     # R_z = np.identity(3)
 
     # R = R_y @ R_z
@@ -275,7 +275,7 @@ if __name__ == "__main__":
     #   ----------------------------------------------------------------------
     #   INPUT
     #   ---------------------------------------------------------------------
-    """
+
     # startpunkt A
     x_start = 1
     y_start = 1
@@ -314,7 +314,7 @@ if __name__ == "__main__":
     theta_B = pi / 3
     phi_B = pi / 3
     steg_B_C = 2
-
+"""
     #   ----------------------------------------------------------------------
     #   BERÄKNING
     #   ---------------------------------------------------------------------
@@ -358,7 +358,7 @@ if __name__ == "__main__":
 
     font_size = 15
 
-
+    """
     fig = plt.figure(figsize=(10, 10))
     ax = plt.axes(projection='3d')
     ax.set_xlim([0.5, 5])
@@ -481,7 +481,7 @@ if __name__ == "__main__":
     #           enhets_vektorer_B[2, 2],
     #           color='royalblue')
 
-    ax.quiver(x_A, y_A, z_A, dx_A_B, dy_A_B, dz_A_B, color='blue', label='första steget, A-> B')
+    ax.quiver(x_A, y_A, z_A, dx_A_B, dy_A_B, dz_A_B, color='blue')
     # ax.quiver(x_A + dx_A_B, y_A + dy_A_B, z_A + dz_A_B, (x_A_C - dx_A_B), (y_A_C - dy_A_B), (z_A_C - dz_A_B),
     #           color='darkviolet',
     #           label='andra steget, B->C (steg tas utifrån B\'s koordinatsystem')
@@ -493,8 +493,9 @@ if __name__ == "__main__":
 
     ax.azim, ax.elev = -115, 30
 
+    plt.title('Ingen rotation', fontsize=font_size*2)
     plt.tight_layout()
-    ax.legend(fontsize=font_size)
+    # ax.legend(fontsize=font_size)
     plt.savefig('3d_fig_rotation_0')
     plt.show()
 
@@ -545,11 +546,16 @@ if __name__ == "__main__":
 
     ax.azim, ax.elev = -115, 30
 
+    # plt.title('R = R_z R_y', fontsize=font_size*2)
+    plt.title('R = R_z', fontsize=font_size*2)
+    # plt.title('R = R_y', fontsize=font_size*2)
     plt.tight_layout()
-    ax.legend(fontsize=font_size)
-    plt.savefig('3d_fig')
+    # ax.legend(fontsize=font_size)
+    # plt.savefig('3d_fig_yz')
+    plt.savefig('3d_fig_z')
+    # plt.savefig('3d_fig_y')
     plt.show()
-"""
+
 
 
 
