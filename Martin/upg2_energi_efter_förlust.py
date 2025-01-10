@@ -5,13 +5,17 @@ def energi_efter_energiförlust(energi, steglängd, rho_medium, stopping_power_d
     """
     Funktion som beräknar energiförlusten efter varje steg som partikeln tar.
     :param energi: Partikelns energi innan steget.
-    :param steglängd: Stegstorleken (cm).
-    :param rho_medium: Densiteten av mediumet.
+    :param steglängd: Stegstorleken (m).
+    :param rho_medium: Densiteten av mediumet (kg/m^3).
     :param stopping_power_data: Stopping power data.
     :return: Energiförlusten under steget.
     """
+
     stopping_power, _ = stopping_power_och_steglängd(energi, rho_medium, stopping_power_data)
-    energiförlust = stopping_power * steglängd  # i eV
+    # print(f'stopping power: {stopping_power}')
+
+    energiförlust = stopping_power * steglängd
+    # print(f'energiförlust: {energiförlust * 10**(-6):.4f} MeV')
     ny_energi = energi - energiförlust
 
     if ny_energi <= 0:

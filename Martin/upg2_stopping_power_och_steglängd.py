@@ -5,14 +5,23 @@ def stopping_power_och_steglängd(energi, rho_medium, stopping_power_data):
     """
     Funktion som ger stopping power och
     :param energi: Partikelns energi i eV.
-    :return: Stopping power (eV/m) och steglängden (m).
+    :param rho_medium: Mediumets densitet i kg / m^3.
+    :param stopping_power_data: Stopping power (eV/m) och steglängden (m).
+    :return:
     """
 
-    energi_MeV_list = stopping_power_data[:, 0]
-    energi_list = np.array([(lambda x: x * 10**6)(x) for x in energi_MeV_list])
+    energi_MeV_list = stopping_power_data[:, 0]  # MeV
+    energi_list = np.array([(lambda x: x * 10 ** 6)(x) for x in energi_MeV_list])  # eV
+    # print(f'energi list: {energi_list}')
 
-    stopping_power_list = stopping_power_data[:, 1]
-    CSDA_list = stopping_power_data[:, 1]
+    stopping_power_MeV_cm_g_list = stopping_power_data[:, 1]  # MeV cm^2 / g
+    stopping_power_list = np.array(
+        [(lambda x: x * 10 ** (6 - 2 * 2 + 3))(x) for x in stopping_power_MeV_cm_g_list])  # eV m^2 / kg
+    # print(f'stopping power list: {stopping_power_list}')
+
+    CSDA_cm_g_list = stopping_power_data[:, 2]  # g / cm^2
+    CSDA_list = np.array([(lambda x: x * 10 ** (-3 + 2 * 2))(x) for x in CSDA_cm_g_list])  # kg / m^2
+    # print(f'CSDA list: {CSDA_list}')
 
     # Tar index för närmaste energi på alfapartikeln.
     diff = np.abs(energi_list - energi)
@@ -37,7 +46,7 @@ def stopping_power_och_steglängd(energi, rho_medium, stopping_power_data):
                 CSDA_close[1] - CSDA_close[0]) / (
                         energi_close[1] - energi_close[0]))
 
-    steglängd = CSDA / rho_medium * 10 ** (-2)  # Omvandla cm till m.
-    stopping_power = stopping_power * rho_medium * 10 ** 2  # Omvandla till eV / m.
+    steglängd = CSDA / rho_medium
+    stopping_power = stopping_power * rho_medium
 
     return stopping_power, steglängd
