@@ -113,7 +113,8 @@ def run_MC_alpha(iterationer, position_start_alpha, radie, max_antal_steg):
                 energideponering = 0
             else:
                 start_position = position_start_alpha(radie, phi, theta)
-                _,steglängd = Stopping_power_och_steglängd(start_energi) #steglängd_alpha(start_position, df_stopping_power)
+                _,Steglängd = Stopping_power_och_steglängd(start_energi) #steglängd_alpha(start_position, df_stopping_power)
+                steglängd=Steglängd*10**(-2)
                 energideponering = laddad_partikel_väg(start_energi, start_position, phi, theta, steglängd, radie,
                                                        max_antal_steg)
 
@@ -135,7 +136,7 @@ def run_MC_alpha(iterationer, position_start_alpha, radie, max_antal_steg):
 
 
 if __name__ == "__main__":
-    iterationer = 10 ** 3
+    iterationer = 10 ** 2
     dummy_iterationer = 10**2
     max_antal_steg = 10**3
     radie_sfär = 300 * 10 ** (-6)
@@ -157,7 +158,9 @@ if __name__ == "__main__":
     end_time(start)
 
     radie_sfär = 1 * 10 ** (-3)
-
+    iterationer = 10 ** 2
+    dummy_iterationer = 10**1
+    max_antal_steg = 10**3
     print(
         '\n----------------------------------------------------------------------\nDUMMY\n----------------------------------------------------------------------\n')
 
@@ -179,3 +182,5 @@ if __name__ == "__main__":
     print(f'Innanför: Energideponering per partikel: {energideponering_tot_innanför / iterationer:.2f} eV / partikel')
 
 
+#Får samma siffror 0 MeV från skalet och 5.860718166904508 MeV i tumören
+#Stämmer inte , får samma oavsett antal iterationer
