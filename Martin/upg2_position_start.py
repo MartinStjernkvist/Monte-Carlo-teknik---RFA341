@@ -2,6 +2,10 @@ from imports import *
 
 @jit(nopython=True)
 def position_start_innanför(radie_sfär):
+    """
+    Funktion som samplar startposition.
+    Fördelningsfunktion: uniform innanför sfär.
+    """
     r = radie_sfär * np.random.rand()
 
     x = r
@@ -15,6 +19,10 @@ def position_start_innanför(radie_sfär):
 
 @jit(nopython=True)
 def position_start_skal(radie_sfär, radie_partikel):
+    """
+    Funktion som samplar startposition.
+    Fördelningsfunktion: ytfördelning på sfär.
+    """
     r = radie_sfär - 0.5 * radie_partikel  # För att inte endast theta = pi ska ge utslag
 
     x = r

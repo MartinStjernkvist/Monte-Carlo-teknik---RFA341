@@ -11,67 +11,102 @@ def run_MC_alpha(iterationer, rho_medium, radie_partikel, stopping_power_data, p
     """
     Monte-Carlo simulering för alfapartiklarna.
     :param iterationer: Antal sönderfall som ska simuleras.
+    :param rho_medium: Densiteten av mediumet (vatten).
+    :param radie_partikel: Partikelns radie (alfa).
     :param stopping_power_data: Stopping power data.
-    :param position_start_alpha: Uniform fördelning i sfären, eller ytfördelning.
+    :param position_start_alpha: Fördelningsfunktion: uniform eller ytfördelning.
     :param radie_sfär: Radien av sfären för fördelningen.
     :param max_antal_steg: Maximalt antal steg som steglängden ska delas upp i.
     :return: Summeringen av energideponeringen innanför sfären.
     """
 
     energideponering_summa = 0
-
+    #   ----------------------------------------------------------------------
+    #   Vilken fördelningsfunktion som ska användas bestämmer hur
+    #   sampling av riktning och position sker.
+    #   ----------------------------------------------------------------------
     if position_start_alpha == position_start_skal:
+        #   ----------------------------------------------------------------------
+        #   Ytfördelning på en sfär.
+        #   ----------------------------------------------------------------------
         iterationer = 0.5 * iterationer
         for i in range(int(iterationer)):
+
+            # Sampla startenergin.
             energi = energi_start(At211_energi, At211_sannolikhet)
             print(f'energi: {energi * 10 ** (-6)} MeV')
 
+            # Sampla riktning och startposition.
             theta, phi = riktning_skal()
             position_start = position_start_skal(radie_sfär, radie_partikel)
 
+            # Sampla steglängd för partikeln.
             _, steglängd = stopping_power_och_steglängd(energi, rho_medium, stopping_power_data)
             print(f'steglängd: {steglängd * 10 ** 6:.2f} mikrometer')
 
+            # Beräkna den totala energideponeringen för en partikel som växelverkar i sfären.
             energideponering = laddad_partikel_väg(energi, position_start, phi, theta, steglängd, radie_sfär,
                                                    rho_medium, stopping_power_data, max_antal_steg)
 
+            # Summera alla dosbidrag.
             energideponering_summa += energideponering
             print(f'energideponering: {energideponering * 10 ** (-6)} MeV')
 
     else:
+        #   ----------------------------------------------------------------------
+        #   Uniform fördelning i en sfär.
+        #   ----------------------------------------------------------------------
         for i in range(iterationer):
+
+            # Sampla startenergin.
             energi = energi_start(At211_energi, At211_sannolikhet)
             print(f'energi: {energi * 10 ** (-6)} MeV')
 
+            # Sampla riktning och startposition.
             theta, phi = riktning_uniform()
             position_start = position_start_innanför(radie_sfär)
 
+            # Sampla steglängd för partikeln.
             _, steglängd = stopping_power_och_steglängd(energi, rho_medium, stopping_power_data)
             print(f'steglängd: {steglängd * 10 ** 6:.2f} mikrometer')
 
+            # Beräkna den totala energideponeringen för en partikel som växelverkar i sfären.
             energideponering = laddad_partikel_väg(energi, position_start, phi, theta, steglängd, radie_sfär,
                                                    rho_medium, stopping_power_data, max_antal_steg)
 
+            # Summera alla dosbidrag.
             energideponering_summa += energideponering
             print(f'energideponering: {energideponering * 10 ** (-6)} MeV')
 
-    # print('antal utanför: ', utanför)
-    # print('total energideponering: ', energideponering_summa)
     # print(f'\nEnergideponering per partikel: {energideponering_summa / iterationer:.2f} eV / partikel')
     return energideponering_summa
 
 
 def energideponering_eV_till_Gy(energideponering_eV, rho_medium, radie_sfär):
-    V = 4 / 3 * np.pi * radie_sfär ** 3
-    massa = V * rho_medium  # kg
-    energideponering_J = energideponering_eV * 1.602 * 10 ** (-19)  # J
+    """
+    Beräkna absorberad i termer av Gy.
+    :param energideponering_eV: Absorberad dos i eV.
+    :param rho_medium: Mediumets densitet.
+    :param radie_sfär: Sfärens radie.
+    """
 
-    energideponering_Gy = energideponering_J / massa  # J / kg
+    # Beräkna volym (m^3) och massa (kg).
+    V = 4 / 3 * np.pi * radie_sfär ** 3
+    massa = V * rho_medium
+
+    # Beräkna absorberad dos i Joule.
+    energideponering_J = energideponering_eV * 1.602 * 10 ** (-19)
+
+    # Beräkna absorberad dos i Gy.
+    energideponering_Gy = energideponering_J / massa
 
     return energideponering_Gy
 
 
 if __name__ == "__main__":
+    #   ----------------------------------------------------------------------
+    #   Kör simuleringen med ingångsvärden.
+    #   ----------------------------------------------------------------------
     iterationer = 10 ** 2
     dummy_iterationer = 10 ** 1
     max_antal_steg = 10 ** 3
@@ -118,6 +153,9 @@ if __name__ == "__main__":
     print(
         '\n----------------------------------------------------------------------\nRESULTAT\n----------------------------------------------------------------------\n')
 
+    #   ----------------------------------------------------------------------
+    #   Beräkna resultat och jämför med valideringsdata.
+    #   ----------------------------------------------------------------------
     print(
         f'\nSkal (300 mikrometer): Energideponering:\n{energideponering_skal_Gy * 10 ** 6 / iterationer} E-06 Gy / sönderfall')
     print(f'faktor {(energideponering_skal_Gy * 10 ** 6 / iterationer) / 1.66} av facit')
