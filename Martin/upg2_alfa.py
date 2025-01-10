@@ -30,8 +30,10 @@ def run_MC_alpha(iterationer, rho_medium, radie_partikel, df_stopping_power, pos
             position_start = position_start_alpha(radie_sfär, radie_partikel)
 
             _, steglängd = stopping_power_och_steglängd(energi, rho_medium, df_stopping_power)
+
             energideponering = laddad_partikel_väg(energi, position_start, phi, theta, steglängd, radie_sfär,
                                                    rho_medium, df_stopping_power, max_antal_steg)
+
             energideponering_summa += energideponering
     else:
         for i in range(iterationer):
@@ -41,6 +43,7 @@ def run_MC_alpha(iterationer, rho_medium, radie_partikel, df_stopping_power, pos
             position_start = position_start_alpha(radie_sfär)
 
             _, steglängd = stopping_power_och_steglängd(energi, rho_medium, df_stopping_power)
+
             energideponering = laddad_partikel_väg(energi, position_start, phi, theta, steglängd, radie_sfär,
                                                    rho_medium, df_stopping_power, max_antal_steg)
 
@@ -50,6 +53,14 @@ def run_MC_alpha(iterationer, rho_medium, radie_partikel, df_stopping_power, pos
     print('total energideponering: ', energideponering_summa)
     print(f'\nEnergideponering per partikel: {energideponering_summa / iterationer:.2f} eV / partikel')
     return energideponering_summa
+
+
+def energideponering_eV_till_Gy(energideponering_eV, rho_medium, radie_sfär):
+    V = rho_medium * 4 / 3 * np.pi * radie_sfär ** 3
+    massa = V * rho_medium
+    energideponering_J = energideponering_eV * 1.602 * 10 ** (-19)
+    energideponering_Gy = energideponering_J / massa  # J / kg
+    return energideponering_Gy
 
 
 if __name__ == "__main__":
@@ -62,41 +73,42 @@ if __name__ == "__main__":
     rho_medium = rho_vatten
     radie_partikel = radie_alpha
 
-    radie_sfär = 300 * 10 ** (-6)
+    radie_sfär_skal = 300 * 10 ** (-6)
+    radie_sfär_innanför = 1 * 10 ** (-3)
 
     print(
         '\n----------------------------------------------------------------------\nDUMMY\n----------------------------------------------------------------------\n')
 
     _ = run_MC_alpha(dummy_iterationer, rho_medium, radie_partikel, stopping_power_data, position_start_skal,
-                     radie_sfär, max_antal_steg)
+                     radie_sfär_skal, max_antal_steg)
 
     start = time.time()
 
     print(
         '\n----------------------------------------------------------------------\nRIKTIG\n----------------------------------------------------------------------\n')
     energideponering_tot_skal = run_MC_alpha(iterationer, rho_medium, radie_partikel, stopping_power_data,
-                                             position_start_skal, radie_sfär, max_antal_steg)
+                                             position_start_skal, radie_sfär_skal, max_antal_steg)
+    energideponering_skal_Gy = energideponering_eV_till_Gy(energideponering_tot_skal, rho_medium, radie_sfär_skal)
 
     end_time(start)
-
-    radie_sfär = 1 * 10 ** (-3)
 
     print(
         '\n----------------------------------------------------------------------\nDUMMY\n----------------------------------------------------------------------\n')
 
     _ = run_MC_alpha(dummy_iterationer, rho_medium, radie_partikel, stopping_power_data, position_start_innanför,
-                     radie_sfär, max_antal_steg)
+                     radie_sfär_innanför, max_antal_steg)
 
     start = time.time()
     print(
         '\n----------------------------------------------------------------------\nRIKTIG\n----------------------------------------------------------------------\n')
     energideponering_tot_innanför = run_MC_alpha(iterationer, rho_medium, radie_partikel, stopping_power_data,
-                                                 position_start_innanför, radie_sfär, max_antal_steg)
-
+                                                 position_start_innanför, radie_sfär_innanför, max_antal_steg)
+    energideponering_innanför_Gy = energideponering_eV_till_Gy(energideponering_tot_innanför, rho_medium, radie_sfär_innanför)
     end_time(start)
 
     print(
         '\n----------------------------------------------------------------------\nRESULTAT\n----------------------------------------------------------------------\n')
 
-    print(f'\nSkal: Energideponering per partikel: {energideponering_tot_skal / iterationer} eV / partikel')
-    print(f'Innanför: Energideponering per partikel: {energideponering_tot_innanför / iterationer} eV / partikel')
+    print(f'\nSkal (300 mikrometer): Energideponering: {energideponering_skal_Gy * 10 ** 9 / iterationer:.1f} E-09 Gy / partikel')
+    print(f'Innanför (1 mm): Energideponering: {energideponering_tot_innanför * 10 ** 9 / iterationer:.1f} E-09 Gy / partikel')
+
