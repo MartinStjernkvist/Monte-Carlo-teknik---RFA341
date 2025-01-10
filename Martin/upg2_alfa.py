@@ -27,7 +27,7 @@ def run_MC_alpha(iterationer, rho_medium, radie_partikel, df_stopping_power, pos
             energi = energi_start(At211_energi, At211_sannolikhet)
 
             theta, phi = riktning_skal()
-            position_start = position_start_alpha(radie_sfär, radie_partikel, phi, theta)
+            position_start = position_start_alpha(radie_sfär, radie_partikel)
 
             _, steglängd = stopping_power_och_steglängd(energi, rho_medium, df_stopping_power)
             energideponering = laddad_partikel_väg(energi, position_start, phi, theta, steglängd, radie_sfär,
@@ -38,7 +38,7 @@ def run_MC_alpha(iterationer, rho_medium, radie_partikel, df_stopping_power, pos
             energi = energi_start(At211_energi, At211_sannolikhet)
 
             theta, phi = riktning_uniform()
-            position_start = position_start_alpha(radie_sfär, phi, theta)
+            position_start = position_start_alpha(radie_sfär)
 
             _, steglängd = stopping_power_och_steglängd(energi, rho_medium, df_stopping_power)
             energideponering = laddad_partikel_väg(energi, position_start, phi, theta, steglängd, radie_sfär,
@@ -53,8 +53,8 @@ def run_MC_alpha(iterationer, rho_medium, radie_partikel, df_stopping_power, pos
 
 
 if __name__ == "__main__":
-    iterationer = 10 ** 5
-    dummy_iterationer = 10 ** 3
+    iterationer = 10 ** 4
+    dummy_iterationer = 10 ** 2
     max_antal_steg = 10 ** 4
 
     stopping_power_data = np.loadtxt(stopping_power_alfa_file)

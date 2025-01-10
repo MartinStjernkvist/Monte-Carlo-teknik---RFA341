@@ -1,7 +1,9 @@
 from imports import *
 from upg2_energi_efter_förlust import energi_efter_energiförlust
 
-def laddad_partikel_väg(energi_start, position_start, phi, theta, steglängd, radie_sfär, rho_medium, df_stopping_power,
+
+def laddad_partikel_väg(energi_start, position_start, phi, theta, steglängd, radie_sfär, rho_medium,
+                        stopping_power_data,
                         max_antal_steg):
     """
     Funktion som följer alfapartikeln allteftersom den växelverkar i ett medium.
@@ -30,7 +32,7 @@ def laddad_partikel_väg(energi_start, position_start, phi, theta, steglängd, r
 
         steg_tagna += 1
         position_vektor += steg_vektor
-        energi = energi_efter_energiförlust(energi, steg_storlek, rho_medium, df_stopping_power)
+        energi = energi_efter_energiförlust(energi, steg_storlek, rho_medium, stopping_power_data)
 
         # if np.dot(position_vektor, position_vektor) <= radie_sfär:
         #     print(f'Energideponering i position ', position_vektor)
