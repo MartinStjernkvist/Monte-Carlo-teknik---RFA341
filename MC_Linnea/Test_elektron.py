@@ -7,6 +7,7 @@ from imports import *
 from Elektron_stp_och_steglängd import Stopping_power_och_steglängd_elektron
 from Elektron_energi import Elektron_startenergi
 from Elektron_polarvinkel import Elektron_riktning
+from upg1_steg_transformation import ny_steg_transformera_koordinatsystem_3d
 
 
 #Visa funktioner går att sätta jit men inte alla
@@ -34,7 +35,7 @@ def energiförlust_elektron(energi, steg):
     if energi <= 0:
         energi = 0
 
-    return energi
+    return energi*10**6
 
 
 @jit(nopython=True)
@@ -82,7 +83,8 @@ def laddad_partikel_väg(start_energi, start_position, phi, theta, radie):
         _,Steg,Tau=Stopping_power_och_steglängd_elektron(energi)
         steg_storlek = (Steg-Tau)*10**(-2) #omvandlar cm till m
 
-        steg_vektor = riktning * steg_storlek
+        #Lägg till steg_transformationen!!!!!!!!
+        steg_vektor = riktning * steg_storlek 
 
         position_vektor += steg_vektor
         energi_förlust = energiförlust_elektron(energi, steg_storlek)
@@ -144,7 +146,7 @@ def run_MC_elektron(iterationer, position_start_eletron, radie):
 
     print('antal utanför: ', utanför)
     print('total energideponering: ', energideponering_summa)
-    print(f'\nEnergideponering per partikel: {energideponering_summa / (iterationer*10**6):.9f} eV / partikel')
+    print(f'\nEnergideponering per partikel: {energideponering_summa / (iterationer):.2f} eV / partikel')
     return energideponering_summa
 
 
