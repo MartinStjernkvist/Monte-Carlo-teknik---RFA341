@@ -53,7 +53,7 @@ def position_start_elektron_innanför(radie_sfär, phi, theta):
 
 @jit(nopython=True)
 def position_start_elektron_skal(radie_sfär, phi, theta):
-    radie_elektron=1*10**(-21) #test för tillfället, sök upp elektronens radie 
+    radie_elektron=r_e*10**(-28) #Från imports filen och omvandlar från barn till m
     r = radie_sfär - 0.5 * radie_elektron  # För att inte endast theta = pi ska ge utslag
 
     x = r * np.sin(theta) * np.cos(phi)
@@ -67,7 +67,7 @@ def position_start_elektron_skal(radie_sfär, phi, theta):
 
 
 #@jit(nopython=True)
-def laddad_partikel_väg(start_energi, start_position, phi, theta, steglängd, radie, max_antal_steg=100):
+def laddad_partikel_väg(start_energi, start_position, phi, theta, radie):
     position_vektor = start_position
     energi = start_energi
 
@@ -79,24 +79,26 @@ def laddad_partikel_väg(start_energi, start_position, phi, theta, steglängd, r
         riktning /= np.linalg.norm(riktning)
 
         #Stegstorleken när den ändrar riktning
-        _,Steg,Tau=Stopping_power_och_steglängd_elektron(energi-energideponering)
+        _,Steg,Tau=Stopping_power_och_steglängd_elektron(energi)
         steg_storlek = (Steg-Tau)*10**(-2) #omvandlar cm till m
 
         steg_vektor = riktning * steg_storlek
 
         position_vektor += steg_vektor
-        energi = energiförlust_elektron(energi, steg_storlek)
-        
+        energi_förlust = energiförlust_elektron(energi, steg_storlek)
         
         if np.dot(position_vektor, position_vektor) <= radie:
             innanför = True
             # trajectory.append(tuple(position_vektor))
             #print(f'Energideponering i position ', position_vektor)
-            energideponering += start_energi - energi
+            energideponering += energi_förlust
+
+            #Ändrar på parametrarna för nästa steg har en annan energi och riktning
+            energi=start_energi - energideponering
             theta=Elektron_riktning(start_energi-energideponering)
             phi=np.random.random()*2*pi
 
-        elif energi-energideponering<=0:
+        elif energi<=0:
             #Förlorat all sin energi
             break
             
@@ -109,7 +111,7 @@ def laddad_partikel_väg(start_energi, start_position, phi, theta, steglängd, r
     return energideponering  # , trajectory
 
 #@jit(nopython=True)
-def run_MC_elektron(iterationer, position_start_eletron, radie, max_antal_steg):
+def run_MC_elektron(iterationer, position_start_eletron, radie):
     
     energideponering_summa = 0
     utanför = 0
@@ -126,18 +128,17 @@ def run_MC_elektron(iterationer, position_start_eletron, radie, max_antal_steg):
                 energideponering = 0
             else:
                 start_position = position_start_eletron(radie, phi, theta)
-                _,_,Steglängd = Stopping_power_och_steglängd_elektron(start_energi) #steglängd_alpha(start_position, df_stopping_power)
-                steglängd=Steglängd*10**(-2)
-                energideponering = laddad_partikel_väg(start_energi, start_position, phi, theta, steglängd, radie,
-                                                       max_antal_steg)
+               
+                energideponering = laddad_partikel_väg(start_energi, start_position, phi, theta, radie
+                                                       )
 
     else:
         for i in range(iterationer):
             theta, phi = riktning_elektron()
             start_position = position_start_eletron(radie, phi, theta)
-            _,_,steglängd = Stopping_power_och_steglängd_elektron(start_energi) #steglängd_alpha(start_position, df_stopping_power)
-            energideponering = laddad_partikel_väg(start_energi, start_position, phi, theta, steglängd, radie,
-                                                   max_antal_steg)
+ 
+            energideponering = laddad_partikel_väg(start_energi, start_position, phi, theta, radie
+                                                   )
 
         energideponering_summa += energideponering
 
@@ -151,40 +152,38 @@ def run_MC_elektron(iterationer, position_start_eletron, radie, max_antal_steg):
 if __name__ == "__main__":
     iterationer = 10 ** 2
     dummy_iterationer = 10**2
-    max_antal_steg = 10**3
     radie_sfär = 300 * 10 ** (-6)
     
 
     print(
         '\n----------------------------------------------------------------------\nDUMMY\n----------------------------------------------------------------------\n')
 
-    _ = run_MC_elektron(dummy_iterationer, position_start_elektron_skal, radie_sfär,
-                                        max_antal_steg)
+    _ = run_MC_elektron(dummy_iterationer, position_start_elektron_skal, radie_sfär)
     
 
     start = time.time()
 
     print(
         '\n----------------------------------------------------------------------\nRIKTIG\n----------------------------------------------------------------------\n')
-    energideponering_tot_skal = run_MC_elektron(iterationer, position_start_elektron_skal, radie_sfär, max_antal_steg)
+    energideponering_tot_skal = run_MC_elektron(iterationer, position_start_elektron_skal, radie_sfär)
 
     end_time(start)
 
     radie_sfär = 1 * 10 ** (-3)
     iterationer = 10 ** 2
     dummy_iterationer = 10**1
-    max_antal_steg = 10**3
+   
     print(
         '\n----------------------------------------------------------------------\nDUMMY\n----------------------------------------------------------------------\n')
 
-    _ = run_MC_elektron(dummy_iterationer, position_start_elektron_innanför, radie_sfär,
-                                                 max_antal_steg)
+    _ = run_MC_elektron(dummy_iterationer, position_start_elektron_innanför, radie_sfär
+                                                )
 
     start = time.time()
     print(
         '\n----------------------------------------------------------------------\nRIKTIG\n----------------------------------------------------------------------\n')
-    energideponering_tot_innanför = run_MC_elektron(iterationer, position_start_elektron_innanför, radie_sfär,
-                                                 max_antal_steg)
+    energideponering_tot_innanför = run_MC_elektron(iterationer, position_start_elektron_innanför, radie_sfär
+                                                 )
 
     end_time(start)
 

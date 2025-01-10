@@ -26,7 +26,7 @@ E_e = 0.511 * 10 ** 6  # eV
 r_e = np.sqrt(0.07941)  # sqrt(b): re2 = e4/Ee2 ≈ 0.07941 b, https://en.wikipedia.org/wiki/Gamma_ray_cross_section
 a_0 = 5.29177210903 * 10 ** (-11) * 10 ** (14)  # sqrt(b), bohr radius of hydrogen
 c = 3 * 10 ** 8
-
+radie_alpha = 1.2*10**(-15)*4**(1/3) #radie i meter enligt Physics Handbook 
 
 # Neutroner???
 massa_H = 1 # enhet u
@@ -51,7 +51,8 @@ massa_Ca = 40
 
 # Sammansättning av vävnad, sida 71 tabeller radiofysik del 1 canvas RFA331.
 vävnad_sammansättning_vektor = np.array(
-    [10.2, 12.3 / massa_C, 3.5 / massa_N, 72.9 / massa_O, 0.08 / massa_Na, 0.02 / massa_Mg, 0.2 / massa_P,
+    [10.2, 12.3 / massa_C, 3.5 / massa_N, 72.9 / massa_O, 0.08 
+     / massa_Na, 0.02 / massa_Mg, 0.2 / massa_P,
      0.5 / massa_S, 0.3 / massa_K, 0.007 / massa_Ca])
 
 # Atomic-Electron Binding Energies.pdf canvas RFA331.

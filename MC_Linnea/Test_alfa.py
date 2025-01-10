@@ -46,7 +46,6 @@ def position_start_alpha_innanför(radie_sfär, phi, theta):
 
 @jit(nopython=True)
 def position_start_alpha_skal(radie_sfär, phi, theta):
-    radie_alpha=1.2*10**(-15)*4**(1/3) #radie i meter enligt Physics Handbook
     r = radie_sfär - 0.5 * radie_alpha  # För att inte endast theta = pi ska ge utslag
 
     x = r * np.sin(theta) * np.cos(phi)
@@ -79,19 +78,21 @@ def laddad_partikel_väg(start_energi, start_position, phi, theta, steglängd, r
 
         # print('steg_vektor', steg_vektor)
         position_vektor += steg_vektor
-        energi = energiförlust_alpha(energi, steg_storlek)
+        energi_förlust = energiförlust_alpha(energi, steg_storlek)
         energideponering=0
         if np.dot(position_vektor, position_vektor) <= radie:
             innanför = True
             # trajectory.append(tuple(position_vektor))
             #print(f'Energideponering i position ', position_vektor)
-            energideponering += start_energi - energi
+            energideponering += energi_förlust
+            energi=start_energi - energideponering
+
+        elif energi<=0:
+            break
             
         else:
             break
             # print('Partikel utanför sfär!')
-
-    
 
     return energideponering  # , trajectory
 
