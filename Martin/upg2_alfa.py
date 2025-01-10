@@ -109,6 +109,6 @@ if __name__ == "__main__":
     print(
         '\n----------------------------------------------------------------------\nRESULTAT\n----------------------------------------------------------------------\n')
 
-    print(f'\nSkal (300 mikrometer): Energideponering: {energideponering_skal_Gy * 10 ** 9 / iterationer:.1f} E-09 Gy / partikel')
-    print(f'Innanför (1 mm): Energideponering: {energideponering_tot_innanför * 10 ** 9 / iterationer:.1f} E-09 Gy / partikel')
+    print(f'\nSkal (300 mikrometer): Energideponering: {energideponering_skal_Gy * 10 ** 9 / iterationer:.1f} E-09 Gy / sönderfall')
+    print(f'Innanför (1 mm): Energideponering: {energideponering_tot_innanför * 10 ** 9 / iterationer:.1f} E-09 Gy / sönderfall')
 
