@@ -4,22 +4,29 @@ from imports import *
 #from Martin.upg1_sampla_energi_start import energi_start
 
 #Energi=energi_start(At211_energi,At211_sannolikhet) #Samplar på samma sätt alfa energin som fotonerna, är i MeV
-from Alfa_stp_och_RCSDA import Stopping_power_och_steglängd
-from upg1_sampla_energi_start import energi_start
+from Elektron_stp_och_steglängd import Stopping_power_och_steglängd_elektron
+from Elektron_energi import Elektron_startenergi
+from Elektron_polarvinkel import Elektron_riktning
+
 
 #Visa funktioner går att sätta jit men inte alla
 @jit(nopython=True)
-def riktning_alpha():
+def riktning_elektron():
     theta = np.arccos(-1 + 2 * np.random.rand())
     phi = 2 * pi * np.random.rand()
     return theta, phi
 
+@jit(nopython=True)
+def förflyttning(position_vektor, steg_vektor):
+    position_vektor += steg_vektor
+    return position_vektor
+
 
 #@jit(nopython=True)
-def energiförlust_alpha(energi, steg):
+def energiförlust_elektron(energi, steg):
     # Implementera stopping power
     # print('WIP')
-    STP,_=Stopping_power_och_steglängd(energi)
+    STP,_,_=Stopping_power_och_steglängd_elektron(energi)
     energiförlust=STP*steg #i MeV
     #energiförlust = energi * 0.1
     energi -= energiförlust
@@ -31,7 +38,7 @@ def energiförlust_alpha(energi, steg):
 
 
 @jit(nopython=True)
-def position_start_alpha_innanför(radie_sfär, phi, theta):
+def position_start_elektron_innanför(radie_sfär, phi, theta):
     r = radie_sfär * np.random.rand()
 
     x = r * np.sin(theta) * np.cos(phi)
@@ -45,9 +52,9 @@ def position_start_alpha_innanför(radie_sfär, phi, theta):
 
 
 @jit(nopython=True)
-def position_start_alpha_skal(radie_sfär, phi, theta):
-    radie_alpha=1.2*10**(-15)*4**(1/3) #radie i meter enligt Physics Handbook
-    r = radie_sfär - 0.5 * radie_alpha  # För att inte endast theta = pi ska ge utslag
+def position_start_elektron_skal(radie_sfär, phi, theta):
+    radie_elektron=1*10**(-21) #test för tillfället, sök upp elektronens radie 
+    r = radie_sfär - 0.5 * radie_elektron  # För att inte endast theta = pi ska ge utslag
 
     x = r * np.sin(theta) * np.cos(phi)
     # y = r * np.sin(theta) * np.sin(phi)
@@ -64,28 +71,30 @@ def laddad_partikel_väg(start_energi, start_position, phi, theta, steglängd, r
     position_vektor = start_position
     energi = start_energi
 
-    # trajectory = [tuple(position_vektor)]
-
-    steg_storlek = steglängd / max_antal_steg
-
-    riktning = np.array([np.sin(theta) * np.cos(phi), np.sin(theta) * np.cos(phi), np.cos(theta)])
-    norm=np.sqrt(np.sum(riktning**2))
-    riktning /= norm
-    steg_vektor = riktning * steg_storlek
-
-
-    # Under tiden som partikeln fortfarnade inte tagit hela sitt steg.
-    for i in range(max_antal_steg):
-
-        # print('steg_vektor', steg_vektor)
-        position_vektor += steg_vektor
-        energi = energiförlust_alpha(energi, steg_storlek)
+    # Under energideponering efter varje steg och ändrar riktningen
+    while True:
         energideponering=0
+        #Ändrar på riktningen efter varje steg
+        riktning = np.array([np.sin(theta) * np.cos(phi), np.sin(theta) * np.cos(phi), np.cos(theta)])
+        riktning /= np.linalg.norm(riktning)
+
+        #Stegstorleken när den ändrar riktning
+        _,Steg,Tau=Stopping_power_och_steglängd_elektron(energi-energideponering)
+        steg_storlek = (Steg-Tau)*10**(-2) #omvandlar cm till m
+
+        steg_vektor = riktning * steg_storlek
+
+        position_vektor += steg_vektor
+        energi = energiförlust_elektron(energi, steg_storlek)
+        
+        
         if np.dot(position_vektor, position_vektor) <= radie:
             innanför = True
             # trajectory.append(tuple(position_vektor))
             #print(f'Energideponering i position ', position_vektor)
             energideponering += start_energi - energi
+            theta=Elektron_riktning(start_energi-energideponering)
+            phi=np.random.random()*2*pi
             
         else:
             break
@@ -96,34 +105,33 @@ def laddad_partikel_väg(start_energi, start_position, phi, theta, steglängd, r
     return energideponering  # , trajectory
 
 #@jit(nopython=True)
-def run_MC_alpha(iterationer, position_start_alpha, radie, max_antal_steg):
+def run_MC_elektron(iterationer, position_start_eletron, radie, max_antal_steg):
     
     energideponering_summa = 0
     utanför = 0
-    start_energi=energi_start(At211_energi,At211_sannolikhet)
+    start_energi=Elektron_startenergi()
 
-    if position_start_alpha == position_start_alpha_skal:
+    if position_start_eletron == position_start_elektron_skal:
 
         for i in range(iterationer):
-            theta, phi = riktning_alpha()
+            theta, phi = riktning_elektron()
 
             if not pi / 2 < phi < 3 * pi / 2:
                 # print('Utanför')
                 utanför += 1
                 energideponering = 0
             else:
-                start_position = position_start_alpha(radie, phi, theta)
-                _,Steglängd = Stopping_power_och_steglängd(start_energi) #steglängd_alpha(start_position, df_stopping_power)
+                start_position = position_start_eletron(radie, phi, theta)
+                _,_,Steglängd = Stopping_power_och_steglängd_elektron(start_energi) #steglängd_alpha(start_position, df_stopping_power)
                 steglängd=Steglängd*10**(-2)
                 energideponering = laddad_partikel_väg(start_energi, start_position, phi, theta, steglängd, radie,
                                                        max_antal_steg)
 
     else:
         for i in range(iterationer):
-            theta, phi = riktning_alpha()
-            start_position = position_start_alpha(radie, phi, theta)
-            _,Steglängd = Stopping_power_och_steglängd(start_energi) #steglängd_alpha(start_position, df_stopping_power)
-            steglängd=Steglängd*10**(-2) #Från cm till m
+            theta, phi = riktning_elektron()
+            start_position = position_start_eletron(radie, phi, theta)
+            _,_,steglängd = Stopping_power_och_steglängd_elektron(start_energi) #steglängd_alpha(start_position, df_stopping_power)
             energideponering = laddad_partikel_väg(start_energi, start_position, phi, theta, steglängd, radie,
                                                    max_antal_steg)
 
@@ -146,7 +154,7 @@ if __name__ == "__main__":
     print(
         '\n----------------------------------------------------------------------\nDUMMY\n----------------------------------------------------------------------\n')
 
-    _ = run_MC_alpha(dummy_iterationer, position_start_alpha_skal, radie_sfär,
+    _ = run_MC_elektron(dummy_iterationer, position_start_elektron_skal, radie_sfär,
                                         max_antal_steg)
     
 
@@ -154,7 +162,7 @@ if __name__ == "__main__":
 
     print(
         '\n----------------------------------------------------------------------\nRIKTIG\n----------------------------------------------------------------------\n')
-    energideponering_tot_skal = run_MC_alpha(iterationer, position_start_alpha_skal, radie_sfär, max_antal_steg)
+    energideponering_tot_skal = run_MC_elektron(iterationer, position_start_elektron_skal, radie_sfär, max_antal_steg)
 
     end_time(start)
 
@@ -165,13 +173,13 @@ if __name__ == "__main__":
     print(
         '\n----------------------------------------------------------------------\nDUMMY\n----------------------------------------------------------------------\n')
 
-    _ = run_MC_alpha(dummy_iterationer, position_start_alpha_innanför, radie_sfär,
+    _ = run_MC_elektron(dummy_iterationer, position_start_elektron_innanför, radie_sfär,
                                                  max_antal_steg)
 
     start = time.time()
     print(
         '\n----------------------------------------------------------------------\nRIKTIG\n----------------------------------------------------------------------\n')
-    energideponering_tot_innanför = run_MC_alpha(iterationer, position_start_alpha_innanför, radie_sfär,
+    energideponering_tot_innanför = run_MC_elektron(iterationer, position_start_elektron_innanför, radie_sfär,
                                                  max_antal_steg)
 
     end_time(start)

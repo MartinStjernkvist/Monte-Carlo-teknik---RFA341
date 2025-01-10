@@ -42,4 +42,3 @@ def Elektron_riktning(Elektron_energi): #Energi i elektron i tabell är i eV
 
 
     
-print(Elektron_riktning(0.511)) # Elektron energi i MeV

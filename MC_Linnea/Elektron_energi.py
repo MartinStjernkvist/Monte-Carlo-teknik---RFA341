@@ -28,7 +28,7 @@ olika_energier=np.linspace(np.min(Energi_Y90), np.max(Energi_Y90),1000)
 plt.plot(olika_energier,polynom_funktion(olika_energier,*params))
 
 #Visa figuren
-plt.show()
+#plt.show()
 
 
 f_max=np.max(polynom_funktion(olika_energier,*params)) 

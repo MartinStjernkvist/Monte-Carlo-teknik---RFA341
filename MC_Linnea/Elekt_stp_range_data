@@ -1,11 +1,3 @@
-ESTAR: Stopping Powers and Range Tables for Electrons
-
-WATER, LIQUID                                                                
-
-Kinetic  	Total    	CSDA     	
-Energy   	Stp. Pow.	Range    	
-MeV      	MeV cm2/g	g/cm2    	
-
 1.000E-02	2.256E+01	2.515E-04	
 1.250E-02	1.898E+01	3.728E-04	
 1.500E-02	1.647E+01	5.147E-04	
