@@ -96,9 +96,11 @@ Lu177_intensitet = [10.38, 6.2, 0.216, 0.2012, 0.1726,
                     0.047]  # Sönderfallsintensitet i % för respektive energi. Från laraweb.
 Lu177_sannolikhet = np.cumsum(Lu177_intensitet) / np.sum(Lu177_intensitet)  # Kumulativa sannolikheten för sönderfall.
 
-At211_energi = [5.869, 5.2119, 5.1403, 4.9934, 4.895]  # Energi i MeV
+At211_energi = [5.869 * 10 ** 6, 5.2119 * 10 ** 6, 5.1403 * 10 ** 6, 4.9934 * 10 ** 6, 4.895 * 10 ** 6]  # Energi i eV
 At211_intensitet = [41.78, 0.0039, 0.0011, 0.0004, 0.00004]  # Intensitet i % för energierna
-At211_sannolikhet = np.cumsum(At211_intensitet / np.sum(At211_intensitet))
+At211_sannolikhet = np.cumsum(At211_intensitet) / np.sum(At211_intensitet)
+
+rho_vatten = 0.998  # Vattens densitet i g/cm^3.
 
 #   ----------------------------------------------------------------------
 #   Filer med Data
@@ -110,8 +112,9 @@ anatomidefinitioner_file = '../given_data/Anatomidefinitioner.xlsx'
 
 mat_file = 'phantom_data.mat'
 
+stopping_power_alfa_file = 'Stoppingpower_data_alfa'
 
-#Inläsning för vscode:
+# Inläsning för vscode:
 """
 tvärsnitt_file = r'given_data/Tvärsnittstabeller_Fotoner.xlsx'
 attenueringsdata_file = r"given_data/Attenueringsdata.xlsx"

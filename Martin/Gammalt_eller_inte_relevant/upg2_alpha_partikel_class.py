@@ -41,7 +41,7 @@ def laddad_partikel_väg_class(partikel, radie, max_antal_steg=100):
     start_energi = partikel.energi
     position_vektor = partikel.position
     steglängd = partikel.steglängd_alpha()
-    theta, phi = partikel.riktning_alpha()
+    theta, phi = partikel.riktning_uniform()
 
     print('start energi', start_energi)
     print('position_vektor', position_vektor)
@@ -70,7 +70,7 @@ def laddad_partikel_väg_class(partikel, radie, max_antal_steg=100):
             sista_energi = partikel.return_energi()  # Det sista värdet kommer sparas, resterande är irrelevanta.
 
             partikel.förflyttning(steg_vektor)
-            partikel.energiförlust_alpha(steg_storlek)
+            partikel.energi_efter_energiförlust(steg_storlek)
 
             if np.dot(partikel.position, partikel.position) <= radie:
                 innanför = True
