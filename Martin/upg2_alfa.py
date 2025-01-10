@@ -57,9 +57,12 @@ def run_MC_alpha(iterationer, rho_medium, radie_partikel, df_stopping_power, pos
 
 def energideponering_eV_till_Gy(energideponering_eV, rho_medium, radie_sfär):
     V = rho_medium * 4 / 3 * np.pi * radie_sfär ** 3
-    massa = V * rho_medium
+    rho_kg_m3 = rho_medium * 1000
+
+    massa = V * rho_kg_m3
     energideponering_J = energideponering_eV * 1.602 * 10 ** (-19)
     energideponering_Gy = energideponering_J / massa  # J / kg
+
     return energideponering_Gy
 
 
