@@ -91,6 +91,7 @@ def laddad_partikel_väg(start_energi, start_position, phi, theta, steglängd, r
             # trajectory.append(tuple(position_vektor))
             #print(f'Energideponering i position ', position_vektor)
             
+            #Vill visa positionen för energideponeringen med en färg som motsvarar energideponeringen
             #ax.scatter(position_vektor[0],position_vektor[1],position_vektor[2],c=energiförlust_alpha(energi,steg_storlek),cmap='plasma')
             energideponering_list.append(energiförlust_alpha(energi, steg_storlek))
             x.append(position_vektor[0])
@@ -114,6 +115,10 @@ def laddad_partikel_väg(start_energi, start_position, phi, theta, steglängd, r
 def run_MC_alpha(iterationer, position_start_alpha, radie, max_antal_steg):
     
     energideponering_summa = 0
+    x_lista=[]
+    y_lista=[]
+    z_lista=[]
+    dos_lista=[]
     utanför = 0
     start_energi=energi_start(At211_energi,At211_sannolikhet)
 
@@ -132,7 +137,10 @@ def run_MC_alpha(iterationer, position_start_alpha, radie, max_antal_steg):
                 steglängd=Steglängd*10**(-2)
                 energideponering, x,y,z, dos = laddad_partikel_väg(start_energi, start_position, phi, theta, steglängd, radie,
                                                        max_antal_steg)
-
+                x_lista+=x
+                y_lista+=y
+                z_lista+=z
+                dos_lista+=dos
     else:
         for i in range(iterationer):
             theta, phi = riktning_alpha()
@@ -141,16 +149,16 @@ def run_MC_alpha(iterationer, position_start_alpha, radie, max_antal_steg):
             steglängd=Steglängd*10**(-2) #Från cm till m
             energideponering, x,y,z, dos  = laddad_partikel_väg(start_energi, start_position, phi, theta, steglängd, radie,
                                                    max_antal_steg)
-        x.extend(x)
-        y.extend(y)
-        z.extend(z)
-        dos.extend(dos)
-        print(x)
+            x_lista+=x
+            y_lista+=y
+            z_lista+=z
+            dos_lista+=dos
+        
         energideponering_summa += energideponering
-    #Plotta en figur
+    #Plotta en figur som visar energideponeringen i hela tumören
     fig = plt.figure()
     ax = fig.add_subplot(projection='3d')
-    ax.scatter(x,y,z,c=dos,cmap='plasma')
+    ax.scatter(x_lista,y_lista,z_lista,c=dos_lista,cmap='plasma') 
 
     print('antal utanför: ', utanför)
     print('total energideponering: ', energideponering_summa)
