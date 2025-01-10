@@ -156,7 +156,7 @@ def transformera_koordinatsystem_extended(steg_A_B, phi_A, theta_A, steg_B_C, ph
             [-np.sin(angle), 0, np.cos(angle)],
         ])
 
-    # R_y = np.identity(3)
+    R_y = np.identity(3)
     # R_z = np.identity(3)
 
     # R = R_y @ R_z
@@ -294,7 +294,27 @@ if __name__ == "__main__":
     theta_B = pi / 3
     phi_B = pi / 3
     steg_B_C = 2
+    """
 
+    # startpunkt A
+    x_start = 1
+    y_start = 1
+    z_start = 1
+
+    x_A = x_start
+    y_A = y_start
+    z_A = z_start
+
+    # steg 1: från A till B
+    theta_A = 3 * pi / 8
+    phi_A = 1 * pi / 8
+    steg_A_B = 3
+
+    # steg 2: Från B till C, enligt koordinatsystemet för B
+    theta_B = pi / 3
+    phi_B = pi / 3
+    steg_B_C = 2
+"""
     #   ----------------------------------------------------------------------
     #   BERÄKNING
     #   ---------------------------------------------------------------------
@@ -345,9 +365,9 @@ if __name__ == "__main__":
     ax.set_ylim([0.5, 4])
     ax.set_zlim([0.5, 4])
 
-    ax.scatter(x_start, y_A, z_A, label='A', color='black', s=100)
-    ax.scatter(x_start + dx_A_B, y_A + dy_A_B, z_A + dz_A_B, label='B', color='dimgrey', s=100)
-    ax.scatter(x_A + x_A_C, y_A + y_A_C, z_A + z_A_C, label='C', color='slategrey', s=100)
+    ax.scatter(x_start, y_A, z_A, label='A', color='black', s=150)
+    ax.scatter(x_start + dx_A_B, y_A + dy_A_B, z_A + dz_A_B, label='B', color='dodgerblue', s=150)
+    ax.scatter(x_A + x_A_C, y_A + y_A_C, z_A + z_A_C,label='C', color='slategrey', s=150)
 
     # Enhetsvektorer
     ax.quiver(x_A, y_A, z_A, 1, 0, 0, color='red')
@@ -367,8 +387,8 @@ if __name__ == "__main__":
     ax.quiver(x_A, y_A, z_A, dx_A_B, dy_A_B, dz_A_B, color='blue', label='första steget, A-> B')
     ax.quiver(x_A + dx_A_B, y_A + dy_A_B, z_A + dz_A_B, (x_A_C - dx_A_B), (y_A_C - dy_A_B), (z_A_C - dz_A_B),
               color='darkviolet',
-              label='andra steget, B->C (steg tas utifrån B\'s koordinatsystem)')
-    ax.quiver(x_A, y_A, z_A, x_A_C, y_A_C, z_A_C, color='magenta',label='steg A -> C i A\'s koordinatsystem)')
+              label='andra steget, B -> C')
+    ax.quiver(x_A, y_A, z_A, x_A_C, y_A_C, z_A_C, color='magenta',label='steg A -> C')
 
     ax.set_xlabel('x')
     ax.set_ylabel('y')
@@ -389,7 +409,7 @@ if __name__ == "__main__":
     ax.set_zlim([0.5, 4])
 
     ax.scatter(x_start, y_A, z_A, label='A', color='black', s=100)
-    ax.scatter(x_start + dx_A_B, y_A + dy_A_B, z_A + dz_A_B, label='B', color='dimgrey', s=100)
+    ax.scatter(x_start + dx_A_B, y_A + dy_A_B, z_A + dz_A_B, label='B', color='dodgerblue', s=100)
     ax.scatter(x_A + x_A_C, y_A + y_A_C, z_A + z_A_C, label='C', color='slategrey', s=100)
 
     # Enhetsvektorer
@@ -410,8 +430,8 @@ if __name__ == "__main__":
     ax.quiver(x_A, y_A, z_A, dx_A_B, dy_A_B, dz_A_B, color='blue', label='första steget, A-> B')
     ax.quiver(x_A + dx_A_B, y_A + dy_A_B, z_A + dz_A_B, (x_A_C - dx_A_B), (y_A_C - dy_A_B), (z_A_C - dz_A_B),
               color='darkviolet',
-              label='andra steget, B->C (steg tas utifrån B\'s koordinatsystem')
-    ax.quiver(x_A, y_A, z_A, x_A_C, y_A_C, z_A_C, color='magenta', label='steg A -> C i A\'s koordinatsystem')
+              label='andra steget, B -> C')
+    ax.quiver(x_A, y_A, z_A, x_A_C, y_A_C, z_A_C, color='magenta', label='steg A -> C')
 
     ax.set_xlabel('x')
     ax.set_ylabel('y')
@@ -461,7 +481,7 @@ if __name__ == "__main__":
     #           enhets_vektorer_B[2, 2],
     #           color='royalblue')
 
-    ax.quiver(x_A, y_A, z_A, dx_A_B, dy_A_B, dz_A_B, color='blue', label='första steget, A-> B')
+    ax.quiver(x_A, y_A, z_A, dx_A_B, dy_A_B, dz_A_B, color='blue')
     # ax.quiver(x_A + dx_A_B, y_A + dy_A_B, z_A + dz_A_B, (x_A_C - dx_A_B), (y_A_C - dy_A_B), (z_A_C - dz_A_B),
     #           color='darkviolet',
     #           label='andra steget, B->C (steg tas utifrån B\'s koordinatsystem')
@@ -473,8 +493,9 @@ if __name__ == "__main__":
 
     ax.azim, ax.elev = -115, 30
 
+    plt.title('Ingen rotation', fontsize=font_size*2)
     plt.tight_layout()
-    ax.legend(fontsize=font_size)
+    # ax.legend(fontsize=font_size)
     plt.savefig('3d_fig_rotation_0')
     plt.show()
 
@@ -525,9 +546,14 @@ if __name__ == "__main__":
 
     ax.azim, ax.elev = -115, 30
 
+    # plt.title('R = R_z R_y', fontsize=font_size*2)
+    plt.title('R = R_z', fontsize=font_size*2)
+    # plt.title('R = R_y', fontsize=font_size*2)
     plt.tight_layout()
-    ax.legend(fontsize=font_size)
-    plt.savefig('3d_fig')
+    # ax.legend(fontsize=font_size)
+    # plt.savefig('3d_fig_yz')
+    plt.savefig('3d_fig_z')
+    # plt.savefig('3d_fig_y')
     plt.show()
 
 

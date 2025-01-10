@@ -192,13 +192,13 @@ if __name__ == "__main__":
     x_data = [energi_list, energi, energi_list, energi, energi_list, energi]
     y_data = [foto_list, foto_target, compton_list, compton_target, rayleigh_list, rayleigh_target]
     scatter = [2, 1, 2, 1, 2, 1]
-    label_data = ['foto', 'foto', 'compton', 'compton', 'rayleigh', 'rayleigh']
+    label_data = ['Foto', 'Foto', 'Compton', 'Compton', 'Rayleigh', 'Rayleigh']
     marker = ['o', 'X', 'o', 'X', 'o', 'X']
     color = ['blue', 'lightcoral', 'green', 'red', 'magenta', 'brown']
 
     fig = plot_stuff(x_data, y_data, scatter, label_data,
-                     marker, color, x_label='energi (eV)', y_label='tvärsnitt (cm^2)', title='foto och compton',
-                     fig_size=(10, 10), symbol_size=100, font_size=30, alpha=1, line_width=2, x_lim=(10, 10 ** 6),
+                     marker, color, x_label='energi (eV)', y_label='tvärsnitt (cm^2)', title='Tvärsnittdata',
+                     fig_size=(10, 10), symbol_size=150, font_size=30, alpha=1, line_width=2, x_lim=(100, 5 * 10 ** 5),
                      y_lim=(10 ** (-30), 10 ** (-17)),
                      grid=True, x_scale='log', y_scale='log')
 

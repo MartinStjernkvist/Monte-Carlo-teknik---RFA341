@@ -117,8 +117,7 @@ def run_MC_alpha(iterationer, df_stopping_power, position_start_alpha, radie, ma
                 energideponering = 0
             else:
                 start_position = position_start_alpha(radie, phi, theta)
-                _,Steglängd = Stopping_power_och_steglängd(start_energi) #steglängd_alpha(start_position, df_stopping_power)
-                steglängd=Steglängd*10**(-2)
+                _,steglängd = Stopping_power_och_steglängd(start_energi) #steglängd_alpha(start_position, df_stopping_power)
                 energideponering = laddad_partikel_väg(start_energi, start_position, phi, theta, steglängd, radie,
                                                        max_antal_steg)
 
@@ -137,7 +136,7 @@ def run_MC_alpha(iterationer, df_stopping_power, position_start_alpha, radie, ma
     print(f'\nEnergideponering per partikel: {energideponering_summa / iterationer:.2f} eV / partikel')
     return energideponering_summa
 
-
+#
 # def run_MC_alpha_innanför(iterationer, df_stopping_power, start_energi, radie, max_antal_steg):
 #     energideponering_summa = 0
 #     utanför = 0
