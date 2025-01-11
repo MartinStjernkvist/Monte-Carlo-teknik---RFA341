@@ -2,7 +2,7 @@ from imports import *
 from upg2_energi_efter_förlust import energi_efter_energiförlust
 
 
-def laddad_partikel_väg(energi_start, position_start, phi, theta, steglängd, radie_sfär, rho_medium,
+def laddad_partikel_väg_elektron(energi_start, position_start, phi, theta, steglängd, radie_sfär, rho_medium,
                         stopping_power_data,
                         max_antal_steg):
     """
@@ -11,6 +11,7 @@ def laddad_partikel_väg(energi_start, position_start, phi, theta, steglängd, r
     :param max_antal_steg: Maximalt antal steg som steglängden ska delas upp i.
     :return: Energideponeringen innanför sfären.
     """
+
 
     position_vektor = position_start
     energi = energi_start
@@ -47,7 +48,7 @@ def laddad_partikel_väg(energi_start, position_start, phi, theta, steglängd, r
 
         
         # if np.dot(position_vektor, position_vektor) <= radie_sfär:
-       # print(f'Energideponering i position ', position_vektor)
+        #print(f'Energideponering i position ', position_vektor)
         # else:
         #     break
         if np.dot(position_vektor, position_vektor) > radie_sfär:

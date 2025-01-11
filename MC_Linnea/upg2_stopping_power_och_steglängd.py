@@ -11,16 +11,18 @@ def stopping_power_och_steglängd(energi, rho_medium, stopping_power_data):
     energi_MeV_list = stopping_power_data[:, 0]
     energi_list = np.array([(lambda x: x * 10**6)(x) for x in energi_MeV_list])
 
-    stopping_power_list = stopping_power_data[:, 1]
-    CSDA_list =np.array([(lambda x: x * 10**6)(x) for x in stopping_power_list])
+    stopping_power_MeV_list = stopping_power_data[:, 1]
+    STP_list =np.array([(lambda x: x * 10**7)(x) for x in stopping_power_MeV_list])
 
+    CSDA_g_per_cm2_list=stopping_power_data[:, 2]
+    CSDA_list=np.array([(lambda x: x * 10**1)(x) for x in CSDA_g_per_cm2_list])
     # Tar index för närmaste energi på alfapartikeln.
     diff = np.abs(energi_list - energi)
     closest_indices = np.argsort(diff)[:2]
 
     # Närmsta värdena:
     energi_close = energi_list[closest_indices]
-    stopping_power_close = stopping_power_list[closest_indices]
+    stopping_power_close = STP_list[closest_indices]
     CSDA_close = CSDA_list[closest_indices]
 
     # Linjärinterpolera och få fram stopping power och slumpmässig steglängd.
