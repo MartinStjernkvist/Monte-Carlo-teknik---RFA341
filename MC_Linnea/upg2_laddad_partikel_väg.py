@@ -49,5 +49,5 @@ def laddad_partikel_väg(energi_start, position_start, phi, theta, steglängd, r
             break
     energideponering = energi_start - energi
     #print('Doslista', np.sum(dos))
-    print(f'energideponering: {energideponering} eV')
-    return energideponering#, x,y,z, dos
+    #print(f'energideponering: {energideponering} eV')
+    return energideponering, x,y,z, dos
