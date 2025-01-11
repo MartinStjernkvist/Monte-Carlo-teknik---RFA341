@@ -51,7 +51,7 @@ def run_MC_alpha_2(iterationer, rho_medium, radie_partikel, stopping_power_data,
             position_start = position_start_innanför(radie_sfär)
 
             _, steglängd = stopping_power_och_steglängd(energi, rho_medium, stopping_power_data)
-            print(f'steglängd: {steglängd * 10 ** 6:.2f} mikrometer')
+            #print(f'steglängd: {steglängd * 10 ** 6:.2f} mikrometer')
 
             energideponering , x,y,z, dos= laddad_partikel_väg(energi, position_start, phi, theta, steglängd, radie_sfär,
                                                    rho_medium, stopping_power_data, max_antal_steg)
@@ -69,6 +69,7 @@ def run_MC_alpha_2(iterationer, rho_medium, radie_partikel, stopping_power_data,
     # print(f'\nEnergideponering per partikel: {energideponering_summa / iterationer:.2f} eV / partikel')
 
     #Plotta en figur som visar energideponeringen i hela tumören
+    #Hitta ett sätt att färga punkterna för värde på energideponeringen
     fig = plt.figure(1)
     fig2=plt.figure(2)
     ax = fig.add_subplot(projection='3d')
@@ -76,12 +77,14 @@ def run_MC_alpha_2(iterationer, rho_medium, radie_partikel, stopping_power_data,
     ax.scatter(x_list,y_list,z_list,c=dos_list,cmap='plasma')
     ax.set_xlabel('x-axel i meter')
     ax.set_ylabel('y-axel i meter')
-    #Testar att sätta en sfär
+
+    #Testar att sätta en sfär för tumören
     u, v = np.mgrid[0:2*np.pi:20j, 0:np.pi:10j]
     x = radie_sfär*np.cos(u)*np.sin(v)
     y = radie_sfär*np.sin(u)*np.sin(v)
     z = radie_sfär*np.cos(v)
     ax.plot_wireframe(x, y, z, color="k",alpha=0.3)
+    
     #ax2.scatter(x_list,y_list,dos_list,c=dos_list,cmap='plasma')
     plt.show()
     return energideponering_summa
