@@ -28,5 +28,6 @@ def Stopping_power_och_steglängd(Alfa_energi): #i MeV för alfa energin
         Steglängd=(Range_close[0] + (Alfa_energi - energi_close[0]) * (
                     Range_close[1] - Range_close[0]) / (
                                     energi_close[1] - energi_close[0]))/rho
-    return STP, Steglängd #stp i MeV/cm och steglängd i cm
+        
+    return STP*10**8, Steglängd*10**(-2) #stp i eV/m och steglängd i m
 

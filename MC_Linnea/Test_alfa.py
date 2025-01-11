@@ -133,8 +133,7 @@ def run_MC_alpha(iterationer, position_start_alpha, radie, max_antal_steg):
                 energideponering = 0
             else:
                 start_position = position_start_alpha(radie, phi, theta)
-                _,Steglängd = Stopping_power_och_steglängd(start_energi) #steglängd_alpha(start_position, df_stopping_power)
-                steglängd=Steglängd*10**(-2) #Från cm till m
+                _,steglängd = Stopping_power_och_steglängd(start_energi) #steglängd_alpha(start_position, df_stopping_power)
                 energideponering, x,y,z, dos = laddad_partikel_väg(start_energi, start_position, phi, theta, steglängd, radie,
                                                        max_antal_steg)
                 x_lista+=x
@@ -146,8 +145,7 @@ def run_MC_alpha(iterationer, position_start_alpha, radie, max_antal_steg):
             start_energi=energi_start(At211_energi,At211_sannolikhet)
             theta, phi = riktning_alpha()
             start_position = position_start_alpha(radie, phi, theta)
-            _,Steglängd = Stopping_power_och_steglängd(start_energi) #steglängd_alpha(start_position, df_stopping_power)
-            steglängd=Steglängd*10**(-2) #Från cm till m
+            _,steglängd = Stopping_power_och_steglängd(start_energi) #steglängd_alpha(start_position, df_stopping_power)
             energideponering, x,y,z, dos  = laddad_partikel_väg(start_energi, start_position, phi, theta, steglängd, radie,
                                                    max_antal_steg)
             x_lista+=x
@@ -161,7 +159,7 @@ def run_MC_alpha(iterationer, position_start_alpha, radie, max_antal_steg):
     ax = fig.add_subplot(projection='3d')
     ax.scatter(x_lista,y_lista,z_lista,c=dos_lista,cmap='plasma') 
 
-    print('Dos', dos_lista)
+    #print('Dos', dos_lista)
     print('antal utanför: ', utanför)
     print('total energideponering: ', energideponering_summa*10**6 )
     print(f'\nEnergideponering per partikel: {energideponering_summa*10**6 / (iterationer)} eV / partikel')#omvandlar från MeV till eV

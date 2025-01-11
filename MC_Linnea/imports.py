@@ -28,6 +28,8 @@ a_0 = 5.29177210903 * 10 ** (-11) * 10 ** (14)  # sqrt(b), bohr radius of hydrog
 c = 3 * 10 ** 8
 radie_alpha = 1.2*10**(-15)*4**(1/3) #radie i meter enligt Physics Handbook 
 
+rho_vatten=998 #kg/m^3
+
 # Neutroner???
 massa_H = 1 # enhet u
 # massa_C = 6
@@ -100,11 +102,11 @@ fluorescence_yield = (1 / np.sum(
 voxel_sidlängd = 0.15  # cm
 
 
-Lu177_energi = [208_366, 112_950, 321_316, 249_674, 71_642, 136_725]  # Sönderfallsenergierna för Lu-177.
+Lu177_energi = [208_366, 112_950, 321_316, 249_674, 71_642, 136_725]  # Sönderfallsenergierna för Lu-177. i eV
 Lu177_intensitet = [10.38, 6.2, 0.216, 0.2012, 0.1726, 0.047]  # Sönderfallsintensitet i % för respektive energi. Från laraweb.
 Lu177_sannolikhet = np.cumsum(Lu177_intensitet) / np.sum(Lu177_intensitet)  # Kumulativa sannolikheten för sönderfall.
 
-At211_energi=[5.869, 5.2119,5.1403, 4.9934,4.895] #Energi i MeV 
+At211_energi=[5_869_000, 5_211_900, 5_140_300, 4_993_400, 4_895_000] #Energi i eV 
 At211_intensitet=[41.78, 0.0039, 0.0011, 0.0004, 0.00004] #Intensitet i % för energierna
 At211_sannolikhet=np.cumsum(At211_intensitet/np.sum(At211_intensitet))
 

@@ -83,7 +83,7 @@ def laddad_partikel_väg(start_energi, start_position, phi, theta, radie):
         _,Steg,Tau=Stopping_power_och_steglängd_elektron(energi)
         steg_storlek = (Steg-Tau)*10**(-2) #omvandlar cm till m
 
-        #Lägg till steg_transformationen!!!!!!!!
+        #Lägg till steg_transformationen?
         steg_vektor = riktning * steg_storlek 
 
         position_vektor += steg_vektor
