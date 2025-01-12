@@ -30,17 +30,15 @@ def laddad_partikel_väg_elektron(energi_start, position_start, phi, theta, steg
     x,y,z,dos=[],[],[],[]
     # Under tiden som partikeln fortfarande inte tagit hela sitt steg.
     while steg_tagna < max_antal_steg and energi > 0:
-        #Plottvärderna för att se dosfördelningen
+        #Plottvärderna för att se dosfördelningen, men får bara ut startpositionen inte alla andra delsteg...
         dos.append(energi-energi_efter_energiförlust(energi, steg_storlek, rho_medium, stopping_power_data))
-
-        #Tar ett steg
-        steg_tagna += 1
-        position_vektor += steg_vektor 
-        #Plottvärderna för att se dosfördelningen
-        #Beroende på var man sätter append kommer olika figurer..........?
         x.append(position_vektor[0])
         y.append(position_vektor[1])
         z.append(position_vektor[2])
+        #Tar ett steg
+        steg_tagna += 1
+        position_vektor += steg_vektor 
+
  
 
         #Förlorar energi och får en ny
