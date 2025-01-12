@@ -1,5 +1,5 @@
 from imports import *
-from Elektron_stp_och_steglängd import Stopping_power_och_steglängd_elektron
+from upg2_Elektron_stp_och_steglängd import Stopping_power_och_steglängd_elektron
 
 def energi_efter_energiförlust(energi, steglängd, rho_medium, stopping_power_data):
     """

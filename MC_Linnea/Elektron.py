@@ -1,7 +1,7 @@
 
 from imports import *
-from Elektron_energi import Elektron_startenergi
-from Elektron_stp_och_steglängd import Stopping_power_och_steglängd_elektron
+from upg2_Elektron_energi import Elektron_startenergi
+from upg2_Elektron_stp_och_steglängd import Stopping_power_och_steglängd_elektron
 from upg2_riktning import riktning_uniform, riktning_skal
 from upg2_position_start import position_start_innanför, position_start_skal
 from upg2_laddad_partikel_väg_elektron import laddad_partikel_väg_elektron
@@ -150,9 +150,9 @@ if __name__ == "__main__":
         '\n----------------------------------------------------------------------\nRESULTAT\n----------------------------------------------------------------------\n')
 
     print(
-        f'\nSkal (300 mikrometer): Energideponering:\n{energideponering_skal_Gy * 10 ** 6 / iterationer} E-06 Gy / sönderfall')
-    print(f'faktor {(energideponering_skal_Gy * 10 ** 6 / iterationer) / 1.66} av facit')
+        f'\nSkal (300 mikrometer): Energideponering:\n{energideponering_skal_Gy * 10 ** 8 / iterationer} E-08 Gy / sönderfall')
+    print(f'faktor {(energideponering_skal_Gy * 10 ** 8 / iterationer) / 4.07} av facit')
 
     print(
-        f'\nInnanför (1 mm): Energideponering:\n{energideponering_innanför_Gy * 10 ** 8 / iterationer} E-08 Gy / sönderfall')
-    print(f'faktor {(energideponering_innanför_Gy * 10 ** 8 / iterationer) / 9.18} av facit')
+        f'\nInnanför (1 mm): Energideponering:\n{energideponering_innanför_Gy * 10 ** 9 / iterationer} E-09 Gy / sönderfall')
+    print(f'faktor {(energideponering_innanför_Gy * 10 ** 9 / iterationer) / 5.22} av facit')
