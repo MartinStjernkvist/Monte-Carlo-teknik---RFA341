@@ -88,7 +88,8 @@ def ny_steg_transformera_koordinatsystem_3d(steg_A_B, phi_A, theta_A, steg_B_C, 
 
     # Vill ha vektor B->C
     vektor = vektor_A_C - vektor_A_B
-    vektor_voxel = (1 / voxel_sidlängd) * vektor
-    dx, dy, dz = vektor_voxel[0], vektor_voxel[1], vektor_voxel[2]
+    #vektor_voxel = (1 / voxel_sidlängd) * vektor
+    #dx, dy, dz = vektor_voxel[0], vektor_voxel[1], vektor_voxel[2]
+    position_ny= np.array([vektor[0], vektor[1], vektor[2]])
 
-    return dx, dy, dz
+    return position_ny

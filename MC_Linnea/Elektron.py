@@ -4,10 +4,10 @@ from Elektron_energi import Elektron_startenergi
 from Elektron_stp_och_steglängd import Stopping_power_och_steglängd_elektron
 from upg2_riktning import riktning_uniform, riktning_skal
 from upg2_position_start import position_start_innanför, position_start_skal
-from upg2_laddad_partikel_väg import laddad_partikel_väg
+from upg2_laddad_partikel_väg_elektron import laddad_partikel_väg_elektron
 
 
-def run_MC_alpha_2(iterationer, rho_medium, radie_partikel, stopping_power_data, position_start_alpha, radie_sfär,
+def run_MC_elektron(iterationer, rho_medium, radie_partikel, stopping_power_data, position_start_alpha, radie_sfär,
                  max_antal_steg):
     """
     Monte-Carlo simulering för alfapartiklarna.
@@ -30,12 +30,14 @@ def run_MC_alpha_2(iterationer, rho_medium, radie_partikel, stopping_power_data,
             theta, phi = riktning_skal()
             position_start = position_start_skal(radie_sfär, radie_partikel)
 
-            _, steglängd = stopping_power_och_steglängd(energi, rho_medium, stopping_power_data)
+            _, _,steglängd = Stopping_power_och_steglängd_elektron(energi, rho_medium, stopping_power_data)
             #print(f'steglängd: {steglängd * 10 ** (-6):.2f} mikrometer')
 
-            energideponering= laddad_partikel_väg(energi, position_start, phi, theta, steglängd, radie_sfär,
+            #kommer gå i Tau i riktningen men sen ändra på den i Steglängd-Tau med theata riktning
+            energideponering, x,y,z, dos= laddad_partikel_väg_elektron(energi, position_start, phi, theta, steglängd, radie_sfär,
                                                    rho_medium, stopping_power_data, max_antal_steg)
-           
+           #ändra i laddad_partikel_väg så den ändrar koordinatsystem med polarvinkeln!!!!!!!!!
+
             energideponering_summa += energideponering
             print(f'energideponering: {energideponering * 10 ** (-6)} MeV')
 
@@ -47,10 +49,10 @@ def run_MC_alpha_2(iterationer, rho_medium, radie_partikel, stopping_power_data,
             theta, phi = riktning_uniform()
             position_start = position_start_innanför(radie_sfär)
 
-            _, steglängd = stopping_power_och_steglängd(energi, rho_medium, stopping_power_data)
+            _, _,steglängd = Stopping_power_och_steglängd_elektron(energi, rho_medium, stopping_power_data)
             #print(f'steglängd: {steglängd * 10 ** 6:.2f} mikrometer')
 
-            energideponering = laddad_partikel_väg(energi, position_start, phi, theta, steglängd, radie_sfär,
+            energideponering , x,y,z, dos= laddad_partikel_väg_elektron(energi, position_start, phi, theta, steglängd, radie_sfär,
                                                    rho_medium, stopping_power_data, max_antal_steg)
         
             energideponering_summa += energideponering
@@ -116,14 +118,14 @@ if __name__ == "__main__":
     print(
         '\n----------------------------------------------------------------------\nDUMMY\n----------------------------------------------------------------------\n')
 
-    _ = run_MC_alpha_2(dummy_iterationer, rho_medium, radie_partikel, stopping_power_data, position_start_skal,
+    _ = run_MC_elektron(dummy_iterationer, rho_medium, radie_partikel, stopping_power_data, position_start_skal,
                      radie_sfär_skal, max_antal_steg)
 
     start = time.time()
 
     print(
         '\n----------------------------------------------------------------------\nRIKTIG\n----------------------------------------------------------------------\n')
-    energideponering_tot_skal = run_MC_alpha_2(iterationer, rho_medium, radie_partikel, stopping_power_data,
+    energideponering_tot_skal = run_MC_elektron(iterationer, rho_medium, radie_partikel, stopping_power_data,
                                              position_start_skal, radie_sfär_skal, max_antal_steg)
     energideponering_skal_Gy = energideponering_eV_till_Gy(energideponering_tot_skal, rho_medium, radie_sfär_skal)
 
@@ -132,13 +134,13 @@ if __name__ == "__main__":
     print(
         '\n----------------------------------------------------------------------\nDUMMY\n----------------------------------------------------------------------\n')
 
-    _ = run_MC_alpha_2(dummy_iterationer, rho_medium, radie_partikel, stopping_power_data, position_start_innanför,
+    _ = run_MC_elektron(dummy_iterationer, rho_medium, radie_partikel, stopping_power_data, position_start_innanför,
                      radie_sfär_innanför, max_antal_steg)
 
     start = time.time()
     print(
         '\n----------------------------------------------------------------------\nRIKTIG\n----------------------------------------------------------------------\n')
-    energideponering_tot_innanför = run_MC_alpha_2(iterationer, rho_medium, radie_partikel, stopping_power_data,
+    energideponering_tot_innanför = run_MC_elektron(iterationer, rho_medium, radie_partikel, stopping_power_data,
                                                  position_start_innanför, radie_sfär_innanför, max_antal_steg)
     energideponering_innanför_Gy = energideponering_eV_till_Gy(energideponering_tot_innanför, rho_medium,
                                                                radie_sfär_innanför)

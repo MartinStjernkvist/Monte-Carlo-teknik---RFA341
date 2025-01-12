@@ -1,7 +1,7 @@
 from imports import *
 
 
-def Elektron_riktning(Elektron_energi): #Energi i elektron i tabell är i eV
+def Elektron_theata_ny(Elektron_energi): #Energi i elektron i tabell är i eV
     R=np.random.random() #Slumpmässig tal mellan 0-1
 
     #Anta att tumören är i en vävnad alltså se på vatten för tvärsnitten

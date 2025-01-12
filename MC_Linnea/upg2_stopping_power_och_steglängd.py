@@ -9,13 +9,14 @@ def stopping_power_och_steglängd(energi, rho_medium, stopping_power_data):
     """
 
     energi_MeV_list = stopping_power_data[:, 0]
-    energi_list = np.array([(lambda x: x * 10**6)(x) for x in energi_MeV_list])
+    energi_list = np.array([(lambda x: x * 10**6)(x) for x in energi_MeV_list]) #Fråm MeV till eV
 
     stopping_power_MeV_list = stopping_power_data[:, 1]
-    STP_list =np.array([(lambda x: x * 10**7)(x) for x in stopping_power_MeV_list])
+    STP_list =np.array([(lambda x: x * 10**5)(x) for x in stopping_power_MeV_list]) #från MeV g/cm^2 till eV kg/m^2
 
     CSDA_g_per_cm2_list=stopping_power_data[:, 2]
-    CSDA_list=np.array([(lambda x: x * 10**1)(x) for x in CSDA_g_per_cm2_list])
+    CSDA_list=np.array([(lambda x: x * 10**1)(x) for x in CSDA_g_per_cm2_list]) #från g/cm^2 till kg/m^2
+
     # Tar index för närmaste energi på alfapartikeln.
     diff = np.abs(energi_list - energi)
     closest_indices = np.argsort(diff)[:2]
