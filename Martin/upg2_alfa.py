@@ -158,8 +158,8 @@ if __name__ == "__main__":
     #   ----------------------------------------------------------------------
     print(
         f'\nSkal (300 mikrometer): Energideponering:\n{energideponering_skal_Gy * 10 ** 6 / iterationer} E-06 Gy / sönderfall')
-    print(f'faktor {(energideponering_skal_Gy * 10 ** 6 / iterationer) / 1.66} av facit')
+    print(f'faktor {(energideponering_skal_Gy * 10 ** 6 / iterationer) / 1.66:.3f} av facit')
 
     print(
         f'\nInnanför (1 mm): Energideponering:\n{energideponering_innanför_Gy * 10 ** 8 / iterationer} E-08 Gy / sönderfall')
-    print(f'faktor {(energideponering_innanför_Gy * 10 ** 8 / iterationer) / 9.18} av facit')
+    print(f'faktor {(energideponering_innanför_Gy * 10 ** 8 / iterationer) / 9.18:.3f} av facit')

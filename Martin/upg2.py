@@ -94,7 +94,7 @@ def riktning_skal():
     hälften av partiklarna ändå skulle lämna sfären.
     """
     theta = np.arccos(-1 + 2 * np.random.rand())
-    phi = pi / 4 * (np.random.rand() + 2)
+    phi = pi / 2 * (2 * np.random.rand() + 1)
     return theta, phi
 
 
