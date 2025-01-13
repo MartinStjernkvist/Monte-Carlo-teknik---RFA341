@@ -27,9 +27,10 @@ def Elektron_theata_ny(Elektron_energi, Scatterpower_data, rho_medium): #Energi 
     closest_indices = np.argsort(diff)[:2]
 
     #Få scattering power nära energierna och energivärderna närmast
-    T_close=Mass_Scatterpower_list[closest_indices]*rho_medium*10**(-3) #kg/m^3 till g/cm^3
+    T_close=Mass_Scatterpower_list[closest_indices]*rho_medium*10**(-3)*10**2 #kg/m^3 till g/cm^3 för scatterpower är i T/cm = T/m *10**2
     energi_close = energi_list[closest_indices]
 
+ #plottar ut olika värden 
     #Linjär interpolera och få fram theata_s
     if energi_close[1] - energi_close[0] < 10 ** (-15):
         theata_s= T_close[0]
@@ -39,8 +40,19 @@ def Elektron_theata_ny(Elektron_energi, Scatterpower_data, rho_medium): #Energi 
                     T_close[1] - T_close[0]) / (
                                     energi_close[1] - energi_close[0])
  
-
+    #Från ekvation 1 
     return np.sqrt(-theata_s*np.log(1-R))
 
 
-    
+if __name__ == "__main__":
+    from upg2_Elektron_energi import Elektron_startenergi
+    iterationer=100
+    scatter_data=np.loadtxt('MC_Linnea/Scatterpower_vatten_data')
+    Olika_energier, polarvinklar=[],[]
+    for i in range(iterationer):
+        energi=Elektron_startenergi()
+        polar_vinkel=Elektron_theata_ny(energi,scatter_data,rho_vatten)
+        Olika_energier.append(energi)
+        polarvinklar.append(polar_vinkel)
+    plt.plot(Olika_energier,polarvinklar,'.')
+    plt.show()
