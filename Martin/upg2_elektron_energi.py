@@ -23,7 +23,7 @@ params, cv = curve_fit(polynom_funktion, Energi_Y90, Intensitet_Y90)
 a, b, c, d, e, f = params
 
 olika_energier = np.linspace(np.min(Energi_Y90), np.max(Energi_Y90), 10_000)
-
+"""
 f_max = np.max(polynom_funktion(olika_energier, *params))
 
 
@@ -32,6 +32,7 @@ f_max = np.max(polynom_funktion(olika_energier, *params))
 #   ----------------------------------------------------------------------
 
 # Tar fram värdet närmast skärningspunkten i x-axeln
+
 def närmast(lista, tal):
     lista = np.array(lista)
     närmsta_index = (np.abs(lista - tal)).argmin()
@@ -42,7 +43,7 @@ close, _ = närmast(polynom_funktion(olika_energier, *params), 0)
 
 for i in range(len(olika_energier)):
     if polynom_funktion(olika_energier[i], *params) == close:
-        Skärpunkt_0 = olika_energier[i]
+        Skärpunkt_0 = olika_energier[i] 
     else:
         continue
 
@@ -57,10 +58,14 @@ def elektron_startenergi():
             return Elektron_energi
         else:
             continue
+"""
 
 
+#   ----------------------------------------------------------------------
+#   Använd rejektionsmetoden för att sampla elektronenergi.
+#   ----------------------------------------------------------------------
 def elektron_energi_start():
-
+    elektron_energi = 0
     hittat = 0
     while hittat == 0:
         x_rand = np.random.rand() * np.max(Energi_Y90)
@@ -68,11 +73,12 @@ def elektron_energi_start():
 
         if y_rand < polynom_funktion(x_rand, *params):
             hittat = 1
+            elektron_energi = x_rand
 
         else:
             hittat = 0
 
-    return elektron_energi_start
+    return elektron_energi
 
 
 if __name__ == "__main__":
