@@ -128,6 +128,8 @@ At211_energi = [5.869*10**6, 5.2119*10**6, 5.1403*10**6,
 
 # Intensitet i % för energierna
 At211_intensitet = [41.78, 0.0039, 0.0011, 0.0004, 0.00004]  
+
+# Kumulativa sannolikheten för sönderfall.
 At211_sannolikhet = np.cumsum(At211_intensitet / np.sum(
                                         At211_intensitet))
 

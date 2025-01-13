@@ -16,6 +16,7 @@ def position_start_innanför(radie_sfär):
 @jit(nopython=True)
 def position_start_skal(radie_sfär, radie_partikel):
     r = radie_sfär - 0.5 * radie_partikel  # För att inte endast theta = pi ska ge utslag
+    #Varför halva radien, räcker inte att ta hela radien??
 
     x = r
     # Utnyttja sfärisk symmetri.
