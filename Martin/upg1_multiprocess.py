@@ -10,7 +10,7 @@ from upg1_attenueringsdata import attenueringsdata
 from upg1_sampla_compton import compton_vinkel_och_energiförlust
 from upg1_sampla_foto_vxv import foto_vxv
 from upg1_bestäm_om_attenuerad import bestäm_om_attenuerad
-from upg1_steg_transformation import ny_steg_transformera_koordinatsystem_3d
+from upg12_steg_transformation import ny_steg_transformera_koordinatsystem_3d
 from upg12_förflyttning import förflyttning
 from upg1_bestäm_om_vxv import bestäm_om_vxv
 
