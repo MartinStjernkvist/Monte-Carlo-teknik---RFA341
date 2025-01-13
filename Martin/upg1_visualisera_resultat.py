@@ -65,7 +65,7 @@ def visualisera_resultat_slicade():
     fil_namn_npy = 'resultat_' + input_resultat + '_slicad.npy'
 
     resultat_matris = np.load(fil_namn_npy)
-    visualisera = visualisera_matris(resultat_matris, visa_något=True)
+    visualisera = visualisera_matris(resultat_matris, visa_något=2)
     visualisera.show()
 
     fil_namn_json = 'inputs_' + input_resultat + '.json'
@@ -85,7 +85,8 @@ def visualisera_resultat_slicade():
 #   ----------------------------------------------------------------------
 if __name__ == "__main__":
     # visualisera_resultat()
-    visualisera_resultat_slicade()
+
+    # visualisera_resultat_slicade()
 
     """
     with (open('inputs_upg1_multiprocess.json', 'r') as f):
@@ -117,3 +118,41 @@ if __name__ == "__main__":
     visualisera.show()
     print(f'\nryggrad benmärg eV / decay: ', np.sum(resultat_5_E6) / (5 * 10 ** 6))
     """
+
+
+
+    resultat_matris = np.load('resultat_v3_slicad.npy')
+
+
+    x, y, z = resultat_matris.shape
+
+    fig, ax = plt.subplots(figsize=(8, 8))
+    plt.subplots_adjust(bottom=0.25)
+    initial_slice_index = x // 2  # Start at the middle slice
+
+    vmin, vmax = 0, 0.1 * np.max(resultat_matris)
+
+    # Display the initial slice
+    img = ax.imshow(resultat_matris[initial_slice_index, :, :], cmap='gray', vmin=vmin, vmax=vmax)
+    ax.set_title(f'Slice {initial_slice_index}')
+    # plt.colorbar(img, ax=ax)
+
+    # Add a slider for navigating through slices
+    ax_slider = plt.axes([0.1, 0.01, 0.75, 0.03], facecolor='lightgoldenrodyellow')
+    slider = Slider(ax_slider, 'Slice Index', 0, x - 1, valinit=initial_slice_index, valstep=1)
+
+
+    # Update function for the slider
+    def update(val):
+        slice_index = int(slider.val)
+        img.set_data(resultat_matris[slice_index, :, :])
+        ax.set_title(f'Slice {slice_index}')
+        fig.canvas.draw_idle()
+
+
+    slider.on_changed(update)
+
+    plt.tight_layout()
+    plt.show()
+
+    plt.savefig('yslice_resultat')

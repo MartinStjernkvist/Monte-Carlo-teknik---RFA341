@@ -27,8 +27,19 @@ class visualisera_matris:
         # ifall allt som plottas ska vara vitt (så att det syns)
         if visa_något == False:
             self.vmin, self.vmax = 0, np.max(array_3d)
-        else:
+        elif visa_något == True:
             self.vmin, self.vmax = 0, 0.0001*np.max(array_3d)
+        else:
+            self.vmin, self.vmax = 0, 0.1 * np.max(array_3d)
+
+        # self.img1 = self.ax1.imshow(array_3d[self.slice_x_index, :, :], cmap='bwr', vmin=self.vmin,
+        #                             vmax=self.vmax)  # x-tvärsnitt
+        # self.ax1.set_title(f'X Slice: {self.slice_x_index}')
+        # self.img2 = self.ax2.imshow(array_3d[:, self.slice_y_index, :], cmap='bwr', vmin=self.vmin,
+        #                             vmax=self.vmax)  # y-tvärsnitt
+        # self.ax2.set_title(f'Y Slice: {self.slice_y_index}')
+        # self.img3 = self.ax3.imshow(array_3d[:, :, self.slice_z_index], cmap='bwr', vmin=self.vmin,
+        #                             vmax=self.vmax)  # z-tvärsnitt
 
         self.img1 = self.ax1.imshow(array_3d[self.slice_x_index, :, :], cmap='gray', vmin=self.vmin,
                                     vmax=self.vmax)  # x-tvärsnitt
