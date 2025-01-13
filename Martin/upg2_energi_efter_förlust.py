@@ -1,6 +1,7 @@
 from imports import *
 from upg2_stopping_power_och_steglängd import stopping_power_och_steglängd
 
+
 def energi_efter_energiförlust(energi, steglängd, rho_medium, stopping_power_data):
     """
     Funktion som beräknar energiförlusten efter varje steg som partikeln tar.

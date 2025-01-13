@@ -28,6 +28,8 @@ r_e = np.sqrt(0.07941)  # sqrt(b): re2 = e4/Ee2 ≈ 0.07941 b, https://en.wikipe
 a_0 = 5.29177210903 * 10 ** (-11) * 10 ** (14)  # sqrt(b), bohr radius of hydrogen
 c = 3 * 10 ** 8
 
+r_e_m = 2.81 * 10**(-15)  # Elektronradie i meter.
+
 radie_alpha = 1.2 * 10 ** (-15) * 4 ** (1 / 3)  # Radie alfapartikel i meter (Physics Handbook)
 
 # enhet u
@@ -113,7 +115,13 @@ anatomidefinitioner_file = '../given_data/Anatomidefinitioner.xlsx'
 
 mat_file = 'phantom_data.mat'
 
+# Uppgift 2: Alfapartiklar
 stopping_power_alfa_file = 'Stoppingpower_data_alfa'
+
+# Uppgift 2: Elektroner.
+Y90_file = '../given_data/Y90_Spektrum.xlsx'
+elektron_stopping_power_data = 'Elektron_stopping_power_range_data'
+elektron_scatter_power_data = 'Elektron_scatter_power_vatten_data'
 
 # Inläsning för vscode:
 """
