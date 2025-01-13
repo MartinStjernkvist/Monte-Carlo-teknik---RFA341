@@ -44,3 +44,4 @@ def stopping_power_och_steglängd(energi, rho_medium, stopping_power_data):
     stopping_power = stopping_power * rho_medium  # Omvandla till eV / m.
 
     return stopping_power, steglängd
+

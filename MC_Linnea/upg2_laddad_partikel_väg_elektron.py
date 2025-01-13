@@ -64,7 +64,7 @@ def laddad_partikel_väg_elektron(energi_start, position_start, phi, theta, steg
         #print(f'Energideponering i position ', position_vektor)
         # else:
         #     break
-        if np.dot(position_vektor, position_vektor) > radie_sfär:
+        if np.dot(position_vektor, position_vektor) > radie_sfär**2:
             break
     energideponering = energi_start - energi
     #print('Doslista', np.sum(dos))

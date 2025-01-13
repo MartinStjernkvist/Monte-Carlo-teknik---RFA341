@@ -75,7 +75,7 @@ def run_MC_alpha_2(iterationer, rho_medium, radie_partikel, stopping_power_data,
     ax = fig.add_subplot(projection='3d')
     
     ax.scatter(x_list,y_list,z_list,c=dos_list,cmap='plasma',label='Partikel position')
-    #fig.colorbar(ax=ax, label='Energideponering')
+    #fig.colorbar(ax=ax, label='Energideponering') #Fixa color bar för att se energideponeringen
 
     ax.set_xlabel('x-axel i meter')
     ax.set_ylabel('y-axel i meter')

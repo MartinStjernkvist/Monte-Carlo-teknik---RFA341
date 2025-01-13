@@ -36,7 +36,7 @@ def laddad_partikel_väg(energi_start, position_start, phi, theta, steglängd, r
         steg_tagna += 1
         position_vektor += steg_vektor 
         #Plottvärderna för att se dosfördelningen
-        #Beroende på var man sätter append kommer olika figurer..........?
+        
         x.append(position_vektor[0])
         y.append(position_vektor[1])
         z.append(position_vektor[2])
@@ -50,7 +50,7 @@ def laddad_partikel_väg(energi_start, position_start, phi, theta, steglängd, r
        # print(f'Energideponering i position ', position_vektor)
         # else:
         #     break
-        if np.dot(position_vektor, position_vektor) > radie_sfär:
+        if np.dot(position_vektor, position_vektor) > radie_sfär**2:
             break
     energideponering = energi_start - energi
     #print('Doslista', np.sum(dos))
