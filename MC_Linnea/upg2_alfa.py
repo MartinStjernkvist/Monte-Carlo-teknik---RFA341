@@ -7,7 +7,7 @@ from upg2_position_start import position_start_innanför, position_start_skal
 from upg2_laddad_partikel_väg import laddad_partikel_väg
 
 
-def run_MC_alpha(iterationer, rho_medium, radie_partikel, stopping_power_data, position_start_alpha, radie_sfär,
+def run_MC_alpha_2(iterationer, rho_medium, radie_partikel, stopping_power_data, position_start_alpha, radie_sfär,
                  max_antal_steg):
     """
     Monte-Carlo simulering för alfapartiklarna.
@@ -20,7 +20,7 @@ def run_MC_alpha(iterationer, rho_medium, radie_partikel, stopping_power_data, p
     """
 
     energideponering_summa = 0
-    
+    x_list,y_list,z_list,dos_list=[],[],[],[]
     if position_start_alpha == position_start_skal:
         iterationer = 0.5 * iterationer
         for i in range(int(iterationer)):
@@ -31,12 +31,14 @@ def run_MC_alpha(iterationer, rho_medium, radie_partikel, stopping_power_data, p
             position_start = position_start_skal(radie_sfär, radie_partikel)
 
             _, steglängd = stopping_power_och_steglängd(energi, rho_medium, stopping_power_data)
-            print(f'steglängd: {steglängd * 10 ** (-6):.2f} mikrometer')
+            #print(f'steglängd: {steglängd * 10 ** (-6):.2f} mikrometer')
 
-            energideponering = laddad_partikel_väg(energi, position_start, phi, theta, steglängd, radie_sfär,
+            energideponering , x,y,z, dos= laddad_partikel_väg(energi, position_start, phi, theta, steglängd, radie_sfär,
                                                    rho_medium, stopping_power_data, max_antal_steg)
-            
-
+            x_list+=x
+            y_list+=y
+            z_list+=z
+            dos_list+=dos
             energideponering_summa += energideponering
             print(f'energideponering: {energideponering * 10 ** (-6)} MeV')
 
@@ -49,17 +51,56 @@ def run_MC_alpha(iterationer, rho_medium, radie_partikel, stopping_power_data, p
             position_start = position_start_innanför(radie_sfär)
 
             _, steglängd = stopping_power_och_steglängd(energi, rho_medium, stopping_power_data)
-            print(f'steglängd: {steglängd * 10 ** 6:.2f} mikrometer')
+            #print(f'steglängd: {steglängd * 10 ** 6:.2f} mikrometer')
 
-            energideponering = laddad_partikel_väg(energi, position_start, phi, theta, steglängd, radie_sfär,
+            energideponering , x,y,z, dos= laddad_partikel_väg(energi, position_start, phi, theta, steglängd, radie_sfär,
                                                    rho_medium, stopping_power_data, max_antal_steg)
-
+            x_list+=x
+            y_list+=y
+            z_list+=z
+            dos_list+=dos
             energideponering_summa += energideponering
             print(f'energideponering: {energideponering * 10 ** (-6)} MeV')
+
+ 
 
     # print('antal utanför: ', utanför)
     # print('total energideponering: ', energideponering_summa)
     # print(f'\nEnergideponering per partikel: {energideponering_summa / iterationer:.2f} eV / partikel')
+
+    #Plotta en figur som visar energideponeringen i hela tumören
+    #Hitta ett sätt att färga punkterna för värde på energideponeringen
+    fig = plt.figure(1)
+    
+    ax = fig.add_subplot(projection='3d')
+    
+    ax.scatter(x_list,y_list,z_list,c=dos_list,cmap='plasma',label='Partikel position')
+    #fig.colorbar(ax=ax, label='Energideponering')
+
+    ax.set_xlabel('x-axel i meter')
+    ax.set_ylabel('y-axel i meter')
+
+    #Testar att sätta en sfär för tumören
+    u, v = np.mgrid[0:2*np.pi:20j, 0:np.pi:10j]
+    x = radie_sfär*np.cos(u)*np.sin(v)
+    y = radie_sfär*np.sin(u)*np.sin(v)
+    z = radie_sfär*np.cos(v)
+    ax.plot_wireframe(x, y, z, color="k",alpha=0.3,label='Tumören')
+
+    ax.legend()
+    
+    #ax2.scatter(x_list,y_list,dos_list,c=dos_list,cmap='plasma')
+
+    #Visar dosfördelningen
+    fig2=plt.figure(2)
+    ax2=fig2.add_subplot()
+    ax2.hist(dos_list)
+    ax2.set_xlabel('Energideponering i eV')
+    ax2.set_ylabel('Antal som har samma energi')
+
+    #Visa figur
+    plt.show()
+    
     return energideponering_summa
 
 
@@ -75,8 +116,8 @@ def energideponering_eV_till_Gy(energideponering_eV, rho_medium, radie_sfär):
 
 
 if __name__ == "__main__":
-    iterationer = 10 ** 2
-    dummy_iterationer = 10 ** 1
+    iterationer = 10 ** 3
+    dummy_iterationer = 10 ** 2
     max_antal_steg = 10 ** 3
 
     stopping_power_data = np.loadtxt('MC_Linnea/Stoppingpower_data_alfa')
@@ -90,14 +131,14 @@ if __name__ == "__main__":
     print(
         '\n----------------------------------------------------------------------\nDUMMY\n----------------------------------------------------------------------\n')
 
-    _ = run_MC_alpha(dummy_iterationer, rho_medium, radie_partikel, stopping_power_data, position_start_skal,
+    _ = run_MC_alpha_2(dummy_iterationer, rho_medium, radie_partikel, stopping_power_data, position_start_skal,
                      radie_sfär_skal, max_antal_steg)
 
     start = time.time()
 
     print(
         '\n----------------------------------------------------------------------\nRIKTIG\n----------------------------------------------------------------------\n')
-    energideponering_tot_skal = run_MC_alpha(iterationer, rho_medium, radie_partikel, stopping_power_data,
+    energideponering_tot_skal = run_MC_alpha_2(iterationer, rho_medium, radie_partikel, stopping_power_data,
                                              position_start_skal, radie_sfär_skal, max_antal_steg)
     energideponering_skal_Gy = energideponering_eV_till_Gy(energideponering_tot_skal, rho_medium, radie_sfär_skal)
 
@@ -106,13 +147,13 @@ if __name__ == "__main__":
     print(
         '\n----------------------------------------------------------------------\nDUMMY\n----------------------------------------------------------------------\n')
 
-    _ = run_MC_alpha(dummy_iterationer, rho_medium, radie_partikel, stopping_power_data, position_start_innanför,
+    _ = run_MC_alpha_2(dummy_iterationer, rho_medium, radie_partikel, stopping_power_data, position_start_innanför,
                      radie_sfär_innanför, max_antal_steg)
 
     start = time.time()
     print(
         '\n----------------------------------------------------------------------\nRIKTIG\n----------------------------------------------------------------------\n')
-    energideponering_tot_innanför = run_MC_alpha(iterationer, rho_medium, radie_partikel, stopping_power_data,
+    energideponering_tot_innanför = run_MC_alpha_2(iterationer, rho_medium, radie_partikel, stopping_power_data,
                                                  position_start_innanför, radie_sfär_innanför, max_antal_steg)
     energideponering_innanför_Gy = energideponering_eV_till_Gy(energideponering_tot_innanför, rho_medium,
                                                                radie_sfär_innanför)

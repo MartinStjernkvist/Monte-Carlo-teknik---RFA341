@@ -12,7 +12,7 @@ def stopping_power_och_steglängd(energi, rho_medium, stopping_power_data):
     energi_list = np.array([(lambda x: x * 10**6)(x) for x in energi_MeV_list]) #Fråm MeV till eV
 
     stopping_power_MeV_list = stopping_power_data[:, 1]
-    STP_list =np.array([(lambda x: x * 10**5)(x) for x in stopping_power_MeV_list]) #från MeV g/cm^2 till eV kg/m^2
+    STP_list =np.array([(lambda x: x * 10**5)(x) for x in stopping_power_MeV_list]) #från MeV cm^2/g till eV m^2/kg
 
     CSDA_g_per_cm2_list=stopping_power_data[:, 2]
     CSDA_list=np.array([(lambda x: x * 10**1)(x) for x in CSDA_g_per_cm2_list]) #från g/cm^2 till kg/m^2
@@ -40,7 +40,7 @@ def stopping_power_och_steglängd(energi, rho_medium, stopping_power_data):
                 CSDA_close[1] - CSDA_close[0]) / (
                         energi_close[1] - energi_close[0]))
 
-    steglängd = CSDA / rho_medium * 10 ** (-2)  # Omvandla cm till m.
-    stopping_power = stopping_power * rho_medium * 10 ** 2  # Omvandla till eV / m.
+    steglängd = CSDA / rho_medium   # i m
+    stopping_power = stopping_power * rho_medium  # Omvandla till eV / m.
 
     return stopping_power, steglängd
