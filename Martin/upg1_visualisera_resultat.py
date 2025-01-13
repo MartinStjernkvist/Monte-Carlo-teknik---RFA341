@@ -126,7 +126,7 @@ if __name__ == "__main__":
 
     x, y, z = resultat_matris.shape
 
-    fig, ax = plt.subplots(figsize=(8, 8))
+    fig, ax = plt.subplots(figsize=(17.5,5))
     plt.subplots_adjust(bottom=0.25)
     initial_slice_index = x // 2  # Start at the middle slice
 
@@ -153,6 +153,38 @@ if __name__ == "__main__":
     slider.on_changed(update)
 
     plt.tight_layout()
+    plt.title('Energideponering i ryggkotorna: x-axeln.', fontsize=25)
+    plt.savefig('xslice_resultat')
     plt.show()
 
+
+    fig, ax = plt.subplots(figsize=(17.5,3.5))
+    plt.subplots_adjust(bottom=0.25)
+    initial_slice_index = y // 2  # Start at the middle slice
+
+    vmin, vmax = 0, 0.1 * np.max(resultat_matris)
+
+    # Display the initial slice
+    img = ax.imshow(resultat_matris[:, initial_slice_index, :], cmap='gray', vmin=vmin, vmax=vmax)
+    ax.set_title(f'Slice {initial_slice_index}')
+    # plt.colorbar(img, ax=ax)
+
+    # Add a slider for navigating through slices
+    ax_slider = plt.axes([0.1, 0.01, 0.75, 0.03], facecolor='lightgoldenrodyellow')
+    slider = Slider(ax_slider, 'Slice Index', 0, y - 1, valinit=initial_slice_index, valstep=1)
+
+
+    # Update function for the slider
+    def update(val):
+        slice_index = int(slider.val)
+        img.set_data(resultat_matris[:, slice_index, :])
+        ax.set_title(f'Slice {slice_index}')
+        fig.canvas.draw_idle()
+
+
+    slider.on_changed(update)
+
+    plt.tight_layout()
+    plt.title('Energideponering i ryggkotorna: y-axeln.', fontsize=25)
     plt.savefig('yslice_resultat')
+    plt.show()
