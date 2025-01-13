@@ -6,8 +6,8 @@ def stopping_power_och_steglängd(energi, rho_medium, stopping_power_data):
     Funktion som ger stopping power och
     :param energi: Partikelns energi i eV.
     :param rho_medium: Mediumets densitet i kg / m^3.
-    :param stopping_power_data: Stopping power (eV/m) och steglängden (m).
-    :return:
+    :param stopping_power_data: Tabellerad data.
+    :return: Stopping power (eV/m^2) och steglängden (m).
     """
 
     energi_MeV_list = stopping_power_data[:, 0]  # MeV
