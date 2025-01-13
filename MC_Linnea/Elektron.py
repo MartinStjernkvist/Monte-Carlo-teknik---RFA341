@@ -37,7 +37,10 @@ def run_MC_elektron(iterationer, rho_medium, radie_partikel, stopping_power_data
             energideponering, x,y,z, dos= laddad_partikel_väg_elektron(energi, position_start, phi, theta, steglängd, radie_sfär,
                                                    rho_medium, stopping_power_data, max_antal_steg)
            #ändra i laddad_partikel_väg så den ändrar koordinatsystem med polarvinkeln!!!!!!!!!
-
+            x_list+=x
+            y_list+=y
+            z_list+=z
+            dos_list+=dos
             energideponering_summa += energideponering
             print(f'energideponering: {energideponering * 10 ** (-6)} MeV')
 
@@ -54,7 +57,11 @@ def run_MC_elektron(iterationer, rho_medium, radie_partikel, stopping_power_data
 
             energideponering , x,y,z, dos= laddad_partikel_väg_elektron(energi, position_start, phi, theta, steglängd, radie_sfär,
                                                    rho_medium, stopping_power_data, max_antal_steg)
-        
+
+            x_list+=x
+            y_list+=y
+            z_list+=z
+            dos_list+=dos        
             energideponering_summa += energideponering
             print(f'energideponering: {energideponering * 10 ** (-6)} MeV')
 
@@ -64,14 +71,19 @@ def run_MC_elektron(iterationer, rho_medium, radie_partikel, stopping_power_data
     # print('total energideponering: ', energideponering_summa)
     # print(f'\nEnergideponering per partikel: {energideponering_summa / iterationer:.2f} eV / partikel')
     
-    """
+    
+    #Plotta en figur som visar energideponeringen i hela tumören
     #Plotta en figur som visar energideponeringen i hela tumören
     #Hitta ett sätt att färga punkterna för värde på energideponeringen
     fig = plt.figure(1)
-    fig2=plt.figure(2)
+    
     ax = fig.add_subplot(projection='3d')
-    ax2=fig2.add_subplot(projection='3d')
-    ax.scatter(x_list,y_list,z_list,c=dos_list,cmap='plasma')
+    
+    ax.scatter(x_list,y_list,z_list,c=dos_list,cmap='plasma',label='Partikel position')
+    #Fixa colorbar för att se energideponeringen i figuren
+
+    #fig.colorbar(ax=ax, label='Energideponering') 
+
     ax.set_xlabel('x-axel i meter')
     ax.set_ylabel('y-axel i meter')
 
@@ -80,14 +92,19 @@ def run_MC_elektron(iterationer, rho_medium, radie_partikel, stopping_power_data
     x = radie_sfär*np.cos(u)*np.sin(v)
     y = radie_sfär*np.sin(u)*np.sin(v)
     z = radie_sfär*np.cos(v)
-    ax.plot_wireframe(x, y, z, color="k",alpha=0.3)
+    ax.plot_wireframe(x, y, z, color="k",alpha=0.3,label='Tumören')
+    ax.legend()
     
-    #ax2.scatter(x_list,y_list,dos_list,c=dos_list,cmap='plasma')
+
+    #Visar dosfördelningen
+    fig2=plt.figure(2)
+    ax2=fig2.add_subplot()
     ax2.hist(dos_list)
-    ax2.set_xlabel('x-axel i energideponering i eV')
-    ax2.set_ylabel('y-axel i antal som har samma energi')
+    ax2.set_xlabel('Energideponering i eV')
+    ax2.set_ylabel('Antal som har samma energi')
+
+    #Visa figur
     plt.show()
-    """
     return energideponering_summa
 
 

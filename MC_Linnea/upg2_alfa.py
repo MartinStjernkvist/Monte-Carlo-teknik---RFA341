@@ -75,7 +75,9 @@ def run_MC_alpha_2(iterationer, rho_medium, radie_partikel, stopping_power_data,
     ax = fig.add_subplot(projection='3d')
     
     ax.scatter(x_list,y_list,z_list,c=dos_list,cmap='plasma',label='Partikel position')
-    #fig.colorbar(ax=ax, label='Energideponering') #Fixa color bar för att se energideponeringen
+    #Fixa colorbar för att se energideponeringen i figuren
+
+    #fig.colorbar(ax=ax, label='Energideponering') 
 
     ax.set_xlabel('x-axel i meter')
     ax.set_ylabel('y-axel i meter')
@@ -86,10 +88,8 @@ def run_MC_alpha_2(iterationer, rho_medium, radie_partikel, stopping_power_data,
     y = radie_sfär*np.sin(u)*np.sin(v)
     z = radie_sfär*np.cos(v)
     ax.plot_wireframe(x, y, z, color="k",alpha=0.3,label='Tumören')
-
     ax.legend()
     
-    #ax2.scatter(x_list,y_list,dos_list,c=dos_list,cmap='plasma')
 
     #Visar dosfördelningen
     fig2=plt.figure(2)

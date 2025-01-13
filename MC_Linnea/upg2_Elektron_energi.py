@@ -13,7 +13,7 @@ Energi_Y90= file_Y90['Energy (MeV)'] #MeV
 Intensitet_Y90=file_Y90['#/nt']
 #Plottar ut värdena från excel filen
 
-plt.scatter(Energi_Y90, Intensitet_Y90)
+#plt.scatter(Energi_Y90, Intensitet_Y90)
 
 #Plottar ut punkterna i excelfilen och gör en kurvanpassning
 
@@ -25,7 +25,7 @@ params, cv= curve_fit (polynom_funktion,Energi_Y90, Intensitet_Y90)
 a,b,c,d=params
 olika_energier=np.linspace(np.min(Energi_Y90), np.max(Energi_Y90),1000)
 
-plt.plot(olika_energier,polynom_funktion(olika_energier,*params))
+#plt.plot(olika_energier,polynom_funktion(olika_energier,*params))
 
 #Visa figuren
 #plt.show()
@@ -56,7 +56,9 @@ for i in range(len(olika_energier)):
 
 def Elektron_startenergi():
     while True:
+        #Slumpar ett värde mellan 0 och skärningspunkten
         x_sampel=np.random.random()*Skärpunkt_0
+        #Ny slumpvärde och jämför med f(x_sampel)/f_max
         if np.random.random()<=polynom_funktion(x_sampel,*params)/f_max:
             Elektron_energi=x_sampel
             return Elektron_energi
