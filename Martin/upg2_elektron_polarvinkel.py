@@ -2,7 +2,6 @@ from imports import *
 
 
 def elektron_theta_ny(elektron_energi, scatterpower_data, rho_medium):  # Energi i elektron i tabell är i eV
-    R = np.random.random()  # Slumpmässig tal mellan 0-1
 
     # Anta att tumören är i en vävnad alltså se på vatten för tvärsnitten
 
@@ -31,11 +30,16 @@ def elektron_theta_ny(elektron_energi, scatterpower_data, rho_medium):  # Energi
 
     # Linjär interpolera och få fram theta_s
     if energi_close[1] - energi_close[0] < 10 ** (-15):
-        theta_s = T_close[0]
+        T = T_close[0]
 
     else:
-        theta_s = T_close[0] + (elektron_energi - energi_close[0]) * (
+        T = T_close[0] + (elektron_energi - energi_close[0]) * (
                 T_close[1] - T_close[0]) / (
                            energi_close[1] - energi_close[0])
 
-    return np.sqrt(-theta_s * np.log(1 - R))
+    R = np.random.random()  # Slumpmässig tal mellan 0-1
+    # R = np.pi / 2 * (-1 + 2 * np.random.random())
+
+    theta_ny = np.sqrt(-T * np.log(1 - R))
+
+    return theta_ny

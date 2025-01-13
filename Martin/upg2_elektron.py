@@ -1,5 +1,5 @@
 from imports import *
-from upg2_elektron_energi import elektron_startenergi
+from upg2_elektron_energi import elektron_startenergi, elektron_energi_start
 from upg2_stopping_power_och_steglängd import stopping_power_och_steglängd
 from upg2_riktning import riktning_uniform, riktning_skal
 from upg2_position_start import position_start_innanför, position_start_skal
@@ -34,7 +34,9 @@ def run_MC_elektron(iterationer, rho_medium, radie_partikel, stopping_power_data
         iterationer = 0.5 * iterationer
         for i in range(int(iterationer)):
             # Sampla startenergin.
-            energi = elektron_startenergi() * 10 ** 6  # i eV
+            # energi = elektron_startenergi() * 10 ** 6  # i eV
+            energi = elektron_energi_start() * 10 ** 6  # i eV
+
             print(f'energi: {energi * 10 ** (-6)} MeV')
 
             # Sampla riktning och startposition.
@@ -64,7 +66,9 @@ def run_MC_elektron(iterationer, rho_medium, radie_partikel, stopping_power_data
         #   ----------------------------------------------------------------------
         for i in range(iterationer):
             # Sampla startenergin.
-            energi = elektron_startenergi() * 10 ** 6  # i eV
+            # energi = elektron_startenergi() * 10 ** 6  # i eV
+            # energi = elektron_startenergi() * 10 ** 6  # i eV
+            energi = elektron_energi_start() * 10 ** 6  # i eV
             print(f'energi: {energi * 10 ** (-6)} MeV')
 
             # Sampla riktning och startposition.
@@ -91,24 +95,24 @@ def run_MC_elektron(iterationer, rho_medium, radie_partikel, stopping_power_data
     # print(f'\nEnergideponering per partikel: {energideponering_summa / iterationer:.2f} eV / partikel')
 
     """
-    #Plotta en figur som visar energideponeringen i hela tumören
-    #Hitta ett sätt att färga punkterna för värde på energideponeringen
+    # Plotta en figur som visar energideponeringen i hela tumören
+    # Hitta ett sätt att färga punkterna för värde på energideponeringen
     fig = plt.figure(1)
-    fig2=plt.figure(2)
+    fig2 = plt.figure(2)
     ax = fig.add_subplot(projection='3d')
-    ax2=fig2.add_subplot(projection='3d')
-    ax.scatter(x_list,y_list,z_list,c=dos_list,cmap='plasma')
+    ax2 = fig2.add_subplot(projection='3d')
+    ax.scatter(x_list, y_list, z_list, c=dos_list, cmap='plasma')
     ax.set_xlabel('x-axel i meter')
     ax.set_ylabel('y-axel i meter')
 
-    #Testar att sätta en sfär för tumören
-    u, v = np.mgrid[0:2*np.pi:20j, 0:np.pi:10j]
-    x = radie_sfär*np.cos(u)*np.sin(v)
-    y = radie_sfär*np.sin(u)*np.sin(v)
-    z = radie_sfär*np.cos(v)
-    ax.plot_wireframe(x, y, z, color="k",alpha=0.3)
+    # Testar att sätta en sfär för tumören
+    u, v = np.mgrid[0:2 * np.pi:20j, 0:np.pi:10j]
+    x = radie_sfär * np.cos(u) * np.sin(v)
+    y = radie_sfär * np.sin(u) * np.sin(v)
+    z = radie_sfär * np.cos(v)
+    ax.plot_wireframe(x, y, z, color="k", alpha=0.3)
 
-    #ax2.scatter(x_list,y_list,dos_list,c=dos_list,cmap='plasma')
+    # ax2.scatter(x_list,y_list,dos_list,c=dos_list,cmap='plasma')
     ax2.hist(dos_list)
     ax2.set_xlabel('x-axel i energideponering i eV')
     ax2.set_ylabel('y-axel i antal som har samma energi')
@@ -120,7 +124,7 @@ def run_MC_elektron(iterationer, rho_medium, radie_partikel, stopping_power_data
 if __name__ == "__main__":
     iterationer = 10 ** 4
     dummy_iterationer = 10 ** 2
-    max_antal_steg = 10 ** 4
+    max_antal_steg = 10 ** 3
 
     stopping_power_data = np.loadtxt(elektron_stopping_power_data)
     scatter_power_data = np.loadtxt(elektron_scatter_power_data)

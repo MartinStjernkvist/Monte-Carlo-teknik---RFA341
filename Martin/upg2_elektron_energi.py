@@ -1,49 +1,35 @@
 from imports import *
 
-# Slumpa ut energi på betakällan
-
-
-# Hittar filen och ta info från excelfilen
-# Läser en Excel fil
+#   ----------------------------------------------------------------------
+#   Sönderfallsdata för Y-90.
+#   ----------------------------------------------------------------------
 
 file_Y90 = pd.read_excel(Y90_file)
 
-# Ta ut värderna på energin och intensiteten betakällan
+# Ta ut mätpunkter med intensitet och energi.
 Energi_Y90 = file_Y90['Energy (MeV)']  # MeV
 Intensitet_Y90 = file_Y90['#/nt']
-# Plottar ut värdena från excel filen
-
-plt.scatter(Energi_Y90, Intensitet_Y90)
 
 
-# Plottar ut punkterna i excelfilen och gör en kurvanpassning
-
-# def polynom_funktion(x, a, b, c, d):
-#     return a * x ** 3 + b * x ** 2 + c * x + d
+#   ----------------------------------------------------------------------
+#   Kurvanpassning till sönderfallsdatan.
+#   ----------------------------------------------------------------------
 
 def polynom_funktion(x, a, b, c, d, e, f):
     return a * x ** 5 + b * x ** 4 + c * x ** 3 + d * x ** 2 + e * x + f
 
 
 params, cv = curve_fit(polynom_funktion, Energi_Y90, Intensitet_Y90)
-# print(*params)
-# a, b, c, d = params
 a, b, c, d, e, f = params
-olika_energier = np.linspace(np.min(Energi_Y90), np.max(Energi_Y90), 1000)
 
-plt.plot(olika_energier, polynom_funktion(olika_energier, *params))
-
-# Visa figuren
-plt.show()
+olika_energier = np.linspace(np.min(Energi_Y90), np.max(Energi_Y90), 10_000)
 
 f_max = np.max(polynom_funktion(olika_energier, *params))
 
 
-# print(f_max) #Test om det stämmer
-
-
-# Använd Rejektionsmetoden för att sampla elektronenergi
-
+#   ----------------------------------------------------------------------
+#   Använd rejektionsmetoden för att sampla elektronenergi.
+#   ----------------------------------------------------------------------
 
 # Tar fram värdet närmast skärningspunkten i x-axeln
 def närmast(lista, tal):
@@ -65,9 +51,34 @@ for i in range(len(olika_energier)):
 
 def elektron_startenergi():
     while True:
-        x_sampel = np.random.random() * Skärpunkt_0
-        if np.random.random() <= polynom_funktion(x_sampel, *params) / f_max:
+        x_sampel = np.random.rand() * Skärpunkt_0
+        if np.random.rand() <= polynom_funktion(x_sampel, *params) / f_max:
             Elektron_energi = x_sampel
             return Elektron_energi
         else:
             continue
+
+
+def elektron_energi_start():
+
+    hittat = 0
+    while hittat == 0:
+        x_rand = np.random.rand() * np.max(Energi_Y90)
+        y_rand = np.random.rand() * np.max(Intensitet_Y90)
+
+        if y_rand < polynom_funktion(x_rand, *params):
+            hittat = 1
+
+        else:
+            hittat = 0
+
+    return elektron_energi_start
+
+
+if __name__ == "__main__":
+    plt.plot(olika_energier, polynom_funktion(olika_energier, *params))
+
+    plt.scatter(Energi_Y90, Intensitet_Y90)
+
+    # Visa figuren
+    plt.show()

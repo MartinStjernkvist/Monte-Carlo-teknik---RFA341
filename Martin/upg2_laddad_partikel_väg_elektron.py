@@ -24,6 +24,9 @@ def laddad_partikel_väg_elektron(energi_start, position_start, phi, theta, steg
     # Under tiden som partikeln fortfarande inte tagit hela sitt steg.
     while steg_tagna < max_antal_steg and energi > 0:
 
+        # Tar ett steg
+        steg_tagna += 1
+
         riktning = np.array(
             [np.sin(theta) * np.cos(phi)
                 , np.sin(theta) * np.cos(phi)
@@ -34,13 +37,13 @@ def laddad_partikel_väg_elektron(energi_start, position_start, phi, theta, steg
 
         # Nya värden på vinklarna
         phi_ny = np.random.random() * 2 * pi
-        theta_ny = elektron_theta_ny(energi, scatter_power_data, rho_vatten)
+        theta_ny = elektron_theta_ny(energi, scatter_power_data, rho_medium)
         # stegstorlek totalt blir steglängd+cos(theta)*(s-steglängd) där s är CSDA
         _, s = stopping_power_och_steglängd(energi, rho_medium, stopping_power_data)
         tau = s * np.random.random()
 
         # Ändrar på positionsvektor efter att transformations matrisen
-        position_vektor += ny_steg_transformera_koordinatsystem_3d(steglängd, theta, phi, s - tau, phi_ny, theta_ny)
+        position_vektor += ny_steg_transformera_koordinatsystem_3d(steglängd, phi, theta, s - tau, phi_ny, theta_ny)
 
         # Plottvärderna för att se dosfördelningen, men får bara ut startpositionen inte alla andra delsteg...
         dos.append(energi - energi_efter_energiförlust(energi, steglängd, rho_medium, stopping_power_data))
@@ -56,15 +59,11 @@ def laddad_partikel_väg_elektron(energi_start, position_start, phi, theta, steg
         theta = theta_ny
         steglängd = s - tau
 
-        # Tar ett steg
-        steg_tagna += 1
-
-        # if np.dot(position_vektor, position_vektor) <= radie_sfär:
-        # print(f'Energideponering i position ', position_vektor)
-        # else:
-        #     break
+        # Håll reda på ifall partikeln befinner sig i sfären eller inte.
         if np.sqrt(np.dot(position_vektor, position_vektor)) > radie_sfär:
             break
+
+    # Beräkna den totala energideponeringen (i sfären) från partikeln.
     energideponering = energi_start - energi
     # print('Doslista', np.sum(dos))
     # print(f'energideponering: {energideponering} eV')
