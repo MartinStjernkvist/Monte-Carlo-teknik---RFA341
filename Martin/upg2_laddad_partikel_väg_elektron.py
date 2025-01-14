@@ -20,13 +20,13 @@ def laddad_partikel_väg_elektron(energi_start, position_start, phi, theta, steg
     steg_tagna = 0
     x, y, z, dos = [], [], [], []
 
-    riktning = np.array(
-        [np.sin(theta) * np.cos(phi)
-            , np.sin(theta) * np.cos(phi)
-            , np.cos(theta)])
-
-    riktning /= np.linalg.norm(riktning)
-    position_vektor += riktning * steglängd
+    # riktning = np.array(
+    #     [np.sin(theta) * np.cos(phi)
+    #         , np.sin(theta) * np.sin(phi)
+    #         , np.cos(theta)])
+    #
+    # riktning /= np.linalg.norm(riktning)
+    # position_vektor += riktning * steglängd
 
 
     # stopping_power_data = np.loadtxt('MC_Linnea/Elekt_stp_range_data')

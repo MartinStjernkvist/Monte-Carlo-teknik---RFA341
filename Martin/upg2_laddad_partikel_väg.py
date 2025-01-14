@@ -28,7 +28,7 @@ def laddad_partikel_väg(energi_start, position_start, phi, theta, steglängd, r
     # Skapa en riktningsvektor.
     riktning = np.array(
         [np.sin(theta) * np.cos(phi)
-            , np.sin(theta) * np.cos(phi)
+            , np.sin(theta) * np.sin(phi)
             , np.cos(theta)])
 
     riktning /= np.linalg.norm(riktning)

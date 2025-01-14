@@ -41,9 +41,12 @@ def elektron_theta_ny(elektron_energi, scatterpower_data, rho_medium):  # Energi
 
     dl = 10**(-20)
 
-    theta_ny = np.sqrt(-T * dl * np.log(1 - R))
+    theta_ny_polar = np.sqrt(-T * dl * np.log(1 - R))
 
-    theta_ny = random.choice([1, -1]) * theta_ny
-    print('theta ny', theta_ny)
+    theta_ny_polar = random.choice([1, -1]) * theta_ny_polar
 
-    return theta_ny
+    theta_ny_sfär = np.pi / 2 - theta_ny_polar
+
+    print('theta ny', theta_ny_sfär)
+
+    return theta_ny_sfär
