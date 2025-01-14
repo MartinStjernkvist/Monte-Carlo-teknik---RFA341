@@ -44,6 +44,8 @@ def laddad_partikel_väg_elektron(energi_start, position_start, phi, theta, steg
         # stegstorlek totalt blir steglängd+cos(theta)*(s-steglängd) där s är CSDA
         _, s = stopping_power_och_steglängd(energi, rho_medium, stopping_power_data)
         tau = s * np.random.random()
+        # tau = s * np.random.random() * 10**(-1)
+
 
         # Ändrar på positionsvektor efter att transformations matrisen
         dx, dy, dz = ny_steg_transformera_koordinatsystem_3d(steglängd, phi, theta, tau, phi_ny, theta_ny)
