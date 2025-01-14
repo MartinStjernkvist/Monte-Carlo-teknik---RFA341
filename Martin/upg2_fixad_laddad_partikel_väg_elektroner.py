@@ -10,9 +10,19 @@ def laddad_partikel_väg_elektron(energi_start, position_start, phi, theta, radi
                                  stopping_power_data, scatter_power_data, energiförlust_faktor):
     """
     Funktion som följer alfapartikeln allteftersom den växelverkar i ett medium.
+    :param energi_start: Elektronens startenergi.
+    :param position_start: Elektronens startposition.
+    :param phi: Sfärisk vinkel.
+    :param theta: Sfärisk vinkel.
     :param radie_sfär: Radien av sfären för fördelningen.
+    :param rho_medium: Mediumets densitet (kg / m^3).
+    :param stopping_power_data: Stopping power tabelldata.
+    :param scatter_power_data: Scatter power tabelldata.
+    :param energiförlust_faktor: Energiförlustfaktor efter varje steglängd.
     :return: Energideponeringen innanför sfären.
     """
+
+    # Initiera tomma listor för att spara datan.
     x, y, z, dos = [], [], [], []
 
     # Startposition och startenergi.
@@ -25,6 +35,7 @@ def laddad_partikel_väg_elektron(energi_start, position_start, phi, theta, radi
     # Den nya energin för elektronen.
     energi_ny = energi * energiförlust_faktor
 
+    # Första steget.
     dx = steglängd * np.sin(theta) * np.cos(phi)
     dy = steglängd * np.sin(theta) * np.sin(phi)
     dz = steglängd * np.cos(theta)
@@ -38,6 +49,11 @@ def laddad_partikel_väg_elektron(energi_start, position_start, phi, theta, radi
         y.append(position_vektor[1])
         z.append(position_vektor[2])
 
+    #   ----------------------------------------------------------------------
+    #   Medan elektronen befinner sig i sfären
+    #   och
+    #   har en energi som är över en tröskelenergi.
+    #   ----------------------------------------------------------------------
     while np.sqrt(np.dot(position_vektor, position_vektor)) < radie_sfär and energi > energi_start * 10 ** (-6):
 
         # Steglängd tas så att en viss energiförlust sker.
@@ -57,24 +73,27 @@ def laddad_partikel_väg_elektron(energi_start, position_start, phi, theta, radi
         dx, dy, dz = ny_steg_transformera_koordinatsystem_3d(steglängd, phi, theta, steglängd_ny, phi_ny, theta_ny)
         position_vektor += np.array([dx, dy, dz])
 
-        # Håll reda på ifall partikeln befinner sig i sfären eller inte.
+        #   ----------------------------------------------------------------------
+        #   Håll reda på ifall partikeln befinner sig i sfären eller inte.
+        #   ----------------------------------------------------------------------
         if np.sqrt(np.dot(position_vektor, position_vektor)) > radie_sfär:
             break
 
+        # Om elektronen fortfarande är i sfären -> spara mätpunkter.
         else:
-            # Plottvärderna för att se dosfördelningen, men får bara ut startpositionen inte alla andra delsteg...
+            # Mätpunkter för att plotta dosfördelningen.
             dos.append(energi - energi_ny)
             x.append(position_vektor[0])
             y.append(position_vektor[1])
             z.append(position_vektor[2])
 
-            # Ändrar på vinklarna och värdet på steglängden innan nästa vinkeländring
+            # Ändrar på vinklarna, värdet på steglängden och energin innan nästa vinkeländring.
             phi = phi_ny
             theta = theta_ny
             steglängd = steglängd_ny
             energi = energi_ny
 
-            print(f'energi: {energi} eV')
+            print(f'energi: {energi:.3f} eV')
             continue
 
     # Beräkna den totala energideponeringen (i sfären) från partikeln.

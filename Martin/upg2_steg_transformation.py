@@ -14,15 +14,12 @@ def ny_steg_transformera_koordinatsystem_3d(steg_A_B, phi_A, theta_A, steg_B_C, 
             hade när den tog steget)
     - Detta görs för att kunna sampla en ny riktning i nästa växelverkanprocess,
     då behövs nämligen ett koordinatsystem i B.
-
     :param steg_A_B: magnitud på steg från A till B
     :param phi_A: vinkel för steget mellan A och B
     :param theta_A: vinkel för steget mellan A och B
-
     :param steg_B_C: magnitud på steg från B till C
     :param phi_B: vinkel för steget mellan B och C
     :param theta_B: vinkel för steget mellan B och C
-
     :return: 3 värden är förflyttningen från B till C, enligt A's koord-syst
     """
 
@@ -42,8 +39,10 @@ def ny_steg_transformera_koordinatsystem_3d(steg_A_B, phi_A, theta_A, steg_B_C, 
             [0, 0, 1]
         ], dtype=np.float64)
 
-    # för att x-axeln ska sammanfalla med riktningsvektorn måste rotationsvinkeln vara pi/2 - theta
+    # för att x-axeln ska sammanfalla med riktningsvektorn måste rotationsvinkeln vara -(pi/2 - theta)
     # angle = -(pi / 2 - theta_A)
+
+    # för att z-axeln ska sammanfalla med riktningsvektorn måste rotationsvinkeln vara theta
     angle = theta_A
     R_y = np.array(
         [
