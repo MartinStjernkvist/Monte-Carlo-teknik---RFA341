@@ -2,7 +2,7 @@ from imports import *
 from upg2_energi_efter_förlust import energi_efter_energiförlust
 from upg2_steg_transformation import ny_steg_transformera_koordinatsystem_3d
 from upg2_stopping_power_och_steglängd import stopping_power_och_steglängd
-from upg2_elektron_polarvinkel import elektron_theta_ny
+from upg2_scattering_power import scattering_power_från_energi
 
 
 def laddad_partikel_väg_elektron(energi_start, position_start, phi, theta, steglängd, radie_sfär, rho_medium,
@@ -29,8 +29,6 @@ def laddad_partikel_väg_elektron(energi_start, position_start, phi, theta, steg
     # position_vektor += riktning * steglängd
 
 
-    # stopping_power_data = np.loadtxt('MC_Linnea/Elekt_stp_range_data')
-    # scatter_power_data = np.loadtxt('MC_Linnea/Scatterpower_vatten_data')
     # Under tiden som partikeln fortfarande inte tagit hela sitt steg.
 
     while steg_tagna < max_antal_steg and energi > 0:
@@ -40,7 +38,7 @@ def laddad_partikel_väg_elektron(energi_start, position_start, phi, theta, steg
 
         # Nya värden på vinklarna
         phi_ny = np.random.random() * 2 * pi
-        theta_ny = elektron_theta_ny(energi, scatter_power_data, rho_medium)
+        theta_ny = scattering_power_från_energi(energi, scatter_power_data, rho_medium)
         # stegstorlek totalt blir steglängd+cos(theta)*(s-steglängd) där s är CSDA
         _, s = stopping_power_och_steglängd(energi, rho_medium, stopping_power_data)
         tau = s * np.random.random()

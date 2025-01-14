@@ -24,43 +24,6 @@ a, b, c, d, e, f = params
 
 olika_energier = np.linspace(np.min(Energi_Y90), np.max(Energi_Y90), 10_000)
 
-"""
-f_max = np.max(polynom_funktion(olika_energier, *params))
-
-
-#   ----------------------------------------------------------------------
-#   Använd rejektionsmetoden för att sampla elektronenergi.
-#   ----------------------------------------------------------------------
-
-# Tar fram värdet närmast skärningspunkten i x-axeln
-
-def närmast(lista, tal):
-    lista = np.array(lista)
-    närmsta_index = (np.abs(lista - tal)).argmin()
-    return lista[närmsta_index], närmsta_index
-
-
-close, _ = närmast(polynom_funktion(olika_energier, *params), 0)
-
-for i in range(len(olika_energier)):
-    if polynom_funktion(olika_energier[i], *params) == close:
-        Skärpunkt_0 = olika_energier[i] 
-    else:
-        continue
-
-
-# Sampla ett x värde mellan 0 och skärningspunkten för att få elektronens energi
-
-def elektron_startenergi():
-    while True:
-        x_sampel = np.random.rand() * Skärpunkt_0
-        if np.random.rand() <= polynom_funktion(x_sampel, *params) / f_max:
-            Elektron_energi = x_sampel
-            return Elektron_energi
-        else:
-            continue
-"""
-
 
 #   ----------------------------------------------------------------------
 #   Använd rejektionsmetoden för att sampla elektronenergi.
