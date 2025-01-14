@@ -123,7 +123,7 @@ def run_MC_elektron(iterationer, rho_medium, radie_partikel, stopping_power_data
 
 
 if __name__ == "__main__":
-    iterationer = 10 ** 4
+    iterationer = 10 ** 3
     dummy_iterationer = 10 ** 2
 
     energiförlust_faktor = 0.98
