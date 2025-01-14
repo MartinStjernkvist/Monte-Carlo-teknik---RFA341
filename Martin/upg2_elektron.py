@@ -38,35 +38,9 @@ def run_MC_elektron(iterationer, rho_medium, radie_partikel, stopping_power_data
             theta, phi = riktning_skal()
             position_start = position_start_skal(radie_sfär, radie_partikel)
 
-
             # Sampla startenergin.
             energi_start = elektron_energi_start() * 10 ** 6  # i eV
-            print(f'energi: {energi_start * 10 ** (-6)} MeV')
-
-            """
-            stopping_power, _ = stopping_power_och_steglängd(energi, rho_medium, stopping_power_data)
-
-            # Bestäm ny energi, varefter steglängden kan lösas ut m.h.a. stopping power.
-            energi_ny = 0.96 * energi # antag 4% energiförlust innan nästa kollission
-            stopping_power_ny, _ = stopping_power_och_steglängd(energi, rho_medium, stopping_power_data)
-
-            stopping_power_medel = (stopping_power + stopping_power_ny) / 2
-            steglängd =
-
-            # Sampla steglängd för partikeln.
-            _, steglängd = stopping_power_och_steglängd(energi, rho_medium, stopping_power_data)
-            steglängd = steglängd * np.random.rand()
-            # print(f'steglängd: {steglängd * 10 ** (-6):.2f} mikrometer')
-            
-
-            # Beräkna den totala energideponeringen för en partikel som växelverkar i sfären.
-            # kommer gå i Tau i riktningen men sen ändra på den i Steglängd-Tau med theta riktning
-            energideponering, x, y, z, dos = laddad_partikel_väg_elektron(energi, position_start, phi, theta,
-                                                                          radie_sfär,
-                                                                          rho_medium, stopping_power_data,
-                                                                          scatter_power_data,
-                                                                          max_antal_steg)
-            """
+            # print(f'energi: {energi_start * 10 ** (-6)} MeV')
 
             # Beräkna den totala energideponeringen för en partikel som växelverkar i sfären.
             energideponering, x, y, z, dos = laddad_partikel_väg_elektron(energi_start, position_start, phi, theta, radie_sfär, rho_medium,
@@ -88,7 +62,7 @@ def run_MC_elektron(iterationer, rho_medium, radie_partikel, stopping_power_data
         for i in range(iterationer):
             # Sampla startenergin.
             energi_start = elektron_energi_start() * 10 ** 6  # i eV
-            print(f'energi: {energi_start * 10 ** (-6)} MeV')
+            # print(f'energi: {energi_start * 10 ** (-6)} MeV')
 
             # Sampla riktning och startposition.
             theta, phi = riktning_uniform()
@@ -108,10 +82,7 @@ def run_MC_elektron(iterationer, rho_medium, radie_partikel, stopping_power_data
             energideponering_summa += energideponering
             print(f'energideponering: {energideponering * 10 ** (-6)} MeV')
 
-
-    # print('antal utanför: ', utanför)
     # print('total energideponering: ', energideponering_summa)
-    # print(f'\nEnergideponering per partikel: {energideponering_summa / iterationer:.2f} eV / partikel')
 
     fig = plt.figure(figsize=(10, 10))
     ax = fig.add_subplot(projection='3d')
@@ -152,10 +123,10 @@ def run_MC_elektron(iterationer, rho_medium, radie_partikel, stopping_power_data
 
 
 if __name__ == "__main__":
-    iterationer = 10 ** 3
+    iterationer = 10 ** 4
     dummy_iterationer = 10 ** 2
 
-    energiförlust_faktor = 0.96
+    energiförlust_faktor = 0.98
 
     stopping_power_data = np.loadtxt(elektron_stopping_power_data)
     scatter_power_data = np.loadtxt(elektron_scatter_power_data)
@@ -180,9 +151,9 @@ if __name__ == "__main__":
 
     print(
         '\n----------------------------------------------------------------------\nRIKTIG\n----------------------------------------------------------------------\n')
-    energideponering_tot_skal = run_MC_elektron(iterationer, rho_medium, radie_partikel, stopping_power_data,
-                                                scatter_power_data,
-                                                position_start_skal, radie_sfär_skal, energiförlust_faktor)
+    energideponering_tot_skal = run_MC_elektron(iterationer, rho_medium, radie_partikel, stopping_power_data, scatter_power_data,
+                        position_start_skal,
+                        radie_sfär_skal, energiförlust_faktor)
 
     energideponering_skal_Gy = energideponering_eV_till_Gy(energideponering_tot_skal, rho_medium, radie_sfär_skal)
 

@@ -383,12 +383,13 @@ def transformera_koordinatsystem_extended(steg_A_B, phi_A, theta_A, steg_B_C, ph
     #     ])
 
     # för att x-axeln ska sammanfalla med riktningsvektorn måste rotationsvinkeln vara pi/2 - theta
-    angle = pi / 2 - theta_A
+    # angle = -(pi / 2 - theta_A)
+    angle = theta_A
     R_y = np.array(
         [
-            [np.cos(angle), 0, -np.sin(angle)],
+            [np.cos(angle), 0, np.sin(angle)],
             [0, 1, 0],
-            [np.sin(angle), 0, np.cos(angle)],
+            [-np.sin(angle), 0, np.cos(angle)],
         ])
 
     # R_y = np.identity(3)
@@ -468,9 +469,9 @@ def ny_transformera_koordinatsystem(steg_A_B, phi_A, theta_A, steg_B_C, phi_B, t
     angle = pi / 2 - theta_A
     R_y = np.array(
         [
-            [np.cos(angle), 0, -np.sin(angle)],
+            [np.cos(angle), 0, np.sin(angle)],
             [0, 1, 0],
-            [np.sin(angle), 0, np.cos(angle)],
+            [-np.sin(angle), 0, np.cos(angle)],
         ], dtype=np.float64)
 
     # först rotation i theta (y-axeln), sedan rotation i phi (z-axeln)
@@ -521,8 +522,12 @@ if __name__ == "__main__":
     z_A = z_start
 
     # steg 1: från A till B
-    theta_A = 3 * pi / 8
-    phi_A = 1 * pi / 8
+    # theta_A = 3 * pi / 8
+    # phi_A = 1 * pi / 8
+    # steg_A_B = 3
+
+    theta_A = pi / 4
+    phi_A = pi / 4
     steg_A_B = 3
 
     # steg 2: Från B till C, enligt koordinatsystemet för B

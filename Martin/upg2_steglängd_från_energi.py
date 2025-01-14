@@ -16,9 +16,9 @@ def steglängd_från_energi(energi_start, rho_medium, stopping_power_data, energ
     stopping_power_2, _ = stopping_power_och_steglängd(energi_2, rho_medium, stopping_power_data)
 
     stopping_power_medel = (stopping_power_2 + stopping_power_1) / 2
-    print(f'stopping power medel: {stopping_power_medel}')
+    # print(f'stopping power medel: {stopping_power_medel}')
 
     steglängd = - (energi_2 - energi_1) / stopping_power_medel
-    print(f'steglängd: {steglängd * 10**6:.2f} mikrometer')
+    # print(f'steglängd: {steglängd * 10**6:.2f} mikrometer')
 
     return steglängd

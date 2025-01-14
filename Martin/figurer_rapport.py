@@ -148,7 +148,8 @@ def transformera_koordinatsystem_extended(steg_A_B, phi_A, theta_A, steg_B_C, ph
     #     ])
 
     # för att x-axeln ska sammanfalla med riktningsvektorn måste rotationsvinkeln vara pi/2 - theta
-    angle = -(pi / 2 - theta_A)
+    # angle = -(pi / 2 - theta_A)
+    angle = theta_A
     R_y = np.array(
         [
             [np.cos(angle), 0, np.sin(angle)],
@@ -156,7 +157,7 @@ def transformera_koordinatsystem_extended(steg_A_B, phi_A, theta_A, steg_B_C, ph
             [-np.sin(angle), 0, np.cos(angle)],
         ])
 
-    R_y = np.identity(3)
+    # R_y = np.identity(3)
     # R_z = np.identity(3)
 
     # R = R_y @ R_z

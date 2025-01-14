@@ -5,6 +5,7 @@ from upg2_scattering_power import scattering_power_från_energi
 from upg2_steglängd_från_energi import steglängd_från_energi
 from upg2_elektron_polarvinkel import polar_vinkel
 
+
 def laddad_partikel_väg_elektron(energi_start, position_start, phi, theta, radie_sfär, rho_medium,
                                  stopping_power_data, scatter_power_data, energiförlust_faktor):
     """
@@ -29,15 +30,15 @@ def laddad_partikel_väg_elektron(energi_start, position_start, phi, theta, radi
     dz = steglängd * np.cos(theta)
 
     position_vektor += np.array([dx, dy, dz])
-    print(f'positionsvektor: {position_vektor}')
+    # print(f'positionsvektor: {position_vektor}')
 
-    # dos.append(energi - energi_ny)
-    # x.append(position_vektor[0])
-    # y.append(position_vektor[1])
-    # z.append(position_vektor[2])
+    if np.sqrt(np.dot(position_vektor, position_vektor)) < radie_sfär:
+        dos.append(energi - energi_ny)
+        x.append(position_vektor[0])
+        y.append(position_vektor[1])
+        z.append(position_vektor[2])
 
-
-    while energi > energi_start * 10**(-10):
+    while np.sqrt(np.dot(position_vektor, position_vektor)) < radie_sfär and energi > energi_start * 10 ** (-6):
 
         # Steglängd tas så att en viss energiförlust sker.
         steglängd_ny = steglängd_från_energi(energi, rho_medium, stopping_power_data, energiförlust_faktor)
@@ -72,6 +73,8 @@ def laddad_partikel_väg_elektron(energi_start, position_start, phi, theta, radi
             theta = theta_ny
             steglängd = steglängd_ny
             energi = energi_ny
+
+            print(f'energi: {energi} eV')
             continue
 
     # Beräkna den totala energideponeringen (i sfären) från partikeln.
