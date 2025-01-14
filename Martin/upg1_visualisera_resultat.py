@@ -21,7 +21,7 @@ def visualisera_resultat():
         visualisera = visualisera_matris(slicad_resultat_matris, visa_något=True)
         visualisera.show()
 
-        fil_namn_json = 'inputs_upg1_multiprocess.json'
+        fil_namn_json = 'inputs_resultat_multiprocess.json'
 
         with (open(fil_namn_json, 'r') as f):
             json_object = json.load(f)
