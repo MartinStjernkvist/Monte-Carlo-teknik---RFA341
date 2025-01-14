@@ -17,6 +17,7 @@ def visualisera_resultat():
         visualisera.show()
 
         slicad_resultat_matris = resultat_matris[105:160, 80:, 140:630]
+        # slicad_resultat_matris = resultat_matris[105:160, 80:, 240:390]
         visualisera = visualisera_matris(slicad_resultat_matris, visa_något=True)
         visualisera.show()
 
@@ -36,11 +37,12 @@ def visualisera_resultat():
         visualisera.show()
 
         slicad_resultat_matris = resultat_matris[105:160, 80:, 140:630]
+        # slicad_resultat_matris = resultat_matris[105:160, 80:, 240:390]
         visualisera = visualisera_matris(slicad_resultat_matris, visa_något=True)
         visualisera.show()
 
         fil_namn_slicad_npy = 'resultat_' + input_resultat + '_slicad.npy'
-
+        # fil_namn_slicad_npy = 'resultat_v4_slicad.npy'
         np.save(fil_namn_slicad_npy, slicad_resultat_matris)
 
         fil_namn_json = 'inputs_' + input_resultat + '.json'
@@ -84,7 +86,7 @@ def visualisera_resultat_slicade():
 #   VISUALISERA RESULTATEN FRÅN upg1_sammanställt
 #   ----------------------------------------------------------------------
 if __name__ == "__main__":
-    # visualisera_resultat()
+    visualisera_resultat()
 
     # visualisera_resultat_slicade()
 

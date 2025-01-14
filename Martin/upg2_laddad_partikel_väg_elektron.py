@@ -1,6 +1,6 @@
 from imports import *
 from upg2_energi_efter_förlust import energi_efter_energiförlust
-from upg12_steg_transformation import ny_steg_transformera_koordinatsystem_3d
+from upg2_steg_transformation import ny_steg_transformera_koordinatsystem_3d
 from upg2_stopping_power_och_steglängd import stopping_power_och_steglängd
 from upg2_elektron_polarvinkel import elektron_theta_ny
 
@@ -19,21 +19,24 @@ def laddad_partikel_väg_elektron(energi_start, position_start, phi, theta, steg
     energi = energi_start
     steg_tagna = 0
     x, y, z, dos = [], [], [], []
+
+    riktning = np.array(
+        [np.sin(theta) * np.cos(phi)
+            , np.sin(theta) * np.cos(phi)
+            , np.cos(theta)])
+
+    riktning /= np.linalg.norm(riktning)
+    position_vektor += riktning * steglängd
+
+
     # stopping_power_data = np.loadtxt('MC_Linnea/Elekt_stp_range_data')
     # scatter_power_data = np.loadtxt('MC_Linnea/Scatterpower_vatten_data')
     # Under tiden som partikeln fortfarande inte tagit hela sitt steg.
+
     while steg_tagna < max_antal_steg and energi > 0:
 
         # Tar ett steg
         steg_tagna += 1
-
-        riktning = np.array(
-            [np.sin(theta) * np.cos(phi)
-                , np.sin(theta) * np.cos(phi)
-                , np.cos(theta)])
-
-        riktning /= np.linalg.norm(riktning)
-        position_vektor += riktning * steglängd
 
         # Nya värden på vinklarna
         phi_ny = np.random.random() * 2 * pi
@@ -43,7 +46,13 @@ def laddad_partikel_väg_elektron(energi_start, position_start, phi, theta, steg
         tau = s * np.random.random()
 
         # Ändrar på positionsvektor efter att transformations matrisen
-        position_vektor += ny_steg_transformera_koordinatsystem_3d(steglängd, phi, theta, s - tau, phi_ny, theta_ny)
+        dx, dy, dz = ny_steg_transformera_koordinatsystem_3d(steglängd, phi, theta, tau, phi_ny, theta_ny)
+        position_vektor += np.array([dx, dy, dz])
+        print('dz', dz)
+
+        # Håll reda på ifall partikeln befinner sig i sfären eller inte.
+        if np.sqrt(np.dot(position_vektor, position_vektor)) > radie_sfär:
+            break
 
         # Plottvärderna för att se dosfördelningen, men får bara ut startpositionen inte alla andra delsteg...
         dos.append(energi - energi_efter_energiförlust(energi, steglängd, rho_medium, stopping_power_data))
@@ -57,11 +66,7 @@ def laddad_partikel_väg_elektron(energi_start, position_start, phi, theta, steg
         # Ändrar på vinklarna och värdet på steglängden innan nästa vinkeländring
         phi = phi_ny
         theta = theta_ny
-        steglängd = s - tau
-
-        # Håll reda på ifall partikeln befinner sig i sfären eller inte.
-        if np.sqrt(np.dot(position_vektor, position_vektor)) > radie_sfär:
-            break
+        steglängd = tau
 
     # Beräkna den totala energideponeringen (i sfären) från partikeln.
     energideponering = energi_start - energi

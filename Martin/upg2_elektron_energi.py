@@ -23,6 +23,7 @@ params, cv = curve_fit(polynom_funktion, Energi_Y90, Intensitet_Y90)
 a, b, c, d, e, f = params
 
 olika_energier = np.linspace(np.min(Energi_Y90), np.max(Energi_Y90), 10_000)
+
 """
 f_max = np.max(polynom_funktion(olika_energier, *params))
 

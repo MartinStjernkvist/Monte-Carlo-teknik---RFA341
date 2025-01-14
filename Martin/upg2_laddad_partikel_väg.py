@@ -48,19 +48,15 @@ def laddad_partikel_väg(energi_start, position_start, phi, theta, steglängd, r
         # Ta ett litet steg.
         position_vektor += steg_vektor
 
+        # Håll reda på ifall partikeln befinner sig i sfären eller inte.
+        # Ekvationen för en sfär: x^2 + y^2 + z^2 = r^2
+        if np.sqrt(np.dot(position_vektor, position_vektor)) > radie_sfär:
+            # print(f'Energideponering i position ', position_vektor)
+            break
+
         # Beräkna energin efter steget.
         energi = energi_efter_energiförlust(energi, steg_storlek, rho_medium, stopping_power_data)
         # print(f'ny energi: {energi * 10 ** (-6):.2f} MeV')
-
-        # Håll reda på ifall partikeln befinner sig i sfären eller inte.
-        # Ekvationen för en sfär: x^2 + y^2 + z^2 = r^2
-        if np.sqrt(np.dot(position_vektor, position_vektor)) < radie_sfär:
-            # print(f'Energideponering i position ', position_vektor)
-            continue
-        else:
-            break
-        # if np.dot(position_vektor, position_vektor) > radie_sfär:
-        #     break
 
     # Beräkna den totala energideponeringen (i sfären) från partikeln.
     energideponering = energi_start - energi

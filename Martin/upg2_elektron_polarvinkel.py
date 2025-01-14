@@ -38,8 +38,12 @@ def elektron_theta_ny(elektron_energi, scatterpower_data, rho_medium):  # Energi
                            energi_close[1] - energi_close[0])
 
     R = np.random.random()  # Slumpmässig tal mellan 0-1
-    # R = np.pi / 2 * (-1 + 2 * np.random.random())
 
-    theta_ny = np.sqrt(-T * np.log(1 - R))
+    dl = 10**(-20)
+
+    theta_ny = np.sqrt(-T * dl * np.log(1 - R))
+
+    theta_ny = random.choice([1, -1]) * theta_ny
+    print('theta ny', theta_ny)
 
     return theta_ny
