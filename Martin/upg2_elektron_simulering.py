@@ -86,6 +86,9 @@ def run_MC_elektron(iterationer, rho_medium, radie_partikel, stopping_power_data
 
     # print('total energideponering: ', energideponering_summa)
 
+    #   -----------------------------------
+    #   Visualisera resultat i figur.
+    #   -----------------------------------
     fig = plt.figure(figsize=(10, 10))
     ax = fig.add_subplot(projection='3d')
     ax.scatter(x_list, y_list, z_list, c=dos_list, cmap='plasma', label='Partikel position')

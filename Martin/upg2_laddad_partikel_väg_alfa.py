@@ -19,6 +19,9 @@ def laddad_partikel_väg(energi_start, position_start, phi, theta, steglängd, r
     :return: Energideponeringen innanför sfären.
     """
 
+    # Initiera tomma listor för att spara datan.
+    x, y, z, dos = [], [], [], []
+
     position_vektor = position_start
     energi = energi_start
 
@@ -54,11 +57,21 @@ def laddad_partikel_väg(energi_start, position_start, phi, theta, steglängd, r
             # print(f'Energideponering i position ', position_vektor)
             break
 
-        # Beräkna energin efter steget.
-        energi = energi_efter_energiförlust(energi, steg_storlek, rho_medium, stopping_power_data)
-        # print(f'ny energi: {energi * 10 ** (-6):.2f} MeV')
+        else:
+            # Beräkna energin efter steget.
+            energi_ny = energi_efter_energiförlust(energi, steg_storlek, rho_medium, stopping_power_data)
+            # print(f'ny energi: {energi * 10 ** (-6):.2f} MeV')
+
+            # Spara mätpunkter.
+            dos.append(energi - energi_ny)
+            x.append(position_vektor[0])
+            y.append(position_vektor[1])
+            z.append(position_vektor[2])
+
+            energi = energi_ny
+            continue
 
     # Beräkna den totala energideponeringen (i sfären) från partikeln.
     energideponering = energi_start - energi
     # print(f'energideponering: {energideponering} eV')
-    return energideponering
+    return energideponering, x, y, z, dos

@@ -1,5 +1,5 @@
 from imports import *
-from upg2_steg_transformation import transformera_koordinatsystem
+from upg12_steg_transformation import transformera_koordinatsystem
 from upg2_stopping_power_och_steglängd import stopping_power_och_steglängd
 from upg2_scattering_power import scattering_power_från_energi
 from upg2_steglängd_från_energi import steglängd_från_energi
@@ -49,6 +49,8 @@ def laddad_partikel_väg_elektron(energi_start, position_start, phi, theta, radi
     # print(f'positionsvektor: {position_vektor}')
 
     if np.sqrt(np.dot(position_vektor, position_vektor)) < radie_sfär:
+
+        # Spara mätpunkter.
         dos.append(energi - energi_ny)
         x.append(position_vektor[0])
         y.append(position_vektor[1])
@@ -101,7 +103,7 @@ def laddad_partikel_väg_elektron(energi_start, position_start, phi, theta, radi
 
         # Om elektronen fortfarande är i sfären -> spara mätpunkter.
         else:
-            # Mätpunkter för att plotta dosfördelningen.
+            # Spara mätpunkter.
             dos.append(energi - energi_ny)
             x.append(position_vektor[0])
             y.append(position_vektor[1])

@@ -3,7 +3,7 @@ from upg1_sampla_energi_start import energi_start
 from upg2_stopping_power_och_steglängd import stopping_power_och_steglängd
 from upg2_riktning import riktning_uniform, riktning_skal
 from upg2_position_start import position_start_innanför, position_start_skal
-from upg2_laddad_partikel_väg import laddad_partikel_väg
+from upg2_laddad_partikel_väg_alfa import laddad_partikel_väg
 
 
 def run_MC_alpha(iterationer, rho_medium, radie_partikel, stopping_power_data, position_start_alpha, radie_sfär,
@@ -20,8 +20,9 @@ def run_MC_alpha(iterationer, rho_medium, radie_partikel, stopping_power_data, p
     :return: Summeringen av energideponeringen innanför sfären.
     """
 
-    # Initiera ett värde för energideponeringen.
+    # Initiera en energisumma och tomma listor för att spara datan.
     energideponering_summa = 0
+    x_list, y_list, z_list, dos_list = [], [], [], []
 
     #   -----------------------------------
     #   Vilken fördelningsfunktion som ska användas bestämmer hur
@@ -33,7 +34,6 @@ def run_MC_alpha(iterationer, rho_medium, radie_partikel, stopping_power_data, p
         #   -----------------------------------
         iterationer = 0.5 * iterationer
         for i in range(int(iterationer)):
-
             # Sampla startenergin.
             energi = energi_start(At211_energi, At211_sannolikhet)
             print(f'energi: {energi * 10 ** (-6):.2f} MeV')
@@ -47,19 +47,25 @@ def run_MC_alpha(iterationer, rho_medium, radie_partikel, stopping_power_data, p
             print(f'steglängd: {steglängd * 10 ** 6:.2f} mikrometer')
 
             # Beräkna den totala energideponeringen för en partikel som växelverkar i sfären.
-            energideponering = laddad_partikel_väg(energi, position_start, phi, theta, steglängd, radie_sfär,
-                                                   rho_medium, stopping_power_data, max_antal_steg)
+            energideponering, x, y, z, dos = laddad_partikel_väg(energi, position_start, phi, theta, steglängd,
+                                                                 radie_sfär,
+                                                                 rho_medium, stopping_power_data, max_antal_steg)
 
             # Summera alla dosbidrag.
             energideponering_summa += energideponering
             print(f'energideponering: {energideponering * 10 ** (-6):.2f} MeV')
+
+            # Spara mätpunkter för plottning.
+            x_list += x
+            y_list += y
+            z_list += z
+            dos_list += dos
 
     else:
         #   -----------------------------------
         #   Uniform fördelning i en sfär.
         #   -----------------------------------
         for i in range(iterationer):
-
             # Sampla startenergin.
             energi = energi_start(At211_energi, At211_sannolikhet)
             print(f'energi: {energi * 10 ** (-6):.2f} MeV')
@@ -73,14 +79,47 @@ def run_MC_alpha(iterationer, rho_medium, radie_partikel, stopping_power_data, p
             print(f'steglängd: {steglängd * 10 ** 6:.2f} mikrometer')
 
             # Beräkna den totala energideponeringen för en partikel som växelverkar i sfären.
-            energideponering = laddad_partikel_väg(energi, position_start, phi, theta, steglängd, radie_sfär,
-                                                   rho_medium, stopping_power_data, max_antal_steg)
+            energideponering, x, y, z, dos = laddad_partikel_väg(energi, position_start, phi, theta, steglängd,
+                                                                 radie_sfär,
+                                                                 rho_medium, stopping_power_data, max_antal_steg)
 
             # Summera alla dosbidrag.
             energideponering_summa += energideponering
             print(f'energideponering: {energideponering * 10 ** (-6):.2f} MeV')
 
+            # Spara mätpunkter för plottning.
+            x_list += x
+            y_list += y
+            z_list += z
+            dos_list += dos
+
     # print(f'\nEnergideponering per partikel: {energideponering_summa / iterationer:.2f} eV / partikel')
+
+    #   -----------------------------------
+    #   Visualisera resultat i figur.
+    #   -----------------------------------
+    fig = plt.figure(figsize=(10, 10))
+    ax = fig.add_subplot(projection='3d')
+    ax.scatter(x_list, y_list, z_list, c=dos_list, cmap='plasma', label='Partikel position')
+    # Fixa colorbar för att se energideponeringen i figuren
+
+    # fig.colorbar(ax=ax, label='Energideponering',)
+
+    ax.set_xlabel('x-axel (m)')
+    ax.set_ylabel('y-axel (m)')
+    ax.set_ylabel('z-axel (m)')
+
+    # Testar att sätta en sfär för tumören
+    u, v = np.mgrid[0:2 * np.pi:20j, 0:np.pi:10j]
+    x = radie_sfär * np.cos(u) * np.sin(v)
+    y = radie_sfär * np.sin(u) * np.sin(v)
+    z = radie_sfär * np.cos(v)
+    ax.plot_wireframe(x, y, z, color="k", alpha=0.3, label='Tumören')
+    ax.legend()
+
+    # Visa figur
+    plt.tight_layout()
+    plt.show()
     return energideponering_summa
 
 
