@@ -141,7 +141,7 @@ if __name__ == "__main__":
     #   Köra simuleringskoden.
     #   -----------------------------------
     iterationer = 10 ** 3
-    dummy_iterationer = 1
+    dummy_iterationer = 10**2
 
     energiförlust_faktor = 0.96  # Energi efter en kollision = 96% av föregående energin.
 
@@ -154,25 +154,25 @@ if __name__ == "__main__":
     radie_sfär_skal = 300 * 10 ** (-6)  # m
     radie_sfär_innanför = 1 * 10 ** (-3)  # m
 
-    # print(
-    #     '\n-----------------------------------\nDUMMY\n-----------------------------------\n')
-    #
-    # _ = run_MC_elektron(dummy_iterationer, rho_medium, radie_partikel, stopping_power_data, scatter_power_data,
-    #                     position_start_skal,
-    #                     radie_sfär_skal, energiförlust_faktor)
-    #
-    # start = time.time()
-    #
-    # print(
-    #     '\n-----------------------------------\nRIKTIG\n-----------------------------------\n')
-    # energideponering_tot_skal = run_MC_elektron(iterationer, rho_medium, radie_partikel, stopping_power_data,
-    #                                             scatter_power_data,
-    #                                             position_start_skal,
-    #                                             radie_sfär_skal, energiförlust_faktor)
-    #
-    # energideponering_skal_Gy = energideponering_eV_till_Gy(energideponering_tot_skal, rho_medium, radie_sfär_skal)
-    #
-    # end_time(start)
+    print(
+        '\n-----------------------------------\nDUMMY\n-----------------------------------\n')
+
+    _ = run_MC_elektron(dummy_iterationer, rho_medium, radie_partikel, stopping_power_data, scatter_power_data,
+                        position_start_skal,
+                        radie_sfär_skal, energiförlust_faktor)
+
+    start = time.time()
+
+    print(
+        '\n-----------------------------------\nRIKTIG\n-----------------------------------\n')
+    energideponering_tot_skal = run_MC_elektron(iterationer, rho_medium, radie_partikel, stopping_power_data,
+                                                scatter_power_data,
+                                                position_start_skal,
+                                                radie_sfär_skal, energiförlust_faktor)
+
+    energideponering_skal_Gy = energideponering_eV_till_Gy(energideponering_tot_skal, rho_medium, radie_sfär_skal)
+
+    end_time(start)
 
     print(
         '\n-----------------------------------\nDUMMY\n-----------------------------------\n')
@@ -181,24 +181,24 @@ if __name__ == "__main__":
                         position_start_innanför,
                         radie_sfär_innanför, energiförlust_faktor)
 
-    # start = time.time()
-    # print(
-    #     '\n-----------------------------------\nRIKTIG\n-----------------------------------\n')
-    # energideponering_tot_innanför = run_MC_elektron(iterationer, rho_medium, radie_partikel, stopping_power_data,
-    #                                                 scatter_power_data,
-    #                                                 position_start_innanför, radie_sfär_innanför, energiförlust_faktor)
-    #
-    # energideponering_innanför_Gy = energideponering_eV_till_Gy(energideponering_tot_innanför, rho_medium,
-    #                                                            radie_sfär_innanför)
-    # end_time(start)
-    #
-    # print(
-    #     '\n-----------------------------------\nRESULTAT\n-----------------------------------\n')
-    #
-    # print(
-    #     f'\nSkal (300 mikrometer): Energideponering:\n{energideponering_skal_Gy * 10 ** 8 / iterationer} E-08 Gy / sönderfall')
-    # print(f'faktor {(energideponering_skal_Gy * 10 ** 8 / iterationer) / 4.07} av facit')
-    #
-    # print(
-    #     f'\nInnanför (1 mm): Energideponering:\n{energideponering_innanför_Gy * 10 ** 9 / iterationer} E-09 Gy / sönderfall')
-    # print(f'faktor {(energideponering_innanför_Gy * 10 ** 9 / iterationer) / 5.22} av facit')
+    start = time.time()
+    print(
+        '\n-----------------------------------\nRIKTIG\n-----------------------------------\n')
+    energideponering_tot_innanför = run_MC_elektron(iterationer, rho_medium, radie_partikel, stopping_power_data,
+                                                    scatter_power_data,
+                                                    position_start_innanför, radie_sfär_innanför, energiförlust_faktor)
+
+    energideponering_innanför_Gy = energideponering_eV_till_Gy(energideponering_tot_innanför, rho_medium,
+                                                               radie_sfär_innanför)
+    end_time(start)
+
+    print(
+        '\n-----------------------------------\nRESULTAT\n-----------------------------------\n')
+
+    print(
+        f'\nSkal (300 mikrometer): Energideponering:\n{energideponering_skal_Gy * 10 ** 8 / iterationer} E-08 Gy / sönderfall')
+    print(f'faktor {(energideponering_skal_Gy * 10 ** 8 / iterationer) / 4.07} av facit')
+
+    print(
+        f'\nInnanför (1 mm): Energideponering:\n{energideponering_innanför_Gy * 10 ** 9 / iterationer} E-09 Gy / sönderfall')
+    print(f'faktor {(energideponering_innanför_Gy * 10 ** 9 / iterationer) / 5.22} av facit')

@@ -21,7 +21,7 @@ def transformera_koordinatsystem(steg_A_B, phi_A, theta_A, steg_B_C, phi_B, thet
     :param steg_B_C: Magnitud på steg från B till C.
     :param phi_B: Vinkel för steget mellan B och C.
     :param theta_B: Vinkel för steget mellan B och C.
-    :return: Vektorkomponenter för vektor_C.
+    :return: Vektorkomponenter för vektor_C (B).
     """
 
     #   -----------------------------------
@@ -78,10 +78,12 @@ def transformera_koordinatsystem(steg_A_B, phi_A, theta_A, steg_B_C, phi_B, thet
     # vektor_B (A)
     vektor_B_A = np.array([x_B_A, y_B_A, z_B_A, 1.0], dtype=np.float64)
 
-    # Vill ha vektor_C.
-    vektor = vektor_C_A - vektor_B_A
+    # Vill ha vektor_C (B).
+    vektor_C_B = vektor_C_A - vektor_B_A
 
-    # Vektorkomponenter av vektor_C.
-    x_C, y_C, z_C = vektor[0], vektor[1], vektor[2]
+    # Vektorkomponenter av vektor_C (B).
+    x_C_B, y_C_B, z_C_B = vektor_C_B[0], vektor_C_B[1], vektor_C_B[2]
 
-    return x_C, y_C, z_C
+    dx, dy, dz = x_C_B, y_C_B, z_C_B
+
+    return dx, dy, dz
