@@ -7,7 +7,7 @@ def stopping_power_och_steglängd(energi, rho_medium, stopping_power_data):
     :param energi: Partikelns energi i eV.
     :param rho_medium: Mediumets densitet i kg / m^3.
     :param stopping_power_data: Tabellerad data.
-    :return: Stopping power (eV/m^2) och steglängden (m).
+    :return: Stopping power (eV/m) och steglängden (m).
     """
 
     energi_MeV_list = stopping_power_data[:, 0]  # MeV
@@ -47,6 +47,6 @@ def stopping_power_och_steglängd(energi, rho_medium, stopping_power_data):
                         energi_close[1] - energi_close[0]))
 
     steglängd = CSDA / rho_medium
-    stopping_power = stopping_power * rho_medium
+    stopping_power = stopping_power * rho_medium  # eV / m
 
     return stopping_power, steglängd

@@ -124,7 +124,7 @@ if __name__ == "__main__":
     iterationer = 10 ** 3
     dummy_iterationer = 10 ** 2
 
-    energiförlust_faktor = 0.98
+    energiförlust_faktor = 0.95  # Energi efter en kollision = 98% av föregående energin.
 
     stopping_power_data = np.loadtxt(elektron_stopping_power_data)
     scatter_power_data = np.loadtxt(elektron_scatter_power_data)

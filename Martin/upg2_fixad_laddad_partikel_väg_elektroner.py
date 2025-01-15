@@ -49,6 +49,8 @@ def laddad_partikel_väg_elektron(energi_start, position_start, phi, theta, radi
         y.append(position_vektor[1])
         z.append(position_vektor[2])
 
+    energi = energi_ny
+
     #   ----------------------------------------------------------------------
     #   Medan elektronen befinner sig i sfären
     #   och
