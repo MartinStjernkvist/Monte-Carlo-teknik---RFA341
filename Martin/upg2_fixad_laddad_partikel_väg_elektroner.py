@@ -66,7 +66,6 @@ def laddad_partikel_väg_elektron(energi_start, position_start, phi, theta, radi
     #   och
     #   energin är över en tröskelenergi.
     #   -----------------------------------
-
     while np.sqrt(np.dot(position_vektor, position_vektor)) < radie_sfär and energi > energi_start * 10 ** (-6):
         print('')
 
@@ -88,7 +87,7 @@ def laddad_partikel_väg_elektron(energi_start, position_start, phi, theta, radi
 
         phi_ny = np.random.random() * 2 * pi
 
-        # Ändrar på positionsvektor efter att transformations matrisen
+        # Koordinattransformation ger ny positionsvektor.
         dx, dy, dz = ny_steg_transformera_koordinatsystem_3d(steglängd, phi, theta, steglängd_ny, phi_ny, theta_ny)
         position_vektor += np.array([dx, dy, dz])
 
@@ -108,7 +107,7 @@ def laddad_partikel_väg_elektron(energi_start, position_start, phi, theta, radi
             y.append(position_vektor[1])
             z.append(position_vektor[2])
 
-            # Ändrar på vinklarna, värdet på steglängden och energin innan nästa vinkeländring.
+            # Ändrar på vinklarna, värdet på steglängden och energin.
             phi = phi_ny
             theta = theta_ny
             steglängd = steglängd_ny

@@ -20,7 +20,9 @@ def run_MC_alpha(iterationer, rho_medium, radie_partikel, stopping_power_data, p
     :return: Summeringen av energideponeringen innanför sfären.
     """
 
+    # Initiera ett värde för energideponeringen.
     energideponering_summa = 0
+
     #   -----------------------------------
     #   Vilken fördelningsfunktion som ska användas bestämmer hur
     #   sampling av riktning och position sker.
