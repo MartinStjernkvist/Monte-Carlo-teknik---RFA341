@@ -6,7 +6,7 @@ from upg2_riktning import riktning_uniform, riktning_skal
 from upg2_position_start import position_start_innanför, position_start_skal
 # from upg2_laddad_partikel_väg_elektron import laddad_partikel_väg_elektron
 from upg2_fixad_laddad_partikel_väg_elektroner import laddad_partikel_väg_elektron
-from upg2_alfa import energideponering_eV_till_Gy
+from upg2_alfa_simulering import energideponering_eV_till_Gy
 
 
 def run_MC_elektron(iterationer, rho_medium, radie_partikel, stopping_power_data, scatter_power_data,

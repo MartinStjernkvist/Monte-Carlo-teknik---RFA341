@@ -22,7 +22,8 @@ def laddad_partikel_väg_elektron(energi_start, position_start, phi, theta, radi
     :return: Energideponeringen innanför sfären.
     """
 
-    print(f'\nny partikel:\n')
+    print(
+        f'\n%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\nny partikel:\n%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%')
 
     # Initiera tomma listor för att spara datan.
     x, y, z, dos = [], [], [], []
@@ -34,8 +35,7 @@ def laddad_partikel_väg_elektron(energi_start, position_start, phi, theta, radi
 
     # Steglängd tas så att en viss energiförlust sker.
     steglängd = steglängd_från_energi(energi, rho_medium, stopping_power_data, energiförlust_faktor)
-    print(f'steglängd: {steglängd * 10**6:.2f} mikrometer')
-
+    print(f'steglängd: {steglängd * 10 ** 6:.2f} mikrometer')
 
     # Den nya energin för elektronen.
     energi_ny = energi * energiförlust_faktor
@@ -54,8 +54,12 @@ def laddad_partikel_väg_elektron(energi_start, position_start, phi, theta, radi
         y.append(position_vektor[1])
         z.append(position_vektor[2])
 
-        print(f'\ninitiera while loop:')
+        print(
+            f'\n----------------------------------------------------------------------\ninitiera while loop:\n----------------------------------------------------------------------')
         energi = energi_ny
+
+    else:
+        print('\n!!!UTANFÖR!!!')
 
     #   ----------------------------------------------------------------------
     #   Medan elektronen befinner sig i sfären
@@ -64,7 +68,7 @@ def laddad_partikel_väg_elektron(energi_start, position_start, phi, theta, radi
     #   ----------------------------------------------------------------------
 
     while np.sqrt(np.dot(position_vektor, position_vektor)) < radie_sfär and energi > energi_start * 10 ** (-6):
-        print('\n')
+        print('')
 
         # Steglängd tas så att en viss energiförlust sker.
         steglängd_ny = steglängd_från_energi(energi, rho_medium, stopping_power_data, energiförlust_faktor)
@@ -92,6 +96,7 @@ def laddad_partikel_väg_elektron(energi_start, position_start, phi, theta, radi
         #   Håll reda på ifall partikeln befinner sig i sfären eller inte.
         #   ----------------------------------------------------------------------
         if np.sqrt(np.dot(position_vektor, position_vektor)) > radie_sfär:
+            print('\n!!!UTANFÖR!!!')
             break
 
         # Om elektronen fortfarande är i sfären -> spara mätpunkter.
