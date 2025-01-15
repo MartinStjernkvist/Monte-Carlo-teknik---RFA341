@@ -21,20 +21,20 @@ def run_MC_alpha(iterationer, rho_medium, radie_partikel, stopping_power_data, p
     """
 
     energideponering_summa = 0
-    #   ----------------------------------------------------------------------
+    #   -----------------------------------
     #   Vilken fördelningsfunktion som ska användas bestämmer hur
     #   sampling av riktning och position sker.
-    #   ----------------------------------------------------------------------
+    #   -----------------------------------
     if position_start_alpha == position_start_skal:
-        #   ----------------------------------------------------------------------
+        #   -----------------------------------
         #   Ytfördelning på en sfär.
-        #   ----------------------------------------------------------------------
+        #   -----------------------------------
         iterationer = 0.5 * iterationer
         for i in range(int(iterationer)):
 
             # Sampla startenergin.
             energi = energi_start(At211_energi, At211_sannolikhet)
-            print(f'energi: {energi * 10 ** (-6)} MeV')
+            print(f'energi: {energi * 10 ** (-6):.2f} MeV')
 
             # Sampla riktning och startposition.
             theta, phi = riktning_skal()
@@ -50,17 +50,17 @@ def run_MC_alpha(iterationer, rho_medium, radie_partikel, stopping_power_data, p
 
             # Summera alla dosbidrag.
             energideponering_summa += energideponering
-            print(f'energideponering: {energideponering * 10 ** (-6)} MeV')
+            print(f'energideponering: {energideponering * 10 ** (-6):.2f} MeV')
 
     else:
-        #   ----------------------------------------------------------------------
+        #   -----------------------------------
         #   Uniform fördelning i en sfär.
-        #   ----------------------------------------------------------------------
+        #   -----------------------------------
         for i in range(iterationer):
 
             # Sampla startenergin.
             energi = energi_start(At211_energi, At211_sannolikhet)
-            print(f'energi: {energi * 10 ** (-6)} MeV')
+            print(f'energi: {energi * 10 ** (-6):.2f} MeV')
 
             # Sampla riktning och startposition.
             theta, phi = riktning_uniform()
@@ -76,7 +76,7 @@ def run_MC_alpha(iterationer, rho_medium, radie_partikel, stopping_power_data, p
 
             # Summera alla dosbidrag.
             energideponering_summa += energideponering
-            print(f'energideponering: {energideponering * 10 ** (-6)} MeV')
+            print(f'energideponering: {energideponering * 10 ** (-6):.2f} MeV')
 
     # print(f'\nEnergideponering per partikel: {energideponering_summa / iterationer:.2f} eV / partikel')
     return energideponering_summa
@@ -104,9 +104,9 @@ def energideponering_eV_till_Gy(energideponering_eV, rho_medium, radie_sfär):
 
 
 if __name__ == "__main__":
-    #   ----------------------------------------------------------------------
+    #   -----------------------------------
     #   Kör simuleringen med ingångsvärden.
-    #   ----------------------------------------------------------------------
+    #   -----------------------------------
     iterationer = 10 ** 2
     dummy_iterationer = 10 ** 1
     max_antal_steg = 10 ** 3
@@ -120,7 +120,7 @@ if __name__ == "__main__":
     radie_sfär_innanför = 1 * 10 ** (-3)
 
     print(
-        '\n----------------------------------------------------------------------\nDUMMY\n----------------------------------------------------------------------\n')
+        '\n-----------------------------------\nDUMMY\n-----------------------------------\n')
 
     _ = run_MC_alpha(dummy_iterationer, rho_medium, radie_partikel, stopping_power_data, position_start_skal,
                      radie_sfär_skal, max_antal_steg)
@@ -128,7 +128,7 @@ if __name__ == "__main__":
     start = time.time()
 
     print(
-        '\n----------------------------------------------------------------------\nRIKTIG\n----------------------------------------------------------------------\n')
+        '\n-----------------------------------\nRIKTIG\n-----------------------------------\n')
     energideponering_tot_skal = run_MC_alpha(iterationer, rho_medium, radie_partikel, stopping_power_data,
                                              position_start_skal, radie_sfär_skal, max_antal_steg)
     energideponering_skal_Gy = energideponering_eV_till_Gy(energideponering_tot_skal, rho_medium, radie_sfär_skal)
@@ -136,14 +136,14 @@ if __name__ == "__main__":
     end_time(start)
 
     print(
-        '\n----------------------------------------------------------------------\nDUMMY\n----------------------------------------------------------------------\n')
+        '\n-----------------------------------\nDUMMY\n-----------------------------------\n')
 
     _ = run_MC_alpha(dummy_iterationer, rho_medium, radie_partikel, stopping_power_data, position_start_innanför,
                      radie_sfär_innanför, max_antal_steg)
 
     start = time.time()
     print(
-        '\n----------------------------------------------------------------------\nRIKTIG\n----------------------------------------------------------------------\n')
+        '\n-----------------------------------\nRIKTIG\n-----------------------------------\n')
     energideponering_tot_innanför = run_MC_alpha(iterationer, rho_medium, radie_partikel, stopping_power_data,
                                                  position_start_innanför, radie_sfär_innanför, max_antal_steg)
     energideponering_innanför_Gy = energideponering_eV_till_Gy(energideponering_tot_innanför, rho_medium,
@@ -151,11 +151,11 @@ if __name__ == "__main__":
     end_time(start)
 
     print(
-        '\n----------------------------------------------------------------------\nRESULTAT\n----------------------------------------------------------------------\n')
+        '\n-----------------------------------\nRESULTAT\n-----------------------------------\n')
 
-    #   ----------------------------------------------------------------------
+    #   -----------------------------------
     #   Beräkna resultat och jämför med valideringsdata.
-    #   ----------------------------------------------------------------------
+    #   -----------------------------------
     print(
         f'\nSkal (300 mikrometer): Energideponering:\n{energideponering_skal_Gy * 10 ** 6 / iterationer} E-06 Gy / sönderfall')
     print(f'faktor {(energideponering_skal_Gy * 10 ** 6 / iterationer) / 1.66:.3f} av facit')

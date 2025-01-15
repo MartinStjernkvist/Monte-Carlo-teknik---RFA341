@@ -1,5 +1,6 @@
 from imports import *
 
+
 class växelverkan:
 
     def __init__(self, energi, df_tvärsnitt):
@@ -21,11 +22,15 @@ class växelverkan:
         foto_close = foto_list[closest_indices]
         energi_close = energi_list[closest_indices]
 
+        #   -----------------------------------
+        #   Bestäm om linjärinterpolering kan genomföras.
+        #   -----------------------------------
+
         if energi_close[1] - energi_close[0] < 10 ** (-15):
             foto_target = foto_close[0]
 
         else:
-            # linjär interpolering funktion
+            # Linjärinterpolering funktion.
             foto_target = foto_close[0] + (self.energi - energi_close[0]) * (foto_close[1] - foto_close[0]) / (
                     energi_close[1] - energi_close[0])
         return foto_target
@@ -39,12 +44,16 @@ class växelverkan:
         compton_close = compton_list[closest_indices]
         energi_close = energi_list[closest_indices]
 
+        #   -----------------------------------
+        #   Bestäm om linjärinterpolering kan genomföras.
+        #   -----------------------------------
         if energi_close[1] - energi_close[0] < 10 ** (-15):
             compton_target = compton_close[0]
 
         else:
+            # Linjärinterpolering funktion.
             compton_target = compton_close[0] + (self.energi - energi_close[0]) * (
-                        compton_close[1] - compton_close[0]) / (
+                    compton_close[1] - compton_close[0]) / (
                                      energi_close[1] - energi_close[0])
 
         return compton_target
@@ -58,12 +67,16 @@ class växelverkan:
         rayleigh_close = rayleigh_list[closest_indices]
         energi_close = energi_list[closest_indices]
 
+        #   -----------------------------------
+        #   Bestäm om linjärinterpolering kan genomföras.
+        #   -----------------------------------
         if energi_close[1] - energi_close[0] < 10 ** (-15):
             rayleigh_target = rayleigh_close[0]
 
         else:
+            # Linjärinterpolering funktion.
             rayleigh_target = rayleigh_close[0] + (self.energi - energi_close[0]) * (
-                        rayleigh_close[1] - rayleigh_close[0]) / (
+                    rayleigh_close[1] - rayleigh_close[0]) / (
                                       energi_close[1] - energi_close[0])
         return rayleigh_target
 
@@ -85,79 +98,6 @@ class växelverkan:
             text = 'rayleigh'
 
         return text
-
-
-"""
-class växelverkan_slimmad:
-
-    def __init__(self, energi, df_tvärsnitt):
-        self.df = df_tvärsnitt
-
-        self.energi = energi
-        self.energi_list = self.df['Energy (eV)'].to_list()
-        self.foto_list = self.df['Photoelectric  (cm^2)'].to_list()
-        self.compton_list = self.df['Compton (cm^2)'].to_list()
-        self.rayleigh_list = self.df['Rayleigh (cm^2)'].to_list()
-
-    def find_foto_tvärsnitt_slimmad(self):
-        energi_list = np.array(self.energi_list)
-        foto_list = np.array(self.foto_list)
-
-        diff = np.abs(energi_list - self.energi)
-        closest_indices = np.argsort(diff)[:2]
-        foto_close = foto_list[closest_indices]
-
-        foto_target = foto_close[0]
-
-        return foto_target
-
-    def find_compton_tvärsnitt_slimmad(self):
-        energi_list = np.array(self.energi_list)
-        compton_list = np.array(self.compton_list)
-
-        diff = np.abs(energi_list - self.energi)
-        closest_indices = np.argsort(diff)[:2]
-        compton_close = compton_list[closest_indices]
-
-        compton_target = compton_close[0]
-
-        return compton_target
-
-    def find_rayleigh_tvärsnitt_slimmad(self):
-        energi_list = np.array(self.energi_list)
-        rayleigh_list = np.array(self.rayleigh_list)
-
-        diff = np.abs(energi_list - self.energi)
-        closest_indices = np.argsort(diff)[:2]
-        rayleigh_close = rayleigh_list[closest_indices]
-
-        rayleigh_target = rayleigh_close[0]
-
-        return rayleigh_target
-
-
-    def bestäm_växelverkan_slimmad(self):
-        foto_target = self.find_foto_tvärsnitt_slimmad()
-        compton_target = self.find_compton_tvärsnitt_slimmad()
-        rayleigh_target = self.find_rayleigh_tvärsnitt_slimmad()
-
-        tvärsnitt_lista = [foto_target, compton_target, rayleigh_target]  # cm^2
-
-        tvärsnitt_lista_norm = np.cumsum(tvärsnitt_lista) / np.sum(tvärsnitt_lista)
-
-        slump_tal = np.random.rand()
-        if slump_tal <= tvärsnitt_lista_norm[0]:
-            text = 'foto'
-        elif slump_tal <= tvärsnitt_lista_norm[1]:
-            text = 'compton'
-        else:
-            text = 'rayleigh'
-        return text
-"""
-
-#   ----------------------------------------------------------------------
-#   FOTO OCH COMPTON
-#   ----------------------------------------------------------------------
 
 
 if __name__ == "__main__":

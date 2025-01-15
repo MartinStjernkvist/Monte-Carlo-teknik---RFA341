@@ -3,8 +3,11 @@ from upg1_visualisera_bin_fil import visualisera_matris
 
 
 def visualisera_resultat():
+    """
+    Visualisering av resultatmatrisen från simuleringskoden.
+    """
     print(
-        '\n----------------------------------------------------------------------\nVilka resultat vill du visualisera?\n----------------------------------------------------------------------\n')
+        '\n-----------------------------------\nVilka resultat vill du visualisera?\n-----------------------------------\n')
     print(
         'Om du anger namn: skriver du "text" utan citattecken kommer filerna \n[resultat_text.npy] och [inputs_text.json] \nvisualiseras.')
     input_resultat = input('\nOm senaste körning: s, Annars ange namn på filerna: ')
@@ -59,7 +62,7 @@ def visualisera_resultat():
 
 def visualisera_resultat_slicade():
     print(
-        '\n----------------------------------------------------------------------\nVilka slicade resultat vill du visualisera?\n----------------------------------------------------------------------\n')
+        '\n-----------------------------------\nVilka slicade resultat vill du visualisera?\n-----------------------------------\n')
     print(
         'Om du anger namn: skriver du "text" utan citattecken kommer filerna \n[resultat_text_slicade.npy] och [inputs_text.json] \nvisualiseras.')
     input_resultat = input('\nAnge namn på filerna: ')
@@ -82,9 +85,9 @@ def visualisera_resultat_slicade():
         f'BENMÄRG: Energideponering per foton (eV / sönderfall): {np.sum(resultat_matris) / iterationer_tot:.1f} \nRYGGRAD: Energideponering per fotoN (eV / sönderfall): {np.sum(resultat_matris) / iterationer_tot:.1f}')
 
 
-#   ----------------------------------------------------------------------
-#   VISUALISERA RESULTATEN FRÅN upg1_sammanställt
-#   ----------------------------------------------------------------------
+#   -----------------------------------
+#   Visualisera resultaten från simuleringskoden.
+#   -----------------------------------
 if __name__ == "__main__":
     visualisera_resultat()
 
@@ -121,14 +124,11 @@ if __name__ == "__main__":
     print(f'\nryggrad benmärg eV / decay: ', np.sum(resultat_5_E6) / (5 * 10 ** 6))
     """
 
-
-
     resultat_matris = np.load('resultat_v3_slicad.npy')
-
 
     x, y, z = resultat_matris.shape
 
-    fig, ax = plt.subplots(figsize=(17.5,5))
+    fig, ax = plt.subplots(figsize=(17.5, 5))
     plt.subplots_adjust(bottom=0.25)
     initial_slice_index = x // 2  # Start at the middle slice
 
@@ -159,8 +159,7 @@ if __name__ == "__main__":
     plt.savefig('xslice_resultat')
     plt.show()
 
-
-    fig, ax = plt.subplots(figsize=(17.5,3.5))
+    fig, ax = plt.subplots(figsize=(17.5, 3.5))
     plt.subplots_adjust(bottom=0.25)
     initial_slice_index = y // 2  # Start at the middle slice
 

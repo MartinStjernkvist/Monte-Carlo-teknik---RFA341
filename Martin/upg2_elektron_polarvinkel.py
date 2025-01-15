@@ -15,6 +15,7 @@ def polar_vinkel(steglängd, scattering_power):
 
     T = scattering_power
 
+    # Beräkning av polarvinkel, med inverstransform.
     theta_ny = np.sqrt(-T * steglängd * np.log(1 - R))
 
     return theta_ny

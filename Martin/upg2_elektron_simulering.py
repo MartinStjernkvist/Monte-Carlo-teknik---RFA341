@@ -1,12 +1,8 @@
 from imports import *
-# from upg2_elektron_energi import elektron_startenergi, elektron_energi_start
 from upg2_elektron_energi import elektron_energi_start
-# from upg2_stopping_power_och_steglängd import stopping_power_och_steglängd
 from upg2_riktning import riktning_uniform, riktning_skal
 from upg2_position_start import position_start_innanför, position_start_skal
-# from upg2_laddad_partikel_väg_elektron import laddad_partikel_väg_elektron
 from upg2_fixad_laddad_partikel_väg_elektroner import laddad_partikel_väg_elektron
-from upg2_alfa_simulering import energideponering_eV_till_Gy
 
 
 def run_MC_elektron(iterationer, rho_medium, radie_partikel, stopping_power_data, scatter_power_data,
@@ -28,14 +24,14 @@ def run_MC_elektron(iterationer, rho_medium, radie_partikel, stopping_power_data
     energideponering_summa = 0
     x_list, y_list, z_list, dos_list = [], [], [], []
 
-    #   ----------------------------------------------------------------------
+    #   -----------------------------------
     #   Vilken fördelningsfunktion som ska användas bestämmer hur
     #   sampling av riktning och position sker.
-    #   ----------------------------------------------------------------------
+    #   -----------------------------------
     if position_start == position_start_skal:
-        #   ----------------------------------------------------------------------
+        #   -----------------------------------
         #   Ytfördelning på en sfär.
-        #   ----------------------------------------------------------------------
+        #   -----------------------------------
         iterationer = 0.5 * iterationer
         for i in range(int(iterationer)):
             # Sampla riktning och startposition.
@@ -44,7 +40,6 @@ def run_MC_elektron(iterationer, rho_medium, radie_partikel, stopping_power_data
 
             # Sampla startenergin.
             energi_start = elektron_energi_start() * 10 ** 6  # i eV
-            # print(f'energi: {energi_start * 10 ** (-6)} MeV')
 
             # Beräkna den totala energideponeringen för en partikel som växelverkar i sfären.
             energideponering, x, y, z, dos = laddad_partikel_väg_elektron(energi_start, position_start, phi, theta,
@@ -63,13 +58,12 @@ def run_MC_elektron(iterationer, rho_medium, radie_partikel, stopping_power_data
             # print(f'energideponering: {energideponering * 10 ** (-6)} MeV')
 
     else:
-        #   ----------------------------------------------------------------------
+        #   -----------------------------------
         #   Uniform fördelning i en sfär.
-        #   ----------------------------------------------------------------------
+        #   -----------------------------------
         for i in range(iterationer):
             # Sampla startenergin.
             energi_start = elektron_energi_start() * 10 ** 6  # i eV
-            # print(f'energi: {energi_start * 10 ** (-6)} MeV')
 
             # Sampla riktning och startposition.
             theta, phi = riktning_uniform()
@@ -137,14 +131,15 @@ def energideponering_eV_till_Gy(energideponering_eV, rho_medium, radie_sfär):
 
     return energideponering_Gy
 
+
 if __name__ == "__main__":
-    #   ----------------------------------------------------------------------
+    #   -----------------------------------
     #   Köra simuleringskoden.
-    #   ----------------------------------------------------------------------
+    #   -----------------------------------
     iterationer = 10 ** 3
     dummy_iterationer = 10 ** 2
 
-    energiförlust_faktor = 0.96  # Energi efter en kollision = 98% av föregående energin.
+    energiförlust_faktor = 0.96  # Energi efter en kollision = 96% av föregående energin.
 
     stopping_power_data = np.loadtxt(elektron_stopping_power_data)
     scatter_power_data = np.loadtxt(elektron_scatter_power_data)
@@ -156,7 +151,7 @@ if __name__ == "__main__":
     radie_sfär_innanför = 1 * 10 ** (-3)  # m
 
     print(
-        '\n----------------------------------------------------------------------\nDUMMY\n----------------------------------------------------------------------\n')
+        '\n-----------------------------------\nDUMMY\n-----------------------------------\n')
 
     _ = run_MC_elektron(dummy_iterationer, rho_medium, radie_partikel, stopping_power_data, scatter_power_data,
                         position_start_skal,
@@ -165,7 +160,7 @@ if __name__ == "__main__":
     start = time.time()
 
     print(
-        '\n----------------------------------------------------------------------\nRIKTIG\n----------------------------------------------------------------------\n')
+        '\n-----------------------------------\nRIKTIG\n-----------------------------------\n')
     energideponering_tot_skal = run_MC_elektron(iterationer, rho_medium, radie_partikel, stopping_power_data,
                                                 scatter_power_data,
                                                 position_start_skal,
@@ -176,7 +171,7 @@ if __name__ == "__main__":
     end_time(start)
 
     print(
-        '\n----------------------------------------------------------------------\nDUMMY\n----------------------------------------------------------------------\n')
+        '\n-----------------------------------\nDUMMY\n-----------------------------------\n')
 
     _ = run_MC_elektron(dummy_iterationer, rho_medium, radie_partikel, stopping_power_data, scatter_power_data,
                         position_start_innanför,
@@ -184,7 +179,7 @@ if __name__ == "__main__":
 
     start = time.time()
     print(
-        '\n----------------------------------------------------------------------\nRIKTIG\n----------------------------------------------------------------------\n')
+        '\n-----------------------------------\nRIKTIG\n-----------------------------------\n')
     energideponering_tot_innanför = run_MC_elektron(iterationer, rho_medium, radie_partikel, stopping_power_data,
                                                     scatter_power_data,
                                                     position_start_innanför, radie_sfär_innanför, energiförlust_faktor)
@@ -194,7 +189,7 @@ if __name__ == "__main__":
     end_time(start)
 
     print(
-        '\n----------------------------------------------------------------------\nRESULTAT\n----------------------------------------------------------------------\n')
+        '\n-----------------------------------\nRESULTAT\n-----------------------------------\n')
 
     print(
         f'\nSkal (300 mikrometer): Energideponering:\n{energideponering_skal_Gy * 10 ** 8 / iterationer} E-08 Gy / sönderfall')

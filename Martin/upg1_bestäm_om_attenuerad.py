@@ -5,15 +5,15 @@ def bestäm_om_attenuerad(x_round, y_round, z_round, x_size, y_size, z_size, uta
     """
     Funktion som bestämmer om en foton ska fortsätta följas eller inte.
     Termen "attenuerad" i koden kan även vara att fotonen rymt från fantommatrisen.
-    :param x_round: voxelposition x
-    :param y_round: voxelposition y
-    :param z_round: voxelposition z
-    :param x_size: storlek matris x
-    :param y_size: storlek matris y
-    :param z_size: storlek matris z
-    :param utanför_fantom: värde som ökar med 1, för att hålla reda på vad som händer när koden körs
-    :param slicad_fantom_matris: fantommatrisen
-    :return: om attenuerad = 1 kommer fotonen att sluta följas
+    :param x_round: Voxelposition x.
+    :param y_round: Voxelposition y.
+    :param z_round: Voxelposition z.
+    :param x_size: Storlek matris x.
+    :param y_size: Storlek matris y.
+    :param z_size: Storlek matris z.
+    :param utanför_fantom: Värde som ökar med 1, för att hålla reda på vad som händer när koden körs.
+    :param slicad_fantom_matris: Fantommatrisen.
+    :return: Om attenuerad = 1 kommer fotonen att sluta följas.
     """
 
     # Om positionen för fotonen är utanför fantommatrisen, indikera att fotonen ska sluta följas.

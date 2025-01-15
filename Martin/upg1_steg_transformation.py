@@ -1,7 +1,6 @@
 from imports import *
 
 
-# @jit(nopython=True)
 def ny_steg_transformera_koordinatsystem_3d(steg_A_B, phi_A, theta_A, steg_B_C, phi_B, theta_B):
     """
     - Börjar på position A[x,y,z]- kalla detta koordinatsystem A.
@@ -42,9 +41,6 @@ def ny_steg_transformera_koordinatsystem_3d(steg_A_B, phi_A, theta_A, steg_B_C, 
             [0, 0, 1]
         ], dtype=np.float64)
 
-    # # för att x-axeln ska sammanfalla med riktningsvektorn måste rotationsvinkeln vara pi/2 - theta
-    # angle = -(pi / 2 - theta_A)
-
     # för att z-axeln ska sammanfalla med riktningsvektorn måste rotationsvinkeln vara theta
     angle = theta_A
     R_y = np.array(
@@ -55,41 +51,17 @@ def ny_steg_transformera_koordinatsystem_3d(steg_A_B, phi_A, theta_A, steg_B_C, 
         ], dtype=np.float64)
 
     # först rotation i theta (y-axeln), sedan rotation i phi (z-axeln)
-    # R = R_z @ R_y
     R = np.dot(R_z, R_y)
-
-    # Homogenous_matrix = np.array(
-    #     [
-    #         [R[0, 0], R[0, 1], R[0, 2], dx_A_B],
-    #         [R[1, 0], R[1, 1], R[1, 2], dy_A_B],
-    #         [R[2, 0], R[2, 1], R[2, 2], dz_A_B],
-    #         [0, 0, 0, 1]
-    #     ], dtype=np.float64)
 
     Homogenous_matrix = np.eye(4, dtype=np.float64)
     Homogenous_matrix[:3, :3] = R
     Homogenous_matrix[:3, 3] = np.array([dx_A_B, dy_A_B, dz_A_B], dtype=np.float64)
 
-    # vektor_A_C = Homogenous_matrix @ np.array(
-    #     [
-    #         [dx_B_C],
-    #         [dy_B_C],
-    #         [dz_B_C],
-    #         [1]   # nödvändigt för beräkningen
-    #     ], dtype=np.float64)
-
     vektor_A_C = np.dot(Homogenous_matrix, np.array([dx_B_C, dy_B_C, dz_B_C, 1.0], dtype=np.float64))
-
-    # vektor_A_B = np.array([
-    #     [dx_A_B],
-    #     [dy_A_B],
-    #     [dz_A_B],
-    #     [1]  # nödvändigt för beräkningen
-    # ], dtype=np.float64)
 
     vektor_A_B = np.array([dx_A_B, dy_A_B, dz_A_B, 1.0], dtype=np.float64)
 
-    # Vill ha vektor B->C
+    # Vill ha vektor B -> C.
     vektor = vektor_A_C - vektor_A_B
     vektor_voxel = (1 / voxel_sidlängd) * vektor
     dx, dy, dz = vektor_voxel[0], vektor_voxel[1], vektor_voxel[2]

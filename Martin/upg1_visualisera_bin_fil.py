@@ -5,6 +5,7 @@ class visualisera_matris:
     """
     Kod som visualiserar fantomen i tre olika tvärsnitt, med sliders.
     """
+
     def __init__(self, array_3d, visa_något=False):
         self.array_3d = array_3d
         self.x, self.y, self.z = array_3d.shape
@@ -28,18 +29,9 @@ class visualisera_matris:
         if visa_något == False:
             self.vmin, self.vmax = 0, np.max(array_3d)
         elif visa_något == True:
-            self.vmin, self.vmax = 0, 0.0001*np.max(array_3d)
+            self.vmin, self.vmax = 0, 0.0001 * np.max(array_3d)
         else:
             self.vmin, self.vmax = 0, 0.1 * np.max(array_3d)
-
-        # self.img1 = self.ax1.imshow(array_3d[self.slice_x_index, :, :], cmap='bwr', vmin=self.vmin,
-        #                             vmax=self.vmax)  # x-tvärsnitt
-        # self.ax1.set_title(f'X Slice: {self.slice_x_index}')
-        # self.img2 = self.ax2.imshow(array_3d[:, self.slice_y_index, :], cmap='bwr', vmin=self.vmin,
-        #                             vmax=self.vmax)  # y-tvärsnitt
-        # self.ax2.set_title(f'Y Slice: {self.slice_y_index}')
-        # self.img3 = self.ax3.imshow(array_3d[:, :, self.slice_z_index], cmap='bwr', vmin=self.vmin,
-        #                             vmax=self.vmax)  # z-tvärsnitt
 
         self.img1 = self.ax1.imshow(array_3d[self.slice_x_index, :, :], cmap='gray', vmin=self.vmin,
                                     vmax=self.vmax)  # x-tvärsnitt
@@ -90,9 +82,10 @@ class visualisera_matris:
     def show(self):
         plt.show()
 
-#   ----------------------------------------------------------------------
+
+#   -----------------------------------
 #   Läs in data
-#   ----------------------------------------------------------------------
+#   -----------------------------------
 
 """
 I matlab:
@@ -107,20 +100,6 @@ fantom_matris = data['array_3d']
 if __name__ == "__main__":
     print("Keys in the .mat file:", data.keys())
 
-    #   ----------------------------------------------------------------------
-    #   PLOTTING 3D
-    #   ----------------------------------------------------------------------
-
-    # from starting_position_photon import sliced_array_njure
-    # array_3d = sliced_array_njure
-
-    # array_3d = array_3d[50:-50,50:200,600:1100]
-    # array_3d = array_3d[:,25:215,:] # denna matris inkluderar kroppen, försöker skära bort luft runtomkring
-
-    '''
-    försöker skära en rimlig matris där växelverkan kan ske och fortfarande leda till energideponering i benmärgen i ryggen
-    '''
-    # array_3d = fantom_matris[:, 25:215, 500:1150]
     array_3d = fantom_matris
     viewer = visualisera_matris(array_3d)
     viewer.show()

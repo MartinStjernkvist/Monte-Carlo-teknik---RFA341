@@ -11,17 +11,18 @@ from upg1_sampla_compton import compton_vinkel_och_energiförlust
 from upg1_sampla_foto_vxv import foto_vxv
 from upg1_bestäm_om_attenuerad import bestäm_om_attenuerad
 from upg1_steg_transformation import ny_steg_transformera_koordinatsystem_3d
-from upg12_förflyttning import förflyttning
-from upg1_bestäm_om_vxv import bestäm_om_vxv
+from upg1_förflyttning import förflyttning
+from upg1_bestäm_om_vxv import bestäm_om_vxv_sker
+
 
 def run_MC_multiprocess(args):
     (start, end, tvärsnitt_file, attenueringsdata_file, anatomidefinitioner_file, slicad_fantom_matris,
      slicad_njure_matris, slicad_benmärg_matris, voxel_sidlängd, radionuklid_energi, radionuklid_intensitet,
      radionuklid_sannolikhet) = args
 
-    #   ----------------------------------------------------------------------
-    #   Läs in data
-    #   ----------------------------------------------------------------------
+    #   -----------------------------------
+    #   Läs in data.
+    #   -----------------------------------
     df_attenueringsdata = pd.read_excel(attenueringsdata_file, index_col=None)
     df_anatomidefinitioner = pd.read_excel(anatomidefinitioner_file, index_col=None)
     df_tvärsnitt = pd.read_excel(tvärsnitt_file, index_col=None)
@@ -29,19 +30,19 @@ def run_MC_multiprocess(args):
     # Matrisdimensionerna, viktigt för att bedöma ifall fotonen är innanför matrisen eller inte.
     x_size, y_size, z_size = slicad_fantom_matris.shape
 
-    # Skapa tom matris, för att sedan fylla på med energideponering i voxklarna.
+    # Skapa tom matris, för att sedan fylla på med energideponering i voxlarna.
     benmärg_matris_deponerad_energi = np.zeros((x_size, y_size, z_size))
 
-    #   ----------------------------------------------------------------------
-    #   Håll reda på vad som händer när koden körs
-    #   ----------------------------------------------------------------------
+    #   -----------------------------------
+    #   Håll reda på vad som händer när koden körs.
+    #   -----------------------------------
     utanför_fantom = 0
     vxv_foto = 0
     träff_benmärg = 0
 
-    #   ----------------------------------------------------------------------
-    #   Loopar igenom alla iterationer
-    #   ----------------------------------------------------------------------
+    #   -----------------------------------
+    #   Loopar igenom alla sönderfall (iterationer).
+    #   -----------------------------------
     for i in range(start, end):
 
         # Initiera loopen med att attenuerad = 0.
@@ -68,19 +69,19 @@ def run_MC_multiprocess(args):
             dx, dy, dz = steg(theta, phi, steglängd)
             x, y, z, x_round, y_round, z_round = förflyttning(x_start, y_start, z_start, dx, dy, dz)
 
-            #   ----------------------------------------------------------------------
-            #   Om foton hamnar utanför fantommatrisen -> kasta ut foton ur loopen
-            #   Ekvationen förekommer nedan efter varje nytt steg tas, dock utan if-statement.
-            #   ----------------------------------------------------------------------
-
+            #   -----------------------------------
+            #   Om foton hamnar utanför fantommatrisen
+            #   -> kasta ut foton ur loopen.
+            #   Ekvationen förekommer nedan efter varje nytt steg tas.
+            #   -----------------------------------
             attenuerad, utanför_fantom = bestäm_om_attenuerad(x_round, y_round, z_round, x_size, y_size, z_size,
                                                               utanför_fantom, slicad_fantom_matris, foton_energi)
 
             if attenuerad == 0:
                 voxelvärde = slicad_fantom_matris[x_round, y_round, z_round]
 
-                vxv_sker = bestäm_om_vxv(voxelvärde, foton_energi, mu_max, df_attenueringsdata,
-                                         df_anatomidefinitioner)
+                vxv_sker = bestäm_om_vxv_sker(voxelvärde, foton_energi, mu_max, df_attenueringsdata,
+                                              df_anatomidefinitioner)
             else:
                 # utanför matris
                 vxv_sker = True
@@ -92,9 +93,11 @@ def run_MC_multiprocess(args):
 
         else:
 
-            #   ----------------------------------------------------------------------
-            #   Loopa under tiden som fotonen inte attenuerats och fortfarande är i matrisen.
-            #   ----------------------------------------------------------------------
+            #   -----------------------------------
+            #   Loopa under tiden som fotonen inte attenuerats
+            #   och
+            #   fortfarande är i matrisen.
+            #   -----------------------------------
             while attenuerad == 0:
                 # print('steglängd: ', steglängd)
 
@@ -108,9 +111,9 @@ def run_MC_multiprocess(args):
                 vxv = instans.bestäm_växelverkan()
                 # print(f'energi: {foton_energi * 10 ** (-3)} keV, vxv: {vxv}')
 
-                #   ----------------------------------------------------------------------
+                #   -----------------------------------
                 #   Fotoabsorption.
-                #   ----------------------------------------------------------------------
+                #   -----------------------------------
                 if vxv == 'foto':
                     vxv_foto += 1
 
@@ -149,8 +152,8 @@ def run_MC_multiprocess(args):
                             if attenuerad == 0:
                                 voxelvärde = slicad_fantom_matris[x_round, y_round, z_round]
 
-                                vxv_sker = bestäm_om_vxv(voxelvärde, foton_energi, mu_max, df_attenueringsdata,
-                                                         df_anatomidefinitioner)
+                                vxv_sker = bestäm_om_vxv_sker(voxelvärde, foton_energi, mu_max, df_attenueringsdata,
+                                                              df_anatomidefinitioner)
                             else:
                                 vxv_sker = True
 
@@ -158,9 +161,9 @@ def run_MC_multiprocess(args):
                         theta, phi = theta_foto, phi_foto
                         steglängd = steglängd_foto
 
-                #   ----------------------------------------------------------------------
+                #   -----------------------------------
                 #   Comptonspridning.
-                #   ----------------------------------------------------------------------
+                #   -----------------------------------
                 elif vxv == 'compton':
 
                     # Sampla spridningsvinklar, samt energideponeringen vid Comptonväxelverkan.
@@ -201,19 +204,18 @@ def run_MC_multiprocess(args):
                         if attenuerad == 0:
                             voxelvärde = slicad_fantom_matris[x_round, y_round, z_round]
 
-                            vxv_sker = bestäm_om_vxv(voxelvärde, foton_energi, mu_max, df_attenueringsdata,
-                                                     df_anatomidefinitioner)
+                            vxv_sker = bestäm_om_vxv_sker(voxelvärde, foton_energi, mu_max, df_attenueringsdata,
+                                                          df_anatomidefinitioner)
                         else:
                             vxv_sker = True
-
 
                     # Ingångsvärden till koordinat-transformeringen (om nästa växelverkan är Comptonspridning eller Rayleighspridning).
                     theta, phi = theta_compton, phi_compton
                     steglängd = steglängd_compton
 
-                #   ----------------------------------------------------------------------
+                #   -----------------------------------
                 #   Rayleighspridning.
-                #   ----------------------------------------------------------------------
+                #   -----------------------------------
                 elif vxv == 'rayleigh':
 
                     # Sampla spridningsvinklar och steglängd.
@@ -247,11 +249,10 @@ def run_MC_multiprocess(args):
                         if attenuerad == 0:
                             voxelvärde = slicad_fantom_matris[x_round, y_round, z_round]
 
-                            vxv_sker = bestäm_om_vxv(voxelvärde, foton_energi, mu_max, df_attenueringsdata,
-                                                     df_anatomidefinitioner)
+                            vxv_sker = bestäm_om_vxv_sker(voxelvärde, foton_energi, mu_max, df_attenueringsdata,
+                                                          df_anatomidefinitioner)
                         else:
                             vxv_sker = True
-
 
                     # Ingångsvärden till koordinat-transformeringen (om nästa växelverkan är Comptonspridning eller Rayleighspridning).
                     theta, phi = theta_rayleigh, phi_rayleigh
@@ -267,7 +268,7 @@ def run_MC_multiprocess(args):
 
 
 def inputs_riktig_körning():
-    print('\n----------------------------------------------------------------------\nDags att ange parametrar.\n----------------------------------------------------------------------\n')
+    print('\n-----------------------------------\nDags att ange parametrar.\n-----------------------------------\n')
     print('Standard eller inte?')
     input_standard = input('\nOm standard: s, Annars: vad som helst: ')
 
@@ -278,7 +279,7 @@ def inputs_riktig_körning():
 
     else:
         print(
-            '\n----------------------------------------------------------------------\nVIKTIGT:\n----------------------------------------------------------------------\nAnge antal processor kärnor')
+            '\n-----------------------------------\nVIKTIGT:\n-----------------------------------\nAnge antal processor kärnor')
         input_antal_cores = input('Antal kärnor: ')
 
         if eval(input_antal_cores) > 8:
@@ -287,7 +288,7 @@ def inputs_riktig_körning():
             antal_cores = eval(input_antal_cores)
 
         print(
-            '\n----------------------------------------------------------------------\nDUMMY:\n----------------------------------------------------------------------\nAnge magnitud: ex 3 -> 10^3 iterationer')
+            '\n-----------------------------------\nDUMMY:\n-----------------------------------\nAnge magnitud: ex 3 -> 10^3 iterationer')
         input_dummy_magnitud_iterationer = input('Magnitud: ')
 
         if eval(input_dummy_magnitud_iterationer) > 4:
@@ -296,7 +297,7 @@ def inputs_riktig_körning():
             iterationer_dummy = 10 ** (eval(input_dummy_magnitud_iterationer))
 
         print(
-            '\n----------------------------------------------------------------------\nRIKTIG:\n----------------------------------------------------------------------\nAnge skalär och magnitud: ex 5 och 5 -> 5 * 10^5 iterationer')
+            '\n-----------------------------------\nRIKTIG:\n-----------------------------------\nAnge skalär och magnitud: ex 5 och 5 -> 5 * 10^5 iterationer')
         input_riktig_skalär_iterationer = input('Skalär: ')
         input_riktig_magnitud_iterationer = input('Magnitud: ')
 
@@ -309,14 +310,18 @@ def inputs_riktig_körning():
     print('antal_cores, iterationer_dummy, iterationer_tot: ', antal_cores, iterationer_dummy, iterationer_tot)
     return antal_cores, iterationer_dummy, iterationer_tot
 
+
 def spara_resultat(matris, json_object):
-    print('\n----------------------------------------------------------------------\nDags att sparan resultaten i en matris.\n----------------------------------------------------------------------\n')
-    print('Om du anger namn: skriver du "text" utan citattecken kommer filerna \n[resultat_text.npy] och [inputs_text.json] \nskapas.')
+    print(
+        '\n-----------------------------------\nDags att sparan resultaten i en matris.\n-----------------------------------\n')
+    print(
+        'Om du anger namn: skriver du "text" utan citattecken kommer filerna \n[resultat_text.npy] och [inputs_text.json] \nskapas.')
     input_spara_resultat = input('\nVar vill du spara matrisen? Om standard: s, Annars: ange namn: ')
 
     if input_spara_resultat == 's':
         fil_namn_npy = 'resultat_multiprocess.npy'
-        # Spara resultatmatrisen i en numpy fil, som sedan går att visualisera i en separat fil.
+        # Spara resultatmatrisen i en numpy fil.
+        # Resultatmatrisen går att visualisera i en separat fil.
         np.save(fil_namn_npy, matris)
 
         fil_namn_json = 'inputs_resultat_multiprocess.json'
@@ -350,11 +355,12 @@ if __name__ == "__main__":
 
     json_object = json.dumps(dictionary)
 
-    #   ----------------------------------------------------------------------
-    #   Dummy run - för att snabba på den riktiga körningen av koden.
-    #   ----------------------------------------------------------------------
+    #   -----------------------------------
+    #   Dummy run.
+    #   För att snabba på den riktiga körningen av koden.
+    #   -----------------------------------
     print(
-        '\n----------------------------------------------------------------------\nDUMMY RUN\n----------------------------------------------------------------------\n')
+        '\n-----------------------------------\nDUMMY RUN\n-----------------------------------\n')
     start = time.time()
 
     # Lite kod för att dela upp arbetet i flera processer, fördelat på olika processor-kärnor.
@@ -372,11 +378,11 @@ if __name__ == "__main__":
 
     end_time(start)
 
-    #   ----------------------------------------------------------------------
+    #   -----------------------------------
     #   Riktig körning.
-    #   ----------------------------------------------------------------------
+    #   -----------------------------------
     print(
-        '\n----------------------------------------------------------------------\nACTUAL RUN\n----------------------------------------------------------------------\n')
+        '\n-----------------------------------\nACTUAL RUN\n-----------------------------------\n')
     start = time.time()
 
     # Samma multiprocess-kod som ovan.
