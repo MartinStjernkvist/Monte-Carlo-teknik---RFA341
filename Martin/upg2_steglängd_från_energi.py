@@ -24,10 +24,8 @@ def steglängd_från_energi(energi_start, rho_medium, stopping_power_data, energ
 
     # Medelvärdet av stopping power mellan startpunkt och slutpunkt.
     stopping_power_medel = (stopping_power_2 + stopping_power_1) / 2
-    print(f'stopping power medel: {stopping_power_medel * 10**(-6):.3f} MeV / m')
+    # print(f'stopping power medel: {stopping_power_medel * 10**(-6):.3f} MeV / m')
 
     # Beräkna steglängden.
     steglängd = - (energi_2 - energi_1) / stopping_power_medel
-    print(f'steglängd: {steglängd * 10**6:.2f} mikrometer')
-
     return steglängd

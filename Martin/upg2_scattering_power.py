@@ -37,6 +37,4 @@ def scattering_power_från_energi(elektron_energi, scatterpower_data, rho_medium
                 T_close[1] - T_close[0]) / (
                     energi_close[1] - energi_close[0])
 
-    print(f'scattering power T / cm: {T / 100}')
-
     return T

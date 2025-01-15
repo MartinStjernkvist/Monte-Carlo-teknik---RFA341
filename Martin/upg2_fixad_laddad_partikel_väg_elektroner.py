@@ -22,15 +22,20 @@ def laddad_partikel_väg_elektron(energi_start, position_start, phi, theta, radi
     :return: Energideponeringen innanför sfären.
     """
 
+    print(f'\nny partikel:\n')
+
     # Initiera tomma listor för att spara datan.
     x, y, z, dos = [], [], [], []
 
     # Startposition och startenergi.
     position_vektor = position_start
     energi = energi_start
+    print(f'start energi: {energi:.3f} eV')
 
     # Steglängd tas så att en viss energiförlust sker.
     steglängd = steglängd_från_energi(energi, rho_medium, stopping_power_data, energiförlust_faktor)
+    print(f'steglängd: {steglängd * 10**6:.2f} mikrometer')
+
 
     # Den nya energin för elektronen.
     energi_ny = energi * energiförlust_faktor
@@ -49,26 +54,34 @@ def laddad_partikel_väg_elektron(energi_start, position_start, phi, theta, radi
         y.append(position_vektor[1])
         z.append(position_vektor[2])
 
-    energi = energi_ny
+        print(f'\ninitiera while loop:')
+        energi = energi_ny
 
     #   ----------------------------------------------------------------------
     #   Medan elektronen befinner sig i sfären
     #   och
     #   har en energi som är över en tröskelenergi.
     #   ----------------------------------------------------------------------
+
     while np.sqrt(np.dot(position_vektor, position_vektor)) < radie_sfär and energi > energi_start * 10 ** (-6):
+        print('\n')
 
         # Steglängd tas så att en viss energiförlust sker.
         steglängd_ny = steglängd_från_energi(energi, rho_medium, stopping_power_data, energiförlust_faktor)
+        print(f'steglängd: {steglängd_ny * 10 ** 6:.3f} mikrometer')
 
         # Den nya energin för elektronen.
         energi_ny = energi * energiförlust_faktor
+        print(f'energi ny: {energi:.3f} eV')
 
         # Scattering power för den nya energin, efter steget.
         scattering_power = scattering_power_från_energi(energi_ny, scatter_power_data, rho_medium)
+        print(f'scattering power T: {scattering_power / 100:.3f} rad^2 / cm')
 
         # Polarvinkel utifrån scattering power.
         theta_ny = polar_vinkel(steglängd, scattering_power)
+        print(f'polarvinkel: {theta_ny * 360 / (2 * np.pi):.3f} grader')
+
         phi_ny = np.random.random() * 2 * pi
 
         # Ändrar på positionsvektor efter att transformations matrisen

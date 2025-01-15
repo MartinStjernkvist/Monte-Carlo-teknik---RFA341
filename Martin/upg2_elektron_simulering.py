@@ -60,7 +60,7 @@ def run_MC_elektron(iterationer, rho_medium, radie_partikel, stopping_power_data
 
             # Summera energideponeringsbidragen från respektive iteration.
             energideponering_summa += energideponering
-            print(f'energideponering: {energideponering * 10 ** (-6)} MeV')
+            # print(f'energideponering: {energideponering * 10 ** (-6)} MeV')
 
     else:
         #   ----------------------------------------------------------------------
@@ -88,7 +88,7 @@ def run_MC_elektron(iterationer, rho_medium, radie_partikel, stopping_power_data
 
             # Summera energideponeringsbidragen från respektive iteration.
             energideponering_summa += energideponering
-            print(f'energideponering: {energideponering * 10 ** (-6)} MeV')
+            # print(f'energideponering: {energideponering * 10 ** (-6)} MeV')
 
     # print('total energideponering: ', energideponering_summa)
 
@@ -144,7 +144,7 @@ if __name__ == "__main__":
     iterationer = 10 ** 3
     dummy_iterationer = 10 ** 2
 
-    energiförlust_faktor = 0.95  # Energi efter en kollision = 98% av föregående energin.
+    energiförlust_faktor = 0.96  # Energi efter en kollision = 98% av föregående energin.
 
     stopping_power_data = np.loadtxt(elektron_stopping_power_data)
     scatter_power_data = np.loadtxt(elektron_scatter_power_data)

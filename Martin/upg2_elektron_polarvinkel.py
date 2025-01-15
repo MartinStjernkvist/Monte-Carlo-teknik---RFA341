@@ -17,5 +17,4 @@ def polar_vinkel(steglängd, scattering_power):
 
     theta_ny = np.sqrt(-T * steglängd * np.log(1 - R))
 
-    print(f'polarvinkel: {theta_ny * 360 / (2*np.pi):.3f} grader')
     return theta_ny
