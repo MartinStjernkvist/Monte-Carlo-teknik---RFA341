@@ -1,7 +1,7 @@
 from imports import *
 
 
-def ny_steg_transformera_koordinatsystem_3d(steg_A_B, phi_A, theta_A, steg_B_C, phi_B, theta_B):
+def transformera_koordinatsystem(steg_A_B, phi_A, theta_A, steg_B_C, phi_B, theta_B):
     """
     Koordinattransformation -> ny positionsvektor.
 

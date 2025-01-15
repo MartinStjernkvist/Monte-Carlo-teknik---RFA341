@@ -1,5 +1,5 @@
 from imports import *
-from upg2_steg_transformation import ny_steg_transformera_koordinatsystem_3d
+from upg2_steg_transformation import transformera_koordinatsystem
 from upg2_stopping_power_och_steglängd import stopping_power_och_steglängd
 from upg2_scattering_power import scattering_power_från_energi
 from upg2_steglängd_från_energi import steglängd_från_energi
@@ -88,7 +88,7 @@ def laddad_partikel_väg_elektron(energi_start, position_start, phi, theta, radi
         phi_ny = np.random.random() * 2 * pi
 
         # Koordinattransformation ger ny positionsvektor.
-        dx, dy, dz = ny_steg_transformera_koordinatsystem_3d(steglängd, phi, theta, steglängd_ny, phi_ny, theta_ny)
+        dx, dy, dz = transformera_koordinatsystem(steglängd, phi, theta, steglängd_ny, phi_ny, theta_ny)
         position_vektor += np.array([dx, dy, dz])
 
         #   -----------------------------------
