@@ -98,7 +98,7 @@ def run_MC_elektron(iterationer, rho_medium, radie_partikel, stopping_power_data
 
     ax.set_xlabel('x-axel (m)')
     ax.set_ylabel('y-axel (m)')
-    ax.set_ylabel('z-axel (m)')
+    ax.set_zlabel('z-axel (m)')
 
     # Testar att sätta en sfär för tumören
     u, v = np.mgrid[0:2 * np.pi:20j, 0:np.pi:10j]
