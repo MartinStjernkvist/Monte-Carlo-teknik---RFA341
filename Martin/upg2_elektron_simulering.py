@@ -141,7 +141,7 @@ if __name__ == "__main__":
     #   Köra simuleringskoden.
     #   -----------------------------------
     iterationer = 10 ** 3
-    dummy_iterationer = 10**2
+    dummy_iterationer = 3 * 10**2
 
     energiförlust_faktor = 0.96  # Energi efter en kollision = 96% av föregående energin.
 
