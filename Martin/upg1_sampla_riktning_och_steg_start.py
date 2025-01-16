@@ -27,9 +27,9 @@ def steg(theta, phi, steglängd):
     """
 
     # Steg, i termer av voxelsidlängd.
-    dx = steglängd * np.sin(theta) * np.cos(phi) / voxel_sidlängd
-    dy = steglängd * np.sin(theta) * np.sin(phi) / voxel_sidlängd
-    dz = steglängd * np.cos(theta) / voxel_sidlängd
+    dx = steglängd * np.sin(theta) * np.cos(phi) #/ voxel_sidlängd
+    dy = steglängd * np.sin(theta) * np.sin(phi) #/ voxel_sidlängd
+    dz = steglängd * np.cos(theta) #/ voxel_sidlängd
 
     return dx, dy, dz
 

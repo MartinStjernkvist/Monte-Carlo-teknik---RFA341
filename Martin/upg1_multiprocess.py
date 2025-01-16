@@ -10,9 +10,12 @@ from upg1_attenueringsdata import attenueringsdata
 from upg1_sampla_compton import compton_vinkel_och_energiförlust
 from upg1_sampla_foto_vxv import foto_vxv
 from upg1_bestäm_om_attenuerad import bestäm_om_attenuerad
-from upg1_steg_transformation import ny_steg_transformera_koordinatsystem_3d
 from upg1_förflyttning import förflyttning
 from upg1_bestäm_om_vxv import bestäm_om_vxv_sker
+
+# from upg1_steg_transformation import ny_steg_transformera_koordinatsystem_3d
+from upg12_steg_transformation import transformera_koordinatsystem
+from upg12_rotation_matris import rotations_matris
 
 
 def run_MC_multiprocess(args):
@@ -53,6 +56,7 @@ def run_MC_multiprocess(args):
         foton_energi = energi_start(radionuklid_energi, radionuklid_sannolikhet)
         x_start, y_start, z_start = position_start(slicad_njure_matris)
         theta, phi = riktning_uniform()
+        R = rotations_matris(phi, theta)
 
         voxelvärde = slicad_fantom_matris[x_start, y_start, z_start]
         instans = attenueringsdata(voxelvärde, foton_energi, df_attenueringsdata, df_anatomidefinitioner)
@@ -67,7 +71,7 @@ def run_MC_multiprocess(args):
             # Gå steget till ny position från startpositionen i startriktningen.
             # Eftersom voxlarna har diskreta positioner måste avrundning till närmaste heltal göras.
             dx, dy, dz = steg(theta, phi, steglängd)
-            x, y, z, x_round, y_round, z_round = förflyttning(x_start, y_start, z_start, dx, dy, dz)
+            x, y, z, x_round, y_round, z_round = förflyttning(x_start, y_start, z_start, dx, dy, dz, voxel_sidlängd)
 
             #   -----------------------------------
             #   Om foton hamnar utanför fantommatrisen
@@ -92,7 +96,6 @@ def run_MC_multiprocess(args):
             i += 1
 
         else:
-
             #   -----------------------------------
             #   Loopa under tiden som fotonen inte attenuerats
             #   och
@@ -141,7 +144,7 @@ def run_MC_multiprocess(args):
                             steglängd_foto = medelvägslängd(mu_max)
 
                             dx, dy, dz = steg(theta, phi, steglängd_foto)
-                            x, y, z, x_round, y_round, z_round = förflyttning(x, y, z, dx, dy, dz)
+                            x, y, z, x_round, y_round, z_round = förflyttning(x, y, z, dx, dy, dz, voxel_sidlängd)
 
                             # Om foton hamnar utanför fantommatrisen -> kasta ut foton ur loopen.
                             attenuerad, utanför_fantom = bestäm_om_attenuerad(x_round, y_round, z_round, x_size, y_size,
@@ -159,6 +162,7 @@ def run_MC_multiprocess(args):
 
                         # Ingångsvärden till koordinat-transformeringen som behöver genomföras ifall växelverkan = compton eller rayleigh.
                         theta, phi = theta_foto, phi_foto
+                        R = rotations_matris(phi, theta)
                         steglängd = steglängd_foto
 
                 #   -----------------------------------
@@ -186,14 +190,15 @@ def run_MC_multiprocess(args):
                         steglängd_compton = medelvägslängd(mu_max)
 
                         # Koordinattransformation, eftersom spridningsvinklarna för Comptonspridning inte kan samplas uniformt.
-                        dx_compton, dy_compton, dz_compton = ny_steg_transformera_koordinatsystem_3d(steglängd, phi,
-                                                                                                     theta,
-                                                                                                     steglängd_compton,
-                                                                                                     phi_compton,
-                                                                                                     theta_compton)
+                        dx_compton, dy_compton, dz_compton, R = transformera_koordinatsystem(steglängd, phi,
+                                                                                             theta,
+                                                                                             steglängd_compton,
+                                                                                             phi_compton,
+                                                                                             theta_compton, R)
 
                         # Ta ett nytt steg.
-                        x, y, z, x_round, y_round, z_round = förflyttning(x, y, z, dx_compton, dy_compton, dz_compton)
+                        x, y, z, x_round, y_round, z_round = förflyttning(x, y, z, dx_compton, dy_compton, dz_compton,
+                                                                          voxel_sidlängd)
 
                         # Om foton hamnar utanför fantommatrisen -> kasta ut foton ur loopen.
                         attenuerad, utanför_fantom = bestäm_om_attenuerad(x_round, y_round, z_round, x_size, y_size,
@@ -211,6 +216,7 @@ def run_MC_multiprocess(args):
 
                     # Ingångsvärden till koordinat-transformeringen (om nästa växelverkan är Comptonspridning eller Rayleighspridning).
                     theta, phi = theta_compton, phi_compton
+                    R = rotations_matris(phi, theta)
                     steglängd = steglängd_compton
 
                 #   -----------------------------------
@@ -228,17 +234,17 @@ def run_MC_multiprocess(args):
                         steglängd_rayleigh = medelvägslängd(mu_max)
 
                         # Koordinattransformation, eftersom spridningsvinklarna för Rayleighspridning inte kan samplas uniformt.
-                        dx_rayleigh, dy_rayleigh, dz_rayleigh = ny_steg_transformera_koordinatsystem_3d(
+                        dx_rayleigh, dy_rayleigh, dz_rayleigh, R = transformera_koordinatsystem(
                             steglängd,
                             phi,
                             theta,
                             steglängd_rayleigh,
                             phi_rayleigh,
-                            theta_rayleigh)
+                            theta_rayleigh, R)
 
                         # Ta ett nytt steg.
                         x, y, z, x_round, y_round, z_round = förflyttning(x, y, z, dx_rayleigh, dy_rayleigh,
-                                                                          dz_rayleigh)
+                                                                          dz_rayleigh, voxel_sidlängd)
 
                         # Om foton hamnar utanför fantommatrisen -> kasta ut foton ur loopen.
                         attenuerad, utanför_fantom = bestäm_om_attenuerad(x_round, y_round, z_round, x_size, y_size,
@@ -256,6 +262,7 @@ def run_MC_multiprocess(args):
 
                     # Ingångsvärden till koordinat-transformeringen (om nästa växelverkan är Comptonspridning eller Rayleighspridning).
                     theta, phi = theta_rayleigh, phi_rayleigh
+                    R = rotations_matris(phi, theta)
                     steglängd = steglängd_rayleigh
 
     # Några print statements, för att hålla reda på vad som händer när koden kör.

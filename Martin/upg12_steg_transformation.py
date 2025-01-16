@@ -1,7 +1,7 @@
 from imports import *
 
 
-def transformera_koordinatsystem(steg_A_B, phi_A, theta_A, steg_B_C, phi_B, theta_B, R_A_B):
+def transformera_koordinatsystem(steg_A_B, phi_A, theta_A, steg_B_C, phi_B, theta_B, R_A):
     """
     Koordinattransformation -> ny positionsvektor.
 
@@ -43,7 +43,7 @@ def transformera_koordinatsystem(steg_A_B, phi_A, theta_A, steg_B_C, phi_B, thet
 
     # Rotera vektor_B_A enligt riktningen för föregående partikel.
     # Samma som att ett virtuellt koordinatsystem för A används.
-    vektor_B_A = np.dot(R_A_B, np.array([x_B_A, y_B_A, z_B_A]))
+    vektor_B_A = np.dot(R_A, np.array([x_B_A, y_B_A, z_B_A]))
 
     x_BC_A = steg_B_C * np.sin(theta_B) * np.cos(phi_B)  # x_C (B)
     y_BC_A = steg_B_C * np.sin(theta_B) * np.sin(phi_B)  # y_C (B)
@@ -76,7 +76,7 @@ def transformera_koordinatsystem(steg_A_B, phi_A, theta_A, steg_B_C, phi_B, thet
     R = np.dot(R_z, R_y)
 
     # Rotera koordinatsystemet enligt föregående riktningsvektor.
-    R = np.dot(R_A_B, R)
+    R = np.dot(R_A, R)
 
     #   -----------------------------------
     #   Homogen matris: H.
