@@ -2,7 +2,7 @@ from imports import *
 from upg2_energi_efter_förlust import energi_efter_energiförlust
 
 from upg12_steg_transformation import transformera_koordinatsystem
-from upg1_förflyttning import förflyttning
+from upg12_förflyttning import förflyttning
 
 
 def laddad_partikel_väg(energi_start, position_start, phi, theta, steglängd, radie_sfär, rho_medium,

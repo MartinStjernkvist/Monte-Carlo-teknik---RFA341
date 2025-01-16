@@ -1,7 +1,7 @@
 from imports import *
 from upg12_rotation_matris import rotations_matris
 from upg12_steg_transformation import transformera_koordinatsystem
-from upg1_förflyttning import förflyttning
+from upg12_förflyttning import förflyttning
 
 iterationer = 50
 

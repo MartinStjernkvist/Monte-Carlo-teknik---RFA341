@@ -4,7 +4,7 @@ from upg2_stopping_power_och_steglängd import stopping_power_och_steglängd
 from upg2_scattering_power import scattering_power_från_energi
 from upg2_steglängd_från_energi import steglängd_från_energi
 from upg2_elektron_polarvinkel import polar_vinkel
-from upg1_förflyttning import förflyttning
+from upg12_förflyttning import förflyttning
 from upg12_rotation_matris import rotations_matris
 
 
