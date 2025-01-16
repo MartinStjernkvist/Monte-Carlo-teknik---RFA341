@@ -1,7 +1,7 @@
 from imports import *
 
 
-def transformera_koordinatsystem(steg_A_B, phi_A, theta_A, steg_B_C, phi_B, theta_B):
+def transformera_koordinatsystem(steg_A_B, phi_A, theta_A, steg_B_C, phi_B, theta_B, R_A_B):
     """
     Koordinattransformation -> ny positionsvektor.
 
@@ -30,6 +30,8 @@ def transformera_koordinatsystem(steg_A_B, phi_A, theta_A, steg_B_C, phi_B, thet
     x_B_A = steg_A_B * np.sin(theta_A) * np.cos(phi_A)  # x_B (A)
     y_B_A = steg_A_B * np.sin(theta_A) * np.sin(phi_A)  # y_B (A)
     z_B_A = steg_A_B * np.cos(theta_A)  # z_B (A)
+
+    vektor_B_A = np.dot(R_A_B, np.array([x_B_A, y_B_A, z_B_A]))
 
     x_C_B = steg_B_C * np.sin(theta_B) * np.cos(phi_B)  # x_C (B)
     y_C_B = steg_B_C * np.sin(theta_B) * np.sin(phi_B)  # y_C (B)
@@ -60,13 +62,17 @@ def transformera_koordinatsystem(steg_A_B, phi_A, theta_A, steg_B_C, phi_B, thet
 
     # Först rotation i y-led, sedan rotation i z-led.
     R = np.dot(R_z, R_y)
+    # R = np.dot(R, R_A_B)
+    R = np.dot(R_A_B, R)
 
     #   -----------------------------------
     #   Homogen matris: H.
     #   -----------------------------------
     H = np.eye(4, dtype=np.float64)
     H[:3, :3] = R
-    H[:3, 3] = np.array([x_B_A, y_B_A, z_B_A], dtype=np.float64)
+    # H[:3, 3] = np.array([x_B_A, y_B_A, z_B_A], dtype=np.float64)
+    H[:3, 3] = np.array([vektor_B_A[0], vektor_B_A[1], vektor_B_A[2]], dtype=np.float64)
+
 
     #   -----------------------------------
     #   Vektorer.
@@ -78,12 +84,16 @@ def transformera_koordinatsystem(steg_A_B, phi_A, theta_A, steg_B_C, phi_B, thet
     # vektor_B (A)
     vektor_B_A = np.array([x_B_A, y_B_A, z_B_A, 1.0], dtype=np.float64)
 
+    # vektor_B_A = np.array([vektor_B_A[0],vektor_B_A[0],vektor_B_A[0], 1.0])
+
     # Vill ha vektor_C (B).
     vektor_C_B = vektor_C_A - vektor_B_A
+
+    # vektor_C_B = np.dot(R_A_B, vektor_C_B[:3])
 
     # Vektorkomponenter av vektor_C (B).
     x_C_B, y_C_B, z_C_B = vektor_C_B[0], vektor_C_B[1], vektor_C_B[2]
 
     dx, dy, dz = x_C_B, y_C_B, z_C_B
 
-    return dx, dy, dz
+    return dx, dy, dz, R

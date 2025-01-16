@@ -5,6 +5,7 @@ from upg2_scattering_power import scattering_power_från_energi
 from upg2_steglängd_från_energi import steglängd_från_energi
 from upg2_elektron_polarvinkel import polar_vinkel
 from upg1_förflyttning import förflyttning
+from upg12_rotation_matris import rotations_matris
 
 
 def laddad_partikel_väg_elektron(energi_start, position_start, phi_start, theta_start, radie_sfär, rho_medium,
@@ -67,6 +68,7 @@ def laddad_partikel_väg_elektron(energi_start, position_start, phi_start, theta
         phi = phi_start
         theta = theta_start
         energi = energi_ny
+        R = rotations_matris(phi, theta)
 
         #   -----------------------------------
         #   Medan elektronen befinner sig i sfären
@@ -95,10 +97,10 @@ def laddad_partikel_väg_elektron(energi_start, position_start, phi_start, theta
             phi_ny = np.random.random() * 2 * pi
 
             # Koordinattransformation ger ny positionsvektor.
-            dx, dy, dz = transformera_koordinatsystem(steglängd, phi, theta, steglängd_ny, phi_ny, theta_ny)
+            dx, dy, dz, R_ny = transformera_koordinatsystem(steglängd, phi, theta, steglängd_ny, phi_ny, theta_ny, R)
 
             x, y, z, _, _, _ = förflyttning(x, y, z, dx, dy, dz)
-            position_vektor = np.array([x, y, z])
+            position_vektor = np.array([x,y,z])
 
             #   -----------------------------------
             #   Håll reda på ifall:
@@ -121,6 +123,7 @@ def laddad_partikel_väg_elektron(energi_start, position_start, phi_start, theta
                 theta = theta_ny
                 steglängd = steglängd_ny
                 energi = energi_ny
+                R = R_ny
 
                 print(f'energi: {energi:.2f} eV')
                 continue
