@@ -61,14 +61,14 @@ def laddad_partikel_väg_elektron(energi_start, position_start, phi_start, theta
         y_list.append(y)
         z_list.append(z)
 
-        print(
-            f'\n-----------------------------------\ninitiera while loop:\n-----------------------------------')
-
         # Ändrar på vinklarna, värdet på steglängden och energin.
         phi = phi_start
         theta = theta_start
         energi = energi_ny
         R = rotations_matris(phi, theta)
+
+        print(
+            f'\n-----------------------------------\ninitiera while loop:\n-----------------------------------')
 
         #   -----------------------------------
         #   Medan elektronen befinner sig i sfären
@@ -126,6 +126,7 @@ def laddad_partikel_väg_elektron(energi_start, position_start, phi_start, theta
                 R = R_ny
 
                 print(f'energi: {energi:.2f} eV')
+                print('Rotationsmatris:\n', R)
                 continue
 
     else:
