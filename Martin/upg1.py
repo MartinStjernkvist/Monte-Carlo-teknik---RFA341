@@ -22,19 +22,25 @@ from tkinter import simpledialog
 from numba import jit
 import json
 
-#   ----------------------------------------------------------------------
+#   -----------------------------------
 #   KONSTANTER
-#   ----------------------------------------------------------------------
+#   -----------------------------------
+
+font_size = 20
+font_size_title = font_size * 1.25
 
 pi = np.pi
 E_e = 0.511 * 10 ** 6  # eV
 r_e = np.sqrt(0.07941)  # sqrt(b): re2 = e4/Ee2 ≈ 0.07941 b, https://en.wikipedia.org/wiki/Gamma_ray_cross_section
-a_0 = 5.29177210903 * 10 ** (-11) * 10 ** (14)  # sqrt(b), bohr radius of hydrogen
+a_0 = 5.29177210903 * 10 ** (-11) * 10 ** 14  # sqrt(b), bohr radius of hydrogen
 c = 3 * 10 ** 8
 
-radie_alpha = 1.9 * 10 ** (-15)  # m
+r_e_m = 2.81 * 10 ** (-15)  # Elektronradie i meter.
 
-massa_H = 1  # enhet u
+radie_alpha = 1.2 * 10 ** (-15) * 4 ** (1 / 3)  # Radie alfapartikel i meter (Physics Handbook)
+
+# enhet u
+massa_H = 1
 massa_C = 12
 massa_N = 14
 massa_O = 16
@@ -99,13 +105,16 @@ Lu177_intensitet = [10.38, 6.2, 0.216, 0.2012, 0.1726,
                     0.047]  # Sönderfallsintensitet i % för respektive energi. Från laraweb.
 Lu177_sannolikhet = np.cumsum(Lu177_intensitet) / np.sum(Lu177_intensitet)  # Kumulativa sannolikheten för sönderfall.
 
-At211_energi = [5.869, 5.2119, 5.1403, 4.9934, 4.895]  # Energi i MeV
+At211_energi_MeV = [5.869, 5.2119, 5.1403, 4.9934, 4.895]  # Sönderfallsdata för At-211.
+At211_energi = [(lambda x: x * 10 ** 6)(x) for x in At211_energi_MeV]  # Energi i eV
 At211_intensitet = [41.78, 0.0039, 0.0011, 0.0004, 0.00004]  # Intensitet i % för energierna
-At211_sannolikhet = np.cumsum(At211_intensitet / np.sum(At211_intensitet))
+At211_sannolikhet = np.cumsum(At211_intensitet) / np.sum(At211_intensitet)
 
-#   ----------------------------------------------------------------------
+rho_vatten = 998  # Vattens densitet i kg / m^3.
+
+#   -----------------------------------
 #   Filer med Data
-#   ----------------------------------------------------------------------
+#   -----------------------------------
 
 tvärsnitt_file = '../given_data/Tvärsnittstabeller_Fotoner.xlsx'
 attenueringsdata_file = '../given_data/Attenueringsdata.xlsx'
@@ -113,16 +122,18 @@ anatomidefinitioner_file = '../given_data/Anatomidefinitioner.xlsx'
 
 mat_file = 'phantom_data.mat'
 
+# Uppgift 2: Alfapartiklar
+stopping_power_alfa_file = 'Stoppingpower_data_alfa'
 
-# tvärsnitt_file = r'C:/Users/Admin/Documents/GitHub/Monte Carlo Linnea/Tvärsnittstabeller_Fotoner.xlsx'
-# attenueringsdata_file = r"C:/Users/Admin/Documents/GitHub/Monte Carlo Linnea/Attenueringsdata.xlsx"
-# anatomidefinitioner_file = r"C:\Users\Admin\Documents\GitHub\Monte Carlo Linnea/Anatomidefinitioner.xlsx"
-# mat_file = r"C:\Users\Admin\Documents\GitHub\Monte Carlo Linnea\phantom_data.mat"
+# Uppgift 2: Elektroner.
+Y90_file = '../given_data/Y90_Spektrum.xlsx'
+elektron_stopping_power_data = 'Elektron_stopping_power_range_data'
+elektron_scatter_power_data = 'Elektron_scatter_power_vatten_data'
 
 
-#   ----------------------------------------------------------------------
+#   -----------------------------------
 #   Funktioner
-#   ----------------------------------------------------------------------
+#   -----------------------------------
 
 def plot_stuff(x_data, y_data, scatter, label_data,
                marker='o', color='blue', x_label='x-label', y_label='y-label', title='1',
