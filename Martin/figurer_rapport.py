@@ -357,8 +357,6 @@ if __name__ == "__main__":
     #   PLOTTNING
     #   ---------------------------------------------------------------------
 
-    font_size = 15
-
     """
     fig = plt.figure(figsize=(10, 10))
     ax = plt.axes(projection='3d')
@@ -446,6 +444,8 @@ if __name__ == "__main__":
     plt.show()
 
     """
+
+
     # KOPIA FÖR ATT GÖRA FIGUR
     fig = plt.figure(figsize=(10, 10))
     ax = plt.axes(projection='3d')
@@ -454,39 +454,13 @@ if __name__ == "__main__":
     ax.set_zlim([0.5, 2])
 
     ax.scatter(x_start, y_A, z_A, label='A', color='black', s=100)
-    # ax.scatter(x_start + dx_A_B, y_A + dy_A_B, z_A + dz_A_B, label='B', color='dimgrey', s=100)
-    # ax.scatter(x_A + x_A_C, y_A + y_A_C, z_A + z_A_C, label='C', color='slategrey', s=100)
 
     # Enhetsvektorer
     ax.quiver(x_A, y_A, z_A, 1, 0, 0, color='red')
     ax.quiver(x_A, y_A, z_A, 0, 1, 0, color='lightcoral')
     ax.quiver(x_A, y_A, z_A, 0, 0, 1, color='brown')
 
-    # ax.quiver(x_A + dx_A_B, y_A + dy_A_B, z_A + dz_A_B, enhets_vektorer_B[0, 0], enhets_vektorer_B[1, 0],
-    #           enhets_vektorer_B[2, 0],
-    #           color='red')
-    # ax.quiver(x_A + dx_A_B, y_A + dy_A_B, z_A + dz_A_B, enhets_vektorer_B[0, 1], enhets_vektorer_B[1, 1],
-    #           enhets_vektorer_B[2, 1],
-    #           color='lightcoral')
-    # ax.quiver(x_A + dx_A_B, y_A + dy_A_B, z_A + dz_A_B, enhets_vektorer_B[0, 2], enhets_vektorer_B[1, 2],
-    #           enhets_vektorer_B[2, 2],
-    #           color='brown')
-
-    # ax.quiver(x_A, y_A, z_A, enhets_vektorer_B[0, 0], enhets_vektorer_B[1, 0],
-    #           enhets_vektorer_B[2, 0],
-    #           color='blue')
-    # ax.quiver(x_A, y_A, z_A, enhets_vektorer_B[0, 1], enhets_vektorer_B[1, 1],
-    #           enhets_vektorer_B[2, 1],
-    #           color='mediumslateblue')
-    # ax.quiver(x_A, y_A, z_A, enhets_vektorer_B[0, 2], enhets_vektorer_B[1, 2],
-    #           enhets_vektorer_B[2, 2],
-    #           color='royalblue')
-
     ax.quiver(x_A, y_A, z_A, dx_A_B, dy_A_B, dz_A_B, color='blue')
-    # ax.quiver(x_A + dx_A_B, y_A + dy_A_B, z_A + dz_A_B, (x_A_C - dx_A_B), (y_A_C - dy_A_B), (z_A_C - dz_A_B),
-    #           color='darkviolet',
-    #           label='andra steget, B->C (steg tas utifrån B\'s koordinatsystem')
-    # ax.quiver(x_A, y_A, z_A, x_A_C, y_A_C, z_A_C, color='magenta', label='steg A -> C i A\'s koordinatsystem')
 
     ax.set_xlabel('x')
     ax.set_ylabel('y')
@@ -494,11 +468,15 @@ if __name__ == "__main__":
 
     ax.azim, ax.elev = -115, 30
 
-    plt.title('Ingen rotation', fontsize=font_size*2)
+    plt.title('Ingen rotation', fontsize=font_size_title)
     plt.tight_layout()
     # ax.legend(fontsize=font_size)
     plt.savefig('3d_fig_rotation_0')
     plt.show()
+
+
+
+
 
     fig = plt.figure(figsize=(10, 10))
     ax = plt.axes(projection='3d')
@@ -507,23 +485,6 @@ if __name__ == "__main__":
     ax.set_zlim([0.5, 2])
 
     ax.scatter(x_start, y_A, z_A, label='A', color='black', s=100)
-    # ax.scatter(x_start + dx_A_B, y_A + dy_A_B, z_A + dz_A_B, label='B', color='dimgrey', s=100)
-    # ax.scatter(x_A + x_A_C, y_A + y_A_C, z_A + z_A_C, label='C', color='slategrey', s=100)
-
-    # Enhetsvektorer
-    # ax.quiver(x_A, y_A, z_A, 1, 0, 0, color='red')
-    # ax.quiver(x_A, y_A, z_A, 0, 1, 0, color='lightcoral')
-    # ax.quiver(x_A, y_A, z_A, 0, 0, 1, color='brown')
-
-    # ax.quiver(x_A + dx_A_B, y_A + dy_A_B, z_A + dz_A_B, enhets_vektorer_B[0, 0], enhets_vektorer_B[1, 0],
-    #           enhets_vektorer_B[2, 0],
-    #           color='red')
-    # ax.quiver(x_A + dx_A_B, y_A + dy_A_B, z_A + dz_A_B, enhets_vektorer_B[0, 1], enhets_vektorer_B[1, 1],
-    #           enhets_vektorer_B[2, 1],
-    #           color='lightcoral')
-    # ax.quiver(x_A + dx_A_B, y_A + dy_A_B, z_A + dz_A_B, enhets_vektorer_B[0, 2], enhets_vektorer_B[1, 2],
-    #           enhets_vektorer_B[2, 2],
-    #           color='brown')
 
     ax.quiver(x_A, y_A, z_A, enhets_vektorer_B[0, 0], enhets_vektorer_B[1, 0],
               enhets_vektorer_B[2, 0],
@@ -536,10 +497,6 @@ if __name__ == "__main__":
               color='brown')
 
     ax.quiver(x_A, y_A, z_A, dx_A_B, dy_A_B, dz_A_B, color='blue', label='första steget, A-> B')
-    # ax.quiver(x_A + dx_A_B, y_A + dy_A_B, z_A + dz_A_B, (x_A_C - dx_A_B), (y_A_C - dy_A_B), (z_A_C - dz_A_B),
-    #           color='darkviolet',
-    #           label='andra steget, B->C (steg tas utifrån B\'s koordinatsystem')
-    # ax.quiver(x_A, y_A, z_A, x_A_C, y_A_C, z_A_C, color='magenta', label='steg A -> C i A\'s koordinatsystem')
 
     ax.set_xlabel('x')
     ax.set_ylabel('y')
@@ -547,14 +504,17 @@ if __name__ == "__main__":
 
     ax.azim, ax.elev = -115, 30
 
-    # plt.title('R = R_z R_y', fontsize=font_size*2)
-    plt.title('R = R_z', fontsize=font_size*2)
-    # plt.title('R = R_y', fontsize=font_size*2)
+    plt.title('R = R_z R_y', fontsize=font_size_title)
+    # plt.title('R = R_z', fontsize=font_size_title)
+    # plt.title('R = R_y', fontsize=font_size_title)
+
     plt.tight_layout()
     # ax.legend(fontsize=font_size)
-    # plt.savefig('3d_fig_yz')
-    plt.savefig('3d_fig_z')
+
+    plt.savefig('3d_fig_yz')
+    # plt.savefig('3d_fig_z')
     # plt.savefig('3d_fig_y')
+
     plt.show()
 
 
