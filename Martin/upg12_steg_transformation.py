@@ -49,7 +49,7 @@ def transformera_koordinatsystem(steg_A_B, phi_A, theta_A, steg_B_C, phi_B, thet
     #
     #   Observera att koordinatsystemet för A egentligen kommer vara
     #   detsamma som det generella (t.ex. koordinatsystemet för fantomen
-    #   eller sfären), men att en virtuell transformation måste
+    #   eller sfären, fast translaterat), men att en virtuell transformation måste
     #   göras för att kunna utföra beräkningar med en homogen matris.
     #   -----------------------------------
 
