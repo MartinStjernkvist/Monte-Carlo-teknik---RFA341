@@ -31,23 +31,31 @@ def transformera_koordinatsystem(steg_A_B, phi_A, theta_A, steg_B_C, phi_B, thet
     y_B_A = steg_A_B * np.sin(theta_A) * np.sin(phi_A)  # y_B (A)
     z_B_A = steg_A_B * np.cos(theta_A)  # z_B (A)
 
+    x_C_B = steg_B_C * np.sin(theta_B) * np.cos(phi_B)  # x_C (B)
+    y_C_B = steg_B_C * np.sin(theta_B) * np.sin(phi_B)  # y_C (B)
+    z_C_B = steg_B_C * np.cos(theta_B)  # z_C (B)
+
+    #   -----------------------------------
+    #   Vektorer.
+    #   -----------------------------------
+
+    vektor_B_A_innan = np.array([x_B_A, y_B_A, z_B_A])  # vektor_B (A)
+
+    vektor_C_B = np.array([x_C_B, y_C_B, z_C_B])  # vektor_C (B)
+
     #   -----------------------------------
     #   Ifall en partikel åkt till A, måste ett virtuellt koordinatsystemet
     #   för A sammanfalla med riktningsvektorn för samma partikel.
     #
     #   Observera att koordinatsystemet för A egentligen kommer vara
-    #   detsamma som det generella (ex. koordinatsystemet för fantomen
+    #   detsamma som det generella (t.ex. koordinatsystemet för fantomen
     #   eller sfären), men att en virtuell transformation måste
     #   göras för att kunna utföra beräkningar med en homogen matris.
     #   -----------------------------------
 
     # Rotera vektor_B_A enligt riktningen för föregående partikel.
     # Samma som att ett virtuellt koordinatsystem för A används.
-    vektor_B_A = np.dot(R_A, np.array([x_B_A, y_B_A, z_B_A]))
-
-    x_BC_A = steg_B_C * np.sin(theta_B) * np.cos(phi_B)  # x_C (B)
-    y_BC_A = steg_B_C * np.sin(theta_B) * np.sin(phi_B)  # y_C (B)
-    z_BC_A = steg_B_C * np.cos(theta_B)  # z_C (B)
+    vektor_B_A = np.dot(R_A, vektor_B_A_innan)
 
     #   -----------------------------------
     #   Rotationsmatriser: R.
@@ -64,19 +72,18 @@ def transformera_koordinatsystem(steg_A_B, phi_A, theta_A, steg_B_C, phi_B, thet
     # Rotation i y-led (theta).
     # För att z-axeln ska sammanfalla med riktningsvektorn
     # -> måste rotationsvinkeln vara theta_A.
-    vinkel = theta_A
     R_y = np.array(
         [
-            [np.cos(vinkel), 0, np.sin(vinkel)],
+            [np.cos(theta_A), 0, np.sin(theta_A)],
             [0, 1, 0],
-            [-np.sin(vinkel), 0, np.cos(vinkel)],
+            [-np.sin(theta_A), 0, np.cos(theta_A)],
         ], dtype=np.float64)
 
     # Först rotation i y-led, sedan rotation i z-led.
-    R = np.dot(R_z, R_y)
+    R_innan = np.dot(R_z, R_y)
 
     # Rotera koordinatsystemet enligt föregående riktningsvektor.
-    R = np.dot(R_A, R)
+    R = np.dot(R_A, R_innan)
 
     #   -----------------------------------
     #   Homogen matris: H.
@@ -91,7 +98,7 @@ def transformera_koordinatsystem(steg_A_B, phi_A, theta_A, steg_B_C, phi_B, thet
     #   -----------------------------------
 
     # vektor_C (A)
-    vektor_C_A = np.dot(H, np.array([x_BC_A, y_BC_A, z_BC_A, 1.0], dtype=np.float64))
+    vektor_C_A = np.dot(H, np.array([vektor_C_B[0], vektor_C_B[1], vektor_C_B[2], 1.0], dtype=np.float64))
 
     # vektor_B (A)
     # vektor_B_A = np.array([x_B_A, y_B_A, z_B_A, 1.0], dtype=np.float64)
@@ -99,7 +106,8 @@ def transformera_koordinatsystem(steg_A_B, phi_A, theta_A, steg_B_C, phi_B, thet
     # vektor_B_A fast med en etta i slutet.
     vektor_B_A = np.array([vektor_B_A[0], vektor_B_A[1], vektor_B_A[2], 1.0])
 
-    # Vill ha vektor_BC (A), alltså vektorn mellan C och B i A's koordinatsystem.
+    # Vill ha vektor_BC (A).
+    # Vektorn från B till C, i A's koordinatsystem.
     vektor_BC_A = vektor_C_A - vektor_B_A
 
     # Vektorkomponenter av vektor_BC (A).

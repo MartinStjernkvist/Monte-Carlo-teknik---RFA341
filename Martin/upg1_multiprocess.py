@@ -143,7 +143,7 @@ def run_MC_multiprocess(args):
                             # Sampla medelvägslängden från inverstransformerad attenueringsfunktion.
                             steglängd_foto = medelvägslängd(mu_max)
 
-                            dx, dy, dz = steg(theta, phi, steglängd_foto)
+                            dx, dy, dz = steg(theta, phi, steglängd_foto) # Ändra till transformationskod?
                             x, y, z, x_round, y_round, z_round = förflyttning(x, y, z, dx, dy, dz, voxel_sidlängd)
 
                             # Om foton hamnar utanför fantommatrisen -> kasta ut foton ur loopen.
