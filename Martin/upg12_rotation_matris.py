@@ -3,11 +3,10 @@ from imports import *
 
 def rotations_matris(phi, theta):
     # Rotation i z-led (phi).
-    vinkel_phi = phi
     R_z = np.array(
         [
-            [np.cos(vinkel_phi), -np.sin(vinkel_phi), 0],
-            [np.sin(vinkel_phi), np.cos(vinkel_phi), 0],
+            [np.cos(phi), -np.sin(phi), 0],
+            [np.sin(phi), np.cos(phi), 0],
             [0, 0, 1]
         ], dtype=np.float64)
 
@@ -22,7 +21,6 @@ def rotations_matris(phi, theta):
         ], dtype=np.float64)
 
     # Först rotation i y-led, sedan rotation i z-led.
-    # R = np.dot(R_y, R_z)
     R = np.dot(R_z, R_y)
 
     return R

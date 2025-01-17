@@ -58,7 +58,7 @@ def transformera_koordinatsystem(steg_A_B, phi_A, theta_A, steg_B_C, phi_B, thet
     vektor_B_A = np.dot(R_A, vektor_B_A_innan)
 
     #   -----------------------------------
-    #   Rotationsmatriser: R.
+    #   Rotationsmatrisen: R.
     #   -----------------------------------
 
     # Rotation i z-led (phi).
@@ -90,7 +90,6 @@ def transformera_koordinatsystem(steg_A_B, phi_A, theta_A, steg_B_C, phi_B, thet
     #   -----------------------------------
     H = np.eye(4, dtype=np.float64)
     H[:3, :3] = R
-    # H[:3, 3] = np.array([x_B_A, y_B_A, z_B_A], dtype=np.float64)
     H[:3, 3] = np.array([vektor_B_A[0], vektor_B_A[1], vektor_B_A[2]], dtype=np.float64)
 
     #   -----------------------------------
@@ -100,11 +99,12 @@ def transformera_koordinatsystem(steg_A_B, phi_A, theta_A, steg_B_C, phi_B, thet
     # vektor_C (A)
     vektor_C_A = np.dot(H, np.array([vektor_C_B[0], vektor_C_B[1], vektor_C_B[2], 1.0], dtype=np.float64))
 
-    # vektor_B (A)
-    # vektor_B_A = np.array([x_B_A, y_B_A, z_B_A, 1.0], dtype=np.float64)
-
     # vektor_B_A fast med en etta i slutet.
     vektor_B_A = np.array([vektor_B_A[0], vektor_B_A[1], vektor_B_A[2], 1.0])
+
+    #   -----------------------------------
+    #   Förflyttning från B -> C, i A's koordinatsystem.
+    #   -----------------------------------
 
     # Vill ha vektor_BC (A).
     # Vektorn från B till C, i A's koordinatsystem.
