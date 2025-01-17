@@ -22,6 +22,9 @@ import json
 #   KONSTANTER
 #   -----------------------------------
 
+font_size = 20
+font_size_title = font_size * 1.25
+
 pi = np.pi
 E_e = 0.511 * 10 ** 6  # eV
 r_e = np.sqrt(0.07941)  # sqrt(b): re2 = e4/Ee2 ≈ 0.07941 b, https://en.wikipedia.org/wiki/Gamma_ray_cross_section

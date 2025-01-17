@@ -6,7 +6,7 @@ from upg2_fixad_laddad_partikel_väg_elektroner import laddad_partikel_väg_elek
 
 
 def run_MC_elektron(iterationer, rho_medium, radie_partikel, stopping_power_data, scatter_power_data,
-                    position_start, radie_sfär, energiförlust_faktor):
+                    position_start, radie_sfär, energiförlust_faktor, fig_title):
     """
     Monte-Carlo simulering för elektrontransport.
     :param iterationer: Antal sönderfall som ska simuleras.
@@ -106,12 +106,13 @@ def run_MC_elektron(iterationer, rho_medium, radie_partikel, stopping_power_data
     y = radie_sfär * np.sin(u) * np.sin(v)
     z = radie_sfär * np.cos(v)
     ax.plot_wireframe(x, y, z, color="k", alpha=0.3, label='Tumören')
-    ax.legend()
+    ax.legend(fontsize=font_size)
+    plt.title(fig_title, fontsize=font_size_title)
 
     # Visa figur
     plt.tight_layout()
+    plt.savefig(fig_title)
     plt.show()
-
     return energideponering_summa
 
 
@@ -154,12 +155,15 @@ if __name__ == "__main__":
     radie_sfär_skal = 300 * 10 ** (-6)  # m
     radie_sfär_innanför = 1 * 10 ** (-3)  # m
 
+    fig_title_skal = 'Betasönderfall vid ytfördelning'
+    fig_title_innanför = 'Betasönderfall vid uniform fördelning'
+
     print(
         '\n-----------------------------------\nDUMMY\n-----------------------------------\n')
 
     _ = run_MC_elektron(dummy_iterationer, rho_medium, radie_partikel, stopping_power_data, scatter_power_data,
                         position_start_skal,
-                        radie_sfär_skal, energiförlust_faktor)
+                        radie_sfär_skal, energiförlust_faktor, fig_title_skal)
 
     start = time.time()
 
@@ -168,7 +172,7 @@ if __name__ == "__main__":
     energideponering_tot_skal = run_MC_elektron(iterationer, rho_medium, radie_partikel, stopping_power_data,
                                                 scatter_power_data,
                                                 position_start_skal,
-                                                radie_sfär_skal, energiförlust_faktor)
+                                                radie_sfär_skal, energiförlust_faktor, fig_title_skal)
 
     energideponering_skal_Gy = energideponering_eV_till_Gy(energideponering_tot_skal, rho_medium, radie_sfär_skal)
 
@@ -179,14 +183,14 @@ if __name__ == "__main__":
 
     _ = run_MC_elektron(dummy_iterationer, rho_medium, radie_partikel, stopping_power_data, scatter_power_data,
                         position_start_innanför,
-                        radie_sfär_innanför, energiförlust_faktor)
+                        radie_sfär_innanför, energiförlust_faktor, fig_title_innanför)
 
     start = time.time()
     print(
         '\n-----------------------------------\nRIKTIG\n-----------------------------------\n')
     energideponering_tot_innanför = run_MC_elektron(iterationer, rho_medium, radie_partikel, stopping_power_data,
                                                     scatter_power_data,
-                                                    position_start_innanför, radie_sfär_innanför, energiförlust_faktor)
+                                                    position_start_innanför, radie_sfär_innanför, energiförlust_faktor, fig_title_innanför)
 
     energideponering_innanför_Gy = energideponering_eV_till_Gy(energideponering_tot_innanför, rho_medium,
                                                                radie_sfär_innanför)

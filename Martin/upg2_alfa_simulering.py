@@ -7,7 +7,7 @@ from upg2_laddad_partikel_väg_alfa import laddad_partikel_väg
 
 
 def run_MC_alpha(iterationer, rho_medium, radie_partikel, stopping_power_data, position_start_alpha, radie_sfär,
-                 max_antal_steg):
+                 max_antal_steg, fig_title):
     """
     Monte-Carlo simulering för alfapartiklarna.
     :param iterationer: Antal sönderfall som ska simuleras.
@@ -115,10 +115,12 @@ def run_MC_alpha(iterationer, rho_medium, radie_partikel, stopping_power_data, p
     y = radie_sfär * np.sin(u) * np.sin(v)
     z = radie_sfär * np.cos(v)
     ax.plot_wireframe(x, y, z, color="k", alpha=0.3, label='Tumören')
-    ax.legend()
+    ax.legend(fontsize=font_size)
+    plt.title(fig_title, fontsize=font_size_title)
 
     # Visa figur
     plt.tight_layout()
+    plt.savefig(fig_title)
     plt.show()
     return energideponering_summa
 
@@ -152,6 +154,9 @@ if __name__ == "__main__":
     dummy_iterationer = 10 ** 1
     max_antal_steg = 10 ** 3
 
+    fig_title_skal = 'Alfasönderfall vid ytfördelning'
+    fig_title_innanför = 'Alfasönderfall vid uniform fördelning'
+
     stopping_power_data = np.loadtxt(stopping_power_alfa_file)
 
     rho_medium = rho_vatten
@@ -164,14 +169,14 @@ if __name__ == "__main__":
         '\n-----------------------------------\nDUMMY\n-----------------------------------\n')
 
     _ = run_MC_alpha(dummy_iterationer, rho_medium, radie_partikel, stopping_power_data, position_start_skal,
-                     radie_sfär_skal, max_antal_steg)
+                     radie_sfär_skal, max_antal_steg, fig_title_skal)
 
     start = time.time()
 
     print(
         '\n-----------------------------------\nRIKTIG\n-----------------------------------\n')
     energideponering_tot_skal = run_MC_alpha(iterationer, rho_medium, radie_partikel, stopping_power_data,
-                                             position_start_skal, radie_sfär_skal, max_antal_steg)
+                                             position_start_skal, radie_sfär_skal, max_antal_steg, fig_title_skal)
     energideponering_skal_Gy = energideponering_eV_till_Gy(energideponering_tot_skal, rho_medium, radie_sfär_skal)
 
     end_time(start)
@@ -180,13 +185,14 @@ if __name__ == "__main__":
         '\n-----------------------------------\nDUMMY\n-----------------------------------\n')
 
     _ = run_MC_alpha(dummy_iterationer, rho_medium, radie_partikel, stopping_power_data, position_start_innanför,
-                     radie_sfär_innanför, max_antal_steg)
+                     radie_sfär_innanför, max_antal_steg, fig_title_innanför)
 
     start = time.time()
     print(
         '\n-----------------------------------\nRIKTIG\n-----------------------------------\n')
     energideponering_tot_innanför = run_MC_alpha(iterationer, rho_medium, radie_partikel, stopping_power_data,
-                                                 position_start_innanför, radie_sfär_innanför, max_antal_steg)
+                                                 position_start_innanför, radie_sfär_innanför, max_antal_steg,
+                                                 fig_title_innanför)
     energideponering_innanför_Gy = energideponering_eV_till_Gy(energideponering_tot_innanför, rho_medium,
                                                                radie_sfär_innanför)
     end_time(start)

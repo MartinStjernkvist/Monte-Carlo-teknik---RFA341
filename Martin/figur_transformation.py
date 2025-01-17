@@ -125,16 +125,19 @@ dx, dy, dz, R, vektor_B_A_innan, vektor_B_A, vektor_C_A, vektor_C_B, vektor_BC_A
 
 eye_R_B = np.dot(R, eye)
 
-font_size = 20
-
 x_lim = 4
 y_lim = x_lim
 z_lim = x_lim
 
+# elev, azim = 30, -115
+# fig1 = 'Punkt_A_1'
+# fig2 = 'Steg_A_B_1'
+# fig3 = 'Steg_B_C_1'
 
-azim, elev = -115, 30
-# -40, 30
-
+elev, azim = 40, -70
+fig1 = 'Punkt_A_2'
+fig2 = 'Steg_A_B_2'
+fig3 = 'Steg_B_C_2'
 
 #   -----------------------------------
 #   Fig: A + rotation i A.
@@ -175,10 +178,10 @@ ax.set_zlabel('z')
 
 ax.azim, ax.elev = azim, elev
 
-plt.title('Punkt A', fontsize=font_size * 1.5)
+plt.title('Punkt A', fontsize=font_size_title)
 plt.tight_layout()
 ax.legend(fontsize=font_size)
-plt.savefig('Punkt_A')
+plt.savefig(fig1)
 plt.show()
 
 #   -----------------------------------
@@ -227,10 +230,10 @@ ax.set_zlabel('z')
 
 ax.azim, ax.elev = azim, elev
 
-plt.title('Steg A -> B', fontsize=font_size * 1.5)
+plt.title('Steg A -> B', fontsize=font_size_title)
 plt.tight_layout()
 ax.legend(fontsize=font_size)
-plt.savefig('Steg_A_B')
+plt.savefig(fig2)
 plt.show()
 
 #   -----------------------------------
@@ -289,8 +292,8 @@ ax.set_zlabel('z')
 
 ax.azim, ax.elev = azim, elev
 
-plt.title('Steg B -> C', fontsize=font_size * 1.5)
+plt.title('Steg B -> C', fontsize=font_size_title)
 plt.tight_layout()
 ax.legend(fontsize=font_size)
-plt.savefig('Steg_B_C')
+plt.savefig(fig3)
 plt.show()
