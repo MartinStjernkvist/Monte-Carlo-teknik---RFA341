@@ -38,72 +38,6 @@ r_e_m = 2.81 * 10 ** (-15)  # Elektronradie i meter.
 
 radie_alpha = 1.2 * 10 ** (-15) * 4 ** (1 / 3)  # Radie alfapartikel i meter (Physics Handbook)
 
-# enhet u
-massa_H = 1
-massa_C = 12
-massa_N = 14
-massa_O = 16
-massa_Na = 23
-massa_Mg = 24.3
-massa_P = 31
-massa_S = 32
-massa_K = 39
-massa_Ca = 40
-
-# Sammansättning av vävnad, sida 71 tabeller radiofysik del 1 canvas RFA331.
-vävnad_sammansättning_vektor = np.array(
-    [10.2, 12.3 / massa_C, 3.5 / massa_N, 72.9 / massa_O, 0.08 / massa_Na, 0.02 / massa_Mg, 0.2 / massa_P,
-     0.5 / massa_S, 0.3 / massa_K, 0.007 / massa_Ca])
-
-# Atomic-Electron Binding Energies.pdf canvas RFA331.
-K_alpha_H = 0.0136 * 10 ** 3
-K_alpha_C = 0.2838 * 10 ** 3
-K_alpha_N = 0.4016 * 10 ** 3
-K_alpha_O = 0.5320 * 10 ** 3
-K_alpha_Na = 1.0721 * 10 ** 3
-K_alpha_Mg = 1.3050 * 10 ** 3
-K_alpha_P = 2.1455 * 10 ** 3
-K_alpha_S = 2.4720 * 10 ** 3
-K_alpha_K = 3.6074 * 10 ** 3
-K_alpha_Ca = 4.0381 * 10 ** 3
-
-K_alpha_vektor = np.array(
-    [K_alpha_H, K_alpha_C, K_alpha_N, K_alpha_O, K_alpha_Na, K_alpha_Mg, K_alpha_P, K_alpha_S, K_alpha_K, K_alpha_Ca])
-
-# Viktat medelvärde
-K_alpha = (1 / np.sum(vävnad_sammansättning_vektor)) * vävnad_sammansättning_vektor @ K_alpha_vektor.T
-# print(K_alpha)
-
-foton_energi_threshhold = K_alpha_H
-
-# Fluorescence and Coster-Kronig Yields, sida 9 tabeller radiofysik del 1 canvas RFA331.
-fluorescence_yield_H = 0
-fluorescence_yield_C = 0.0028
-fluorescence_yield_N = 0.0052
-fluorescence_yield_O = 0.0083
-fluorescence_yield_Na = 0.023
-fluorescence_yield_Mg = 0.030
-fluorescence_yield_P = 0.063
-fluorescence_yield_S = 0.078
-fluorescence_yield_K = 0.140
-fluorescence_yield_Ca = 0.163
-
-fluorescence_yield_vektor = np.array(
-    [fluorescence_yield_H, fluorescence_yield_C, fluorescence_yield_N, fluorescence_yield_O, fluorescence_yield_Na,
-     fluorescence_yield_Mg, fluorescence_yield_P, fluorescence_yield_S, fluorescence_yield_K, fluorescence_yield_Ca])
-
-# Viktat medelvärde.
-fluorescence_yield = (1 / np.sum(
-    vävnad_sammansättning_vektor)) * vävnad_sammansättning_vektor @ fluorescence_yield_vektor.T
-
-# Sidlängd på voxlarna i matriserna.
-voxel_sidlängd = 0.15  # cm
-
-Lu177_energi = [208_366, 112_950, 321_316, 249_674, 71_642, 136_725]  # Sönderfallsenergierna för Lu-177.
-Lu177_intensitet = [10.38, 6.2, 0.216, 0.2012, 0.1726,
-                    0.047]  # Sönderfallsintensitet i % för respektive energi. Från laraweb.
-Lu177_sannolikhet = np.cumsum(Lu177_intensitet) / np.sum(Lu177_intensitet)  # Kumulativa sannolikheten för sönderfall.
-
 At211_energi_MeV = [5.869, 5.2119, 5.1403, 4.9934, 4.895]  # Sönderfallsdata för At-211.
 At211_energi = [(lambda x: x * 10 ** 6)(x) for x in At211_energi_MeV]  # Energi i eV
 At211_intensitet = [41.78, 0.0039, 0.0011, 0.0004, 0.00004]  # Intensitet i % för energierna
@@ -114,12 +48,6 @@ rho_vatten = 998  # Vattens densitet i kg / m^3.
 #   -----------------------------------
 #   Filer med Data
 #   -----------------------------------
-
-tvärsnitt_file = '../given_data/Tvärsnittstabeller_Fotoner.xlsx'
-attenueringsdata_file = '../given_data/Attenueringsdata.xlsx'
-anatomidefinitioner_file = '../given_data/Anatomidefinitioner.xlsx'
-
-mat_file = 'phantom_data.mat'
 
 # Uppgift 2: Alfapartiklar
 stopping_power_alfa_file = 'Stoppingpower_data_alfa'
@@ -196,8 +124,8 @@ def end_time(start):
 
 """
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-RIKTNING
-Samplar riktningen för en partikel, utifrån fördelningsfunktion.
+STARTRIKTNING
+Samplar startriktningen för en partikel, utifrån fördelningsfunktion.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 """
 
@@ -223,49 +151,6 @@ def riktning_skal():
     theta = np.arccos(-1 + 2 * np.random.rand())
     phi = pi / 2 * (2 * np.random.rand() + 1)
     return theta, phi
-
-
-"""
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-STARTPOSITION
-Samplar startposition för partiklarna utifrån fördelningsfunktion.
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-"""
-
-
-@jit(nopython=True)
-def position_start_innanför(radie_sfär):
-    """
-    Funktion som samplar startposition.
-    Fördelningsfunktion: uniform innanför sfär.
-    """
-    r = radie_sfär * np.random.rand()
-
-    x = r
-    # Utnyttja sfärisk symmetri.
-    y = 0
-    z = 0
-
-    position_vektor = np.array([x, y, z])
-    return position_vektor
-
-
-@jit(nopython=True)
-def position_start_skal(radie_sfär, radie_partikel):
-    """
-    Funktion som samplar startposition.
-    Fördelningsfunktion: ytfördelning på sfär.
-    """
-    r = radie_sfär - 0.5 * radie_partikel  # För att inte endast theta = pi ska ge utslag
-
-    x = r
-    # Utnyttja sfärisk symmetri.
-    y = 0
-    z = 0
-
-    position_vektor = np.array([x, y, z])
-    return position_vektor
-
 
 """
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -544,8 +429,8 @@ def laddad_partikel_väg(energi_start, position_start, phi, theta, steglängd, r
 
 """
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-MONTE-CARLO SIMULERING
-Samplar startposition för partiklarna utifrån fördelningsfunktion.
+SIMULERING
+Simuleringskod som sammanställer alla ovan nämnda avsnitt.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 """
 

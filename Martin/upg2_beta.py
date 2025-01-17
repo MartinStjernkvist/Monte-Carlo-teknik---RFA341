@@ -1,7 +1,7 @@
 """
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 IMPORTS
-
+Pythonpaket och konstanter.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 """
 
@@ -22,85 +22,22 @@ from tkinter import simpledialog
 from numba import jit
 import json
 
-#   ----------------------------------------------------------------------
+#   -----------------------------------
 #   KONSTANTER
-#   ----------------------------------------------------------------------
+#   -----------------------------------
+
+font_size = 20
+font_size_title = font_size * 1.25
 
 pi = np.pi
 E_e = 0.511 * 10 ** 6  # eV
 r_e = np.sqrt(0.07941)  # sqrt(b): re2 = e4/Ee2 ≈ 0.07941 b, https://en.wikipedia.org/wiki/Gamma_ray_cross_section
-a_0 = 5.29177210903 * 10 ** (-11) * 10 ** (14)  # sqrt(b), bohr radius of hydrogen
+a_0 = 5.29177210903 * 10 ** (-11) * 10 ** 14  # sqrt(b), bohr radius of hydrogen
 c = 3 * 10 ** 8
 
 r_e_m = 2.81 * 10 ** (-15)  # Elektronradie i meter.
 
 radie_alpha = 1.2 * 10 ** (-15) * 4 ** (1 / 3)  # Radie alfapartikel i meter (Physics Handbook)
-
-# enhet u
-massa_H = 1
-massa_C = 12
-massa_N = 14
-massa_O = 16
-massa_Na = 23
-massa_Mg = 24.3
-massa_P = 31
-massa_S = 32
-massa_K = 39
-massa_Ca = 40
-
-# Sammansättning av vävnad, sida 71 tabeller radiofysik del 1 canvas RFA331.
-vävnad_sammansättning_vektor = np.array(
-    [10.2, 12.3 / massa_C, 3.5 / massa_N, 72.9 / massa_O, 0.08 / massa_Na, 0.02 / massa_Mg, 0.2 / massa_P,
-     0.5 / massa_S, 0.3 / massa_K, 0.007 / massa_Ca])
-
-# Atomic-Electron Binding Energies.pdf canvas RFA331.
-K_alpha_H = 0.0136 * 10 ** 3
-K_alpha_C = 0.2838 * 10 ** 3
-K_alpha_N = 0.4016 * 10 ** 3
-K_alpha_O = 0.5320 * 10 ** 3
-K_alpha_Na = 1.0721 * 10 ** 3
-K_alpha_Mg = 1.3050 * 10 ** 3
-K_alpha_P = 2.1455 * 10 ** 3
-K_alpha_S = 2.4720 * 10 ** 3
-K_alpha_K = 3.6074 * 10 ** 3
-K_alpha_Ca = 4.0381 * 10 ** 3
-
-K_alpha_vektor = np.array(
-    [K_alpha_H, K_alpha_C, K_alpha_N, K_alpha_O, K_alpha_Na, K_alpha_Mg, K_alpha_P, K_alpha_S, K_alpha_K, K_alpha_Ca])
-
-# Viktat medelvärde
-K_alpha = (1 / np.sum(vävnad_sammansättning_vektor)) * vävnad_sammansättning_vektor @ K_alpha_vektor.T
-# print(K_alpha)
-
-foton_energi_threshhold = K_alpha_H
-
-# Fluorescence and Coster-Kronig Yields, sida 9 tabeller radiofysik del 1 canvas RFA331.
-fluorescence_yield_H = 0
-fluorescence_yield_C = 0.0028
-fluorescence_yield_N = 0.0052
-fluorescence_yield_O = 0.0083
-fluorescence_yield_Na = 0.023
-fluorescence_yield_Mg = 0.030
-fluorescence_yield_P = 0.063
-fluorescence_yield_S = 0.078
-fluorescence_yield_K = 0.140
-fluorescence_yield_Ca = 0.163
-
-fluorescence_yield_vektor = np.array(
-    [fluorescence_yield_H, fluorescence_yield_C, fluorescence_yield_N, fluorescence_yield_O, fluorescence_yield_Na,
-     fluorescence_yield_Mg, fluorescence_yield_P, fluorescence_yield_S, fluorescence_yield_K, fluorescence_yield_Ca])
-
-# Viktat medelvärde.
-fluorescence_yield = (1 / np.sum(
-    vävnad_sammansättning_vektor)) * vävnad_sammansättning_vektor @ fluorescence_yield_vektor.T
-
-# Sidlängd på voxlarna i matriserna.
-voxel_sidlängd = 0.15  # cm
-
-Lu177_energi = [208_366, 112_950, 321_316, 249_674, 71_642, 136_725]  # Sönderfallsenergierna för Lu-177.
-Lu177_intensitet = [10.38, 6.2, 0.216, 0.2012, 0.1726,
-                    0.047]  # Sönderfallsintensitet i % för respektive energi. Från laraweb.
-Lu177_sannolikhet = np.cumsum(Lu177_intensitet) / np.sum(Lu177_intensitet)  # Kumulativa sannolikheten för sönderfall.
 
 At211_energi_MeV = [5.869, 5.2119, 5.1403, 4.9934, 4.895]  # Sönderfallsdata för At-211.
 At211_energi = [(lambda x: x * 10 ** 6)(x) for x in At211_energi_MeV]  # Energi i eV
@@ -109,28 +46,22 @@ At211_sannolikhet = np.cumsum(At211_intensitet) / np.sum(At211_intensitet)
 
 rho_vatten = 998  # Vattens densitet i kg / m^3.
 
-#   ----------------------------------------------------------------------
+#   -----------------------------------
 #   Filer med Data
-#   ----------------------------------------------------------------------
+#   -----------------------------------
+
+# Uppgift 2: Alfapartiklar
+stopping_power_alfa_file = 'Stoppingpower_data_alfa'
 
 # Uppgift 2: Elektroner.
 Y90_file = '../given_data/Y90_Spektrum.xlsx'
 elektron_stopping_power_data = 'Elektron_stopping_power_range_data'
 elektron_scatter_power_data = 'Elektron_scatter_power_vatten_data'
 
-# Inläsning för vscode:
-"""
-tvärsnitt_file = r'given_data/Tvärsnittstabeller_Fotoner.xlsx'
-attenueringsdata_file = r"given_data/Attenueringsdata.xlsx"
-anatomidefinitioner_file = r"given_data/Anatomidefinitioner.xlsx"
 
-mat_file = r"Martin/phantom_data.mat"
-"""
-
-
-#   ----------------------------------------------------------------------
+#   -----------------------------------
 #   Funktioner
-#   ----------------------------------------------------------------------
+#   -----------------------------------
 
 def plot_stuff(x_data, y_data, scatter, label_data,
                marker='o', color='blue', x_label='x-label', y_label='y-label', title='1',
@@ -195,13 +126,13 @@ def end_time(start):
 """
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 STARTENERGI
-
+Beräknar startenergin för partikeln, utifrån söndefallsdata.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 """
 
-#   ----------------------------------------------------------------------
+#   -----------------------------------
 #   Sönderfallsdata för Y-90.
-#   ----------------------------------------------------------------------
+#   -----------------------------------
 
 file_Y90 = pd.read_excel(Y90_file)
 
@@ -210,31 +141,48 @@ Energi_Y90 = file_Y90['Energy (MeV)']  # MeV
 Intensitet_Y90 = file_Y90['#/nt']
 
 
-#   ----------------------------------------------------------------------
+#   -----------------------------------
 #   Kurvanpassning till sönderfallsdatan.
-#   ----------------------------------------------------------------------
+#   -----------------------------------
 
 def polynom_funktion(x, a, b, c, d, e, f):
+    """
+    5:gradigt polynom för kurvanpassning.
+    """
     return a * x ** 5 + b * x ** 4 + c * x ** 3 + d * x ** 2 + e * x + f
 
 
+# Interpolera.
 params, cv = curve_fit(polynom_funktion, Energi_Y90, Intensitet_Y90)
 a, b, c, d, e, f = params
 
 olika_energier = np.linspace(np.min(Energi_Y90), np.max(Energi_Y90), 10_000)
 
 
-#   ----------------------------------------------------------------------
+#   -----------------------------------
 #   Använd rejektionsmetoden för att sampla elektronenergi.
-#   ----------------------------------------------------------------------
+#   -----------------------------------
 def elektron_energi_start():
+    """
+    Funktion som samplar elektronens startenergi.
+    Använder rejektionsmetoden.
+    """
+
+    # Initiera värden.
     elektron_energi = 0
     hittat = 0
+
+    # Medan inget värde accepterats:
     while hittat == 0:
+
+        # Slumpmässiga värden på energi och intensitet.
         x_rand = np.random.rand() * np.max(Energi_Y90)
         y_rand = np.random.rand() * np.max(Intensitet_Y90)
 
+        # Rejektionsmetoden för att hitta en energi.
         if y_rand < polynom_funktion(x_rand, *params):
+
+            # Om hittat: erhåll energin och avsluta while loopen.
             hittat = 1
             elektron_energi = x_rand
 
@@ -247,7 +195,7 @@ def elektron_energi_start():
 """
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 STARTRIKTNING
-
+Samplar startriktningen för en partikel, utifrån fördelningsfunktion.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 """
 
@@ -255,7 +203,7 @@ STARTRIKTNING
 @jit(nopython=True)
 def riktning_uniform():
     """
-    Uniform riktning.
+    Uniform riktning i en sfär.
     """
     theta = np.arccos(-1 + 2 * np.random.rand())
     phi = 2 * pi * np.random.rand()
@@ -265,7 +213,7 @@ def riktning_uniform():
 @jit(nopython=True)
 def riktning_skal():
     """
-    Ifall skalförfördelnning:
+    Ifall ytfördelning (skalet på en sfär):
     pi / 2 < phi < 3 * pi / 2 för att effektivisera koden.
     Då kan antalet iterationer halveras, eftersom man vet att
     hälften av partiklarna ändå skulle lämna sfären.
@@ -278,7 +226,7 @@ def riktning_skal():
 """
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 STARTPOSITION
-
+Samplar startposition för partiklarna utifrån fördelningsfunktion.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 """
 
@@ -319,8 +267,9 @@ def position_start_skal(radie_sfär, radie_partikel):
 
 """
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-ELEKTRON POLARVINKEL
-
+POLARVINKEL
+Sampla spridningsvinkeln vid kollissioner.
+Använder inverstransform sampling.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 """
 
@@ -339,16 +288,16 @@ def polar_vinkel(steglängd, scattering_power):
 
     T = scattering_power
 
+    # Beräkning av polarvinkel, med inverstransform.
     theta_ny = np.sqrt(-T * steglängd * np.log(1 - R))
 
-    print(f'polarvinkel: {theta_ny * 360 / (2 * np.pi):.3f} grader')
     return theta_ny
 
 
 """
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 SCATTERING POWER FRÅN ENERGI
-
+Beräknar scattering power utifrån partikelns energi.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 """
 
@@ -389,15 +338,13 @@ def scattering_power_från_energi(elektron_energi, scatterpower_data, rho_medium
                 T_close[1] - T_close[0]) / (
                     energi_close[1] - energi_close[0])
 
-    print(f'scattering power T / cm: {T / 100}')
-
     return T
 
 
 """
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-STOPPING POWER OCH STEGLÄNGD
-
+STOPPING POWER
+Beräknar stopping power utifrån partikelns energi.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 """
 
@@ -405,8 +352,8 @@ STOPPING POWER OCH STEGLÄNGD
 def stopping_power_och_steglängd(energi, rho_medium, stopping_power_data):
     """
     Funktion som ger stopping power och
-    :param energi: Partikelns energi i eV.
-    :param rho_medium: Mediumets densitet i kg / m^3.
+    :param energi: Partikelns energi (eV).
+    :param rho_medium: Mediumets densitet (kg/m^3).
     :param stopping_power_data: Tabellerad data.
     :return: Stopping power (eV/m) och steglängden (m).
     """
@@ -448,7 +395,7 @@ def stopping_power_och_steglängd(energi, rho_medium, stopping_power_data):
                         energi_close[1] - energi_close[0]))
 
     steglängd = CSDA / rho_medium
-    stopping_power = stopping_power * rho_medium  # eV / m
+    stopping_power = stopping_power * rho_medium
 
     return stopping_power, steglängd
 
@@ -456,7 +403,8 @@ def stopping_power_och_steglängd(energi, rho_medium, stopping_power_data):
 """
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 STEGLÄNGD FRÅN ENERGI
-
+Beräknar steglängden mellan kollisioner.
+Använder procentuell energiförlust mellan kollisioner.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 """
 
@@ -483,54 +431,83 @@ def steglängd_från_energi(energi_start, rho_medium, stopping_power_data, energ
 
     # Medelvärdet av stopping power mellan startpunkt och slutpunkt.
     stopping_power_medel = (stopping_power_2 + stopping_power_1) / 2
-    print(f'stopping power medel: {stopping_power_medel * 10 ** (-6):.3f} MeV / m')
+    # print(f'stopping power medel: {stopping_power_medel * 10**(-6):.3f} MeV / m')
 
     # Beräkna steglängden.
     steglängd = - (energi_2 - energi_1) / stopping_power_medel
-    print(f'steglängd: {steglängd * 10 ** 6:.2f} mikrometer')
-
     return steglängd
 
 
 """
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-TRANSFORMERA KOORDINATSYSTEM
-
+TRANSFORMATION - HOMOGEN MATRIS
+Translation och rotation i tre dimensioner.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 """
 
 
 # @jit(nopython=True)
-def ny_steg_transformera_koordinatsystem_3d(steg_A_B, phi_A, theta_A, steg_B_C, phi_B, theta_B):
+def transformera_koordinatsystem(steg_A_B, phi_A, theta_A, steg_B_C, phi_B, theta_B, R_A):
     """
-    - Börjar på position A[x,y,z]- kalla detta koordinatsystem A.
-    - Tar ett steg med steglängd steg_A_B, riktning (phi_A, theta_A), enligt koordinatsystemet i A.
-            (exempelvis kommer phi_A att vara relativt enhetsvektorn i x-led för koord-syst A)
-    - Tar ett steg till ny punkt - kalla denna punkt B.
-    - Transformerar koordinatsystemet så att riktningsvektorn sammandfaller med
-    nya koordinatsystemet.
-            (nya enhetsvektorn i x-led, i B's koord-syst, ska ha samma riktning som fotonen
-            hade när den tog steget)
-    - Detta görs för att kunna sampla en ny riktning i nästa växelverkanprocess,
-    då behövs nämligen ett koordinatsystem i B.
-    :param steg_A_B: magnitud på steg från A till B
-    :param phi_A: vinkel för steget mellan A och B
-    :param theta_A: vinkel för steget mellan A och B
-    :param steg_B_C: magnitud på steg från B till C
-    :param phi_B: vinkel för steget mellan B och C
-    :param theta_B: vinkel för steget mellan B och C
-    :return: 3 värden är förflyttningen från B till C, enligt A's koord-syst
+    Koordinattransformation -> ny positionsvektor.
+
+    1)  Börjar på position A[x,y,z]- kalla detta koordinatsystem A.
+    2)  Tar ett steg med steglängd steg_A_B, riktning (phi_A, theta_A), enligt koordinatsystemet i A.
+                - Vinklarna (phi_A, theta_A) är relativa koordinatsystemet i A.
+    3)  Efter steget befinner sig partikeln i en ny punkt - kalla denna punkt B.
+    4)  Transformerar koordinatsystemet så att riktningsvektorn sammanfaller med nya koordinatsystemet.
+                - Nya enhetsvektorn i z-led, i B's koordinatsystem,
+                ska ha samma riktning som fotonen hade när den tog steget
+    5)  Detta görs för att kunna sampla en ny riktning i nästa växelverkanprocess,
+        då behövs nämligen ett koordinatsystem i B.
+
+    :param steg_A_B: Magnitud på steg från A till B.
+    :param phi_A: Vinkel för steget mellan A och B.
+    :param theta_A: Vinkel för steget mellan A och B.
+    :param steg_B_C: Magnitud på steg från B till C.
+    :param phi_B: Vinkel för steget mellan B och C.
+    :param theta_B: Vinkel för steget mellan B och C.
+    :return: Vektorkomponenter för vektor_BC (A).
     """
 
-    dx_A_B = steg_A_B * np.sin(theta_A) * np.cos(phi_A)
-    dy_A_B = steg_A_B * np.sin(theta_A) * np.sin(phi_A)
-    dz_A_B = steg_A_B * np.cos(theta_A)
+    #   -----------------------------------
+    #   Vektorkomponenter.
+    #   -----------------------------------
+    x_B_A = steg_A_B * np.sin(theta_A) * np.cos(phi_A)  # x_B (A)
+    y_B_A = steg_A_B * np.sin(theta_A) * np.sin(phi_A)  # y_B (A)
+    z_B_A = steg_A_B * np.cos(theta_A)  # z_B (A)
 
-    dx_B_C = steg_B_C * np.sin(theta_B) * np.cos(phi_B)
-    dy_B_C = steg_B_C * np.sin(theta_B) * np.sin(phi_B)
-    dz_B_C = steg_B_C * np.cos(theta_B)
+    x_C_B = steg_B_C * np.sin(theta_B) * np.cos(phi_B)  # x_C (B)
+    y_C_B = steg_B_C * np.sin(theta_B) * np.sin(phi_B)  # y_C (B)
+    z_C_B = steg_B_C * np.cos(theta_B)  # z_C (B)
 
-    # transformera med rotation i z-led (phi)
+    #   -----------------------------------
+    #   Vektorer.
+    #   -----------------------------------
+
+    vektor_B_A_innan = np.array([x_B_A, y_B_A, z_B_A])  # vektor_B (A)
+
+    vektor_C_B = np.array([x_C_B, y_C_B, z_C_B])  # vektor_C (B)
+
+    #   -----------------------------------
+    #   Ifall en partikel åkt till A, måste ett virtuellt koordinatsystemet
+    #   för A sammanfalla med riktningsvektorn för samma partikel.
+    #
+    #   Observera att koordinatsystemet för A egentligen kommer vara
+    #   detsamma som det generella (t.ex. koordinatsystemet för fantomen
+    #   eller sfären, fast translaterat), men att en virtuell transformation måste
+    #   göras för att kunna utföra beräkningar med en homogen matris.
+    #   -----------------------------------
+
+    # Rotera vektor_B_A enligt riktningen för föregående partikel.
+    # Samma som att ett virtuellt koordinatsystem för A används.
+    vektor_B_A = np.dot(R_A, vektor_B_A_innan)
+
+    #   -----------------------------------
+    #   Rotationsmatrisen: R.
+    #   -----------------------------------
+
+    # Rotation i z-led (phi).
     R_z = np.array(
         [
             [np.cos(phi_A), -np.sin(phi_A), 0],
@@ -538,49 +515,128 @@ def ny_steg_transformera_koordinatsystem_3d(steg_A_B, phi_A, theta_A, steg_B_C, 
             [0, 0, 1]
         ], dtype=np.float64)
 
-    # för att z-axeln ska sammanfalla med riktningsvektorn måste rotationsvinkeln vara theta_A
-    angle = theta_A
+    # Rotation i y-led (theta).
+    # För att z-axeln ska sammanfalla med riktningsvektorn
+    # -> måste rotationsvinkeln vara theta_A.
     R_y = np.array(
         [
-            [np.cos(angle), 0, np.sin(angle)],
+            [np.cos(theta_A), 0, np.sin(theta_A)],
             [0, 1, 0],
-            [-np.sin(angle), 0, np.cos(angle)],
+            [-np.sin(theta_A), 0, np.cos(theta_A)],
         ], dtype=np.float64)
 
-    # först rotation i theta (y-axeln), sedan rotation i phi (z-axeln)
+    # Först rotation i y-led, sedan rotation i z-led.
+    R_innan = np.dot(R_z, R_y)
+
+    # Rotera koordinatsystemet enligt föregående riktningsvektor.
+    R = np.dot(R_A, R_innan)
+
+    #   -----------------------------------
+    #   Homogen matris: H.
+    #   -----------------------------------
+    H = np.eye(4, dtype=np.float64)
+    H[:3, :3] = R
+    H[:3, 3] = np.array([vektor_B_A[0], vektor_B_A[1], vektor_B_A[2]], dtype=np.float64)
+
+    #   -----------------------------------
+    #   Vektorer.
+    #   -----------------------------------
+
+    # vektor_C (A)
+    vektor_C_A = np.dot(H, np.array([vektor_C_B[0], vektor_C_B[1], vektor_C_B[2], 1.0], dtype=np.float64))
+
+    # vektor_B_A fast med en etta i slutet.
+    vektor_B_A = np.array([vektor_B_A[0], vektor_B_A[1], vektor_B_A[2], 1.0])
+
+    #   -----------------------------------
+    #   Förflyttning från B -> C, i A's koordinatsystem.
+    #   -----------------------------------
+
+    # Vill ha vektor_BC (A).
+    # Vektorn från B till C, i A's koordinatsystem.
+    vektor_BC_A = vektor_C_A - vektor_B_A
+
+    # Vektorkomponenter av vektor_BC (A).
+    x_BC_A, y_BC_A, z_BC_A = vektor_BC_A[0], vektor_BC_A[1], vektor_BC_A[2]
+
+    # Genom att dela upp i vektorkomponenter kan positionen
+    # för partikeln följas i det övegripande koordinatsystemet,
+    # genom att addera stegvektorer.
+    dx, dy, dz = x_BC_A, y_BC_A, z_BC_A
+
+    return dx, dy, dz, R
+
+
+"""
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+FÖRFLYTTNING
+Ta ett steg.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+"""
+
+
+@jit(nopython=True)
+def förflyttning(x, y, z, dx, dy, dz, voxel_sidlängd=1):
+    x_ny = x + dx / voxel_sidlängd
+    y_ny = y + dy / voxel_sidlängd
+    z_ny = z + dz / voxel_sidlängd
+
+    x_round = round(x_ny)
+    y_round = round(y_ny)
+    z_round = round(z_ny)
+
+    return x_ny, y_ny, z_ny, x_round, y_round, z_round
+
+
+"""
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ROTATIONSMATRIS
+Skapa en rotationsmatris, utifrån steget som tas.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+"""
+
+
+def rotations_matris(phi, theta):
+    # Rotation i z-led (phi).
+    R_z = np.array(
+        [
+            [np.cos(phi), -np.sin(phi), 0],
+            [np.sin(phi), np.cos(phi), 0],
+            [0, 0, 1]
+        ], dtype=np.float64)
+
+    # Rotation i y-led (theta).
+    # För att z-axeln ska sammanfalla med riktningsvektorn
+    # -> måste rotationsvinkeln vara theta_A.
+    R_y = np.array(
+        [
+            [np.cos(theta), 0, np.sin(theta)],
+            [0, 1, 0],
+            [-np.sin(theta), 0, np.cos(theta)],
+        ], dtype=np.float64)
+
+    # Först rotation i y-led, sedan rotation i z-led.
     R = np.dot(R_z, R_y)
 
-    Homogenous_matrix = np.eye(4, dtype=np.float64)
-    Homogenous_matrix[:3, :3] = R
-    Homogenous_matrix[:3, 3] = np.array([dx_A_B, dy_A_B, dz_A_B], dtype=np.float64)
-
-    vektor_A_C = np.dot(Homogenous_matrix, np.array([dx_B_C, dy_B_C, dz_B_C, 1.0], dtype=np.float64))
-
-    vektor_A_B = np.array([dx_A_B, dy_A_B, dz_A_B, 1.0], dtype=np.float64)
-
-    # Vill ha vektor B->C
-    vektor = vektor_A_C - vektor_A_B
-    dx, dy, dz = vektor[0], vektor[1], vektor[2]
-
-    return dx, dy, dz
+    return R
 
 
 """
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-LADDAD PARTIKEL VÄG - ELEKTRONER
-
+FÖLJA PARTIKELN
+Följer partikeln allteftersom den växelverkar.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 """
 
 
-def laddad_partikel_väg_elektron(energi_start, position_start, phi, theta, radie_sfär, rho_medium,
+def laddad_partikel_väg_elektron(energi_start, position_start, phi_start, theta_start, radie_sfär, rho_medium,
                                  stopping_power_data, scatter_power_data, energiförlust_faktor):
     """
     Funktion som följer alfapartikeln allteftersom den växelverkar i ett medium.
     :param energi_start: Elektronens startenergi.
     :param position_start: Elektronens startposition.
-    :param phi: Sfärisk vinkel.
-    :param theta: Sfärisk vinkel.
+    :param phi_start: Sfärisk vinkel.
+    :param theta_start: Sfärisk vinkel.
     :param radie_sfär: Radien av sfären för fördelningen.
     :param rho_medium: Mediumets densitet (kg / m^3).
     :param stopping_power_data: Stopping power tabelldata.
@@ -589,98 +645,130 @@ def laddad_partikel_väg_elektron(energi_start, position_start, phi, theta, radi
     :return: Energideponeringen innanför sfären.
     """
 
+    print(
+        f'\n%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\nny partikel:\n%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%')
+
     # Initiera tomma listor för att spara datan.
-    x, y, z, dos = [], [], [], []
+    x_list, y_list, z_list, dos = [], [], [], []
 
     # Startposition och startenergi.
     position_vektor = position_start
+    x_start, y_start, z_start = position_vektor[0], position_vektor[1], position_vektor[2]
+
     energi = energi_start
+    print(f'start energi: {energi:.3f} eV')
 
     # Steglängd tas så att en viss energiförlust sker.
     steglängd = steglängd_från_energi(energi, rho_medium, stopping_power_data, energiförlust_faktor)
+    print(f'steglängd: {steglängd * 10 ** 6:.2f} mikrometer')
 
     # Den nya energin för elektronen.
     energi_ny = energi * energiförlust_faktor
 
     # Första steget.
-    dx = steglängd * np.sin(theta) * np.cos(phi)
-    dy = steglängd * np.sin(theta) * np.sin(phi)
-    dz = steglängd * np.cos(theta)
+    dx = steglängd * np.sin(theta_start) * np.cos(phi_start)
+    dy = steglängd * np.sin(theta_start) * np.sin(phi_start)
+    dz = steglängd * np.cos(theta_start)
 
-    position_vektor += np.array([dx, dy, dz])
+    x, y, z, _, _, _ = förflyttning(x_start, y_start, z_start, dx, dy, dz)
+    position_vektor = np.array([x, y, z])
     # print(f'positionsvektor: {position_vektor}')
 
     if np.sqrt(np.dot(position_vektor, position_vektor)) < radie_sfär:
+
+        # Spara mätpunkter.
         dos.append(energi - energi_ny)
-        x.append(position_vektor[0])
-        y.append(position_vektor[1])
-        z.append(position_vektor[2])
+        x_list.append(x)
+        y_list.append(y)
+        z_list.append(z)
 
-    energi = energi_ny
+        # Ändrar på vinklarna, värdet på steglängden och energin.
+        phi = phi_start
+        theta = theta_start
+        energi = energi_ny
+        R = rotations_matris(phi, theta)
 
-    #   ----------------------------------------------------------------------
-    #   Medan elektronen befinner sig i sfären
-    #   och
-    #   har en energi som är över en tröskelenergi.
-    #   ----------------------------------------------------------------------
-    while np.sqrt(np.dot(position_vektor, position_vektor)) < radie_sfär and energi > energi_start * 10 ** (-6):
+        print(
+            f'\n-----------------------------------\ninitiera while loop:\n-----------------------------------')
 
-        # Steglängd tas så att en viss energiförlust sker.
-        steglängd_ny = steglängd_från_energi(energi, rho_medium, stopping_power_data, energiförlust_faktor)
+        #   -----------------------------------
+        #   Medan elektronen befinner sig i sfären
+        #   och
+        #   energin är över en tröskelenergi.
+        #   -----------------------------------
+        while np.sqrt(np.dot(position_vektor, position_vektor)) < radie_sfär and energi > energi_start * 10 ** (-6):
+            print('')
 
-        # Den nya energin för elektronen.
-        energi_ny = energi * energiförlust_faktor
+            # Steglängd tas så att en viss energiförlust sker.
+            steglängd_ny = steglängd_från_energi(energi, rho_medium, stopping_power_data, energiförlust_faktor)
+            print(f'steglängd: {steglängd_ny * 10 ** 6:.2f} mikrometer')
 
-        # Scattering power för den nya energin, efter steget.
-        scattering_power = scattering_power_från_energi(energi_ny, scatter_power_data, rho_medium)
+            # Den nya energin för elektronen.
+            energi_ny = energi * energiförlust_faktor
+            print(f'energi ny: {energi:.2f} eV')
 
-        # Polarvinkel utifrån scattering power.
-        theta_ny = polar_vinkel(steglängd, scattering_power)
-        phi_ny = np.random.random() * 2 * pi
+            # Scattering power för den nya energin, efter steget.
+            scattering_power = scattering_power_från_energi(energi_ny, scatter_power_data, rho_medium)
+            print(f'scattering power T: {scattering_power / 100:.2f} rad^2 / cm')
 
-        # Ändrar på positionsvektor efter att transformations matrisen
-        dx, dy, dz = ny_steg_transformera_koordinatsystem_3d(steglängd, phi, theta, steglängd_ny, phi_ny, theta_ny)
-        position_vektor += np.array([dx, dy, dz])
+            # Polarvinkel utifrån scattering power.
+            theta_ny = polar_vinkel(steglängd, scattering_power)
+            print(f'polarvinkel: {theta_ny * 360 / (2 * np.pi):.2f} grader')
 
-        #   ----------------------------------------------------------------------
-        #   Håll reda på ifall partikeln befinner sig i sfären eller inte.
-        #   ----------------------------------------------------------------------
-        if np.sqrt(np.dot(position_vektor, position_vektor)) > radie_sfär:
-            break
+            phi_ny = np.random.random() * 2 * pi
 
-        # Om elektronen fortfarande är i sfären -> spara mätpunkter.
-        else:
-            # Mätpunkter för att plotta dosfördelningen.
-            dos.append(energi - energi_ny)
-            x.append(position_vektor[0])
-            y.append(position_vektor[1])
-            z.append(position_vektor[2])
+            # Koordinattransformation ger ny positionsvektor.
+            dx, dy, dz, R_ny = transformera_koordinatsystem(steglängd, phi, theta, steglängd_ny, phi_ny, theta_ny, R)
 
-            # Ändrar på vinklarna, värdet på steglängden och energin innan nästa vinkeländring.
-            phi = phi_ny
-            theta = theta_ny
-            steglängd = steglängd_ny
-            energi = energi_ny
+            x, y, z, _, _, _ = förflyttning(x, y, z, dx, dy, dz)
+            position_vektor = np.array([x, y, z])
 
-            print(f'energi: {energi:.3f} eV')
-            continue
+            #   -----------------------------------
+            #   Håll reda på ifall:
+            #   partikeln befinner sig i sfären.
+            #   -----------------------------------
+            if np.sqrt(np.dot(position_vektor, position_vektor)) > radie_sfär:
+                print('\n!!!UTANFÖR!!!')
+                break
+
+            # Om elektronen fortfarande är i sfären -> spara mätpunkter.
+            else:
+                # Spara mätpunkter.
+                dos.append(energi - energi_ny)
+                x_list.append(x)
+                y_list.append(y)
+                z_list.append(z)
+
+                # Ändrar på vinklarna, värdet på steglängden och energin.
+                phi = phi_ny
+                theta = theta_ny
+                steglängd = steglängd_ny
+                energi = energi_ny
+                R = R_ny
+
+                print(f'energi: {energi:.2f} eV')
+                print('Rotationsmatris:\n', R)
+                continue
+
+    else:
+        print('\n!!!UTANFÖR!!!')
 
     # Beräkna den totala energideponeringen (i sfären) från partikeln.
     energideponering = energi_start - energi
     # print(f'energideponering: {energideponering} eV')
-    return energideponering, x, y, z, dos
+    return energideponering, x_list, y_list, z_list, dos
 
 
 """
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-SIMULERINGSKOD
-
+SIMULERING
+Simuleringskod som sammanställer alla ovan nämnda avsnitt.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 """
 
 
 def run_MC_elektron(iterationer, rho_medium, radie_partikel, stopping_power_data, scatter_power_data,
-                    position_start, radie_sfär, energiförlust_faktor):
+                    position_start, radie_sfär, energiförlust_faktor, fig_title):
     """
     Monte-Carlo simulering för elektrontransport.
     :param iterationer: Antal sönderfall som ska simuleras.
@@ -698,14 +786,14 @@ def run_MC_elektron(iterationer, rho_medium, radie_partikel, stopping_power_data
     energideponering_summa = 0
     x_list, y_list, z_list, dos_list = [], [], [], []
 
-    #   ----------------------------------------------------------------------
+    #   -----------------------------------
     #   Vilken fördelningsfunktion som ska användas bestämmer hur
     #   sampling av riktning och position sker.
-    #   ----------------------------------------------------------------------
+    #   -----------------------------------
     if position_start == position_start_skal:
-        #   ----------------------------------------------------------------------
+        #   -----------------------------------
         #   Ytfördelning på en sfär.
-        #   ----------------------------------------------------------------------
+        #   -----------------------------------
         iterationer = 0.5 * iterationer
         for i in range(int(iterationer)):
             # Sampla riktning och startposition.
@@ -714,7 +802,6 @@ def run_MC_elektron(iterationer, rho_medium, radie_partikel, stopping_power_data
 
             # Sampla startenergin.
             energi_start = elektron_energi_start() * 10 ** 6  # i eV
-            # print(f'energi: {energi_start * 10 ** (-6)} MeV')
 
             # Beräkna den totala energideponeringen för en partikel som växelverkar i sfären.
             energideponering, x, y, z, dos = laddad_partikel_väg_elektron(energi_start, position_start, phi, theta,
@@ -730,16 +817,15 @@ def run_MC_elektron(iterationer, rho_medium, radie_partikel, stopping_power_data
 
             # Summera energideponeringsbidragen från respektive iteration.
             energideponering_summa += energideponering
-            print(f'energideponering: {energideponering * 10 ** (-6)} MeV')
+            # print(f'energideponering: {energideponering * 10 ** (-6)} MeV')
 
     else:
-        #   ----------------------------------------------------------------------
+        #   -----------------------------------
         #   Uniform fördelning i en sfär.
-        #   ----------------------------------------------------------------------
+        #   -----------------------------------
         for i in range(iterationer):
             # Sampla startenergin.
             energi_start = elektron_energi_start() * 10 ** 6  # i eV
-            # print(f'energi: {energi_start * 10 ** (-6)} MeV')
 
             # Sampla riktning och startposition.
             theta, phi = riktning_uniform()
@@ -758,10 +844,13 @@ def run_MC_elektron(iterationer, rho_medium, radie_partikel, stopping_power_data
 
             # Summera energideponeringsbidragen från respektive iteration.
             energideponering_summa += energideponering
-            print(f'energideponering: {energideponering * 10 ** (-6)} MeV')
+            # print(f'energideponering: {energideponering * 10 ** (-6)} MeV')
 
     # print('total energideponering: ', energideponering_summa)
 
+    #   -----------------------------------
+    #   Visualisera resultat i figur.
+    #   -----------------------------------
     fig = plt.figure(figsize=(10, 10))
     ax = fig.add_subplot(projection='3d')
     ax.scatter(x_list, y_list, z_list, c=dos_list, cmap='plasma', label='Partikel position')
@@ -771,7 +860,7 @@ def run_MC_elektron(iterationer, rho_medium, radie_partikel, stopping_power_data
 
     ax.set_xlabel('x-axel (m)')
     ax.set_ylabel('y-axel (m)')
-    ax.set_ylabel('z-axel (m)')
+    ax.set_zlabel('z-axel (m)')
 
     # Testar att sätta en sfär för tumören
     u, v = np.mgrid[0:2 * np.pi:20j, 0:np.pi:10j]
@@ -779,11 +868,13 @@ def run_MC_elektron(iterationer, rho_medium, radie_partikel, stopping_power_data
     y = radie_sfär * np.sin(u) * np.sin(v)
     z = radie_sfär * np.cos(v)
     ax.plot_wireframe(x, y, z, color="k", alpha=0.3, label='Tumören')
-    ax.legend()
+    ax.legend(fontsize=font_size)
+    plt.title(fig_title, fontsize=font_size_title)
 
     # Visa figur
+    plt.tight_layout()
+    plt.savefig(fig_title)
     plt.show()
-
     return energideponering_summa
 
 
@@ -809,13 +900,13 @@ def energideponering_eV_till_Gy(energideponering_eV, rho_medium, radie_sfär):
 
 
 if __name__ == "__main__":
-    #   ----------------------------------------------------------------------
+    #   -----------------------------------
     #   Köra simuleringskoden.
-    #   ----------------------------------------------------------------------
+    #   -----------------------------------
     iterationer = 10 ** 3
-    dummy_iterationer = 10 ** 2
+    dummy_iterationer = 3 * 10 ** 2
 
-    energiförlust_faktor = 0.95  # Energi efter en kollision = 98% av föregående energin.
+    energiförlust_faktor = 0.96  # Energi efter en kollision = 96% av föregående energin.
 
     stopping_power_data = np.loadtxt(elektron_stopping_power_data)
     scatter_power_data = np.loadtxt(elektron_scatter_power_data)
@@ -826,46 +917,50 @@ if __name__ == "__main__":
     radie_sfär_skal = 300 * 10 ** (-6)  # m
     radie_sfär_innanför = 1 * 10 ** (-3)  # m
 
+    fig_title_skal = 'Betasönderfall vid ytfördelning'
+    fig_title_innanför = 'Betasönderfall vid uniform fördelning'
+
     print(
-        '\n----------------------------------------------------------------------\nDUMMY\n----------------------------------------------------------------------\n')
+        '\n-----------------------------------\nDUMMY\n-----------------------------------\n')
 
     _ = run_MC_elektron(dummy_iterationer, rho_medium, radie_partikel, stopping_power_data, scatter_power_data,
                         position_start_skal,
-                        radie_sfär_skal, energiförlust_faktor)
+                        radie_sfär_skal, energiförlust_faktor, fig_title_skal)
 
     start = time.time()
 
     print(
-        '\n----------------------------------------------------------------------\nRIKTIG\n----------------------------------------------------------------------\n')
+        '\n-----------------------------------\nRIKTIG\n-----------------------------------\n')
     energideponering_tot_skal = run_MC_elektron(iterationer, rho_medium, radie_partikel, stopping_power_data,
                                                 scatter_power_data,
                                                 position_start_skal,
-                                                radie_sfär_skal, energiförlust_faktor)
+                                                radie_sfär_skal, energiförlust_faktor, fig_title_skal)
 
     energideponering_skal_Gy = energideponering_eV_till_Gy(energideponering_tot_skal, rho_medium, radie_sfär_skal)
 
     end_time(start)
 
     print(
-        '\n----------------------------------------------------------------------\nDUMMY\n----------------------------------------------------------------------\n')
+        '\n-----------------------------------\nDUMMY\n-----------------------------------\n')
 
     _ = run_MC_elektron(dummy_iterationer, rho_medium, radie_partikel, stopping_power_data, scatter_power_data,
                         position_start_innanför,
-                        radie_sfär_innanför, energiförlust_faktor)
+                        radie_sfär_innanför, energiförlust_faktor, fig_title_innanför)
 
     start = time.time()
     print(
-        '\n----------------------------------------------------------------------\nRIKTIG\n----------------------------------------------------------------------\n')
+        '\n-----------------------------------\nRIKTIG\n-----------------------------------\n')
     energideponering_tot_innanför = run_MC_elektron(iterationer, rho_medium, radie_partikel, stopping_power_data,
                                                     scatter_power_data,
-                                                    position_start_innanför, radie_sfär_innanför, energiförlust_faktor)
+                                                    position_start_innanför, radie_sfär_innanför, energiförlust_faktor,
+                                                    fig_title_innanför)
 
     energideponering_innanför_Gy = energideponering_eV_till_Gy(energideponering_tot_innanför, rho_medium,
                                                                radie_sfär_innanför)
     end_time(start)
 
     print(
-        '\n%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\nRESULTAT\n%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n')
+        '\n-----------------------------------\nRESULTAT\n-----------------------------------\n')
 
     print(
         f'\nSkal (300 mikrometer): Energideponering:\n{energideponering_skal_Gy * 10 ** 8 / iterationer} E-08 Gy / sönderfall')
