@@ -89,7 +89,8 @@ def run_MC_elektron(iterationer, rho_medium, radie_partikel, stopping_power_data
     #   -----------------------------------
     #   Visualisera resultat i figur.
     #   -----------------------------------
-    """
+
+    # Figur normal
     fig = plt.figure(figsize=(10, 10))
     ax = fig.add_subplot(projection='3d')
     ax.scatter(x_list, y_list, z_list, c=dos_list, cmap='plasma', label='Partikel position')
@@ -114,7 +115,39 @@ def run_MC_elektron(iterationer, rho_medium, radie_partikel, stopping_power_data
     plt.tight_layout()
     plt.savefig(fig_title)
     plt.show()
-    """
+
+
+    # Figur inzoomad
+    fig = plt.figure(figsize=(10, 10))
+    ax = fig.add_subplot(projection='3d')
+    ax.scatter(x_list, y_list, z_list, c=dos_list, cmap='plasma', label='Partikel position')
+    # Fixa colorbar för att se energideponeringen i figuren
+
+    # fig.colorbar(ax=ax, label='Energideponering',)
+
+    ax.set_xlabel('x-axel (m)')
+    ax.set_ylabel('y-axel (m)')
+    ax.set_zlabel('z-axel (m)')
+
+    inzoom = radie_sfär / 10
+    ax.set_xlim([radie_sfär - 2 * inzoom, radie_sfär])
+    ax.set_ylim([-inzoom, inzoom])
+    ax.set_zlim([-inzoom, inzoom])
+
+    # Testar att sätta en sfär för tumören
+    u, v = np.mgrid[0:2 * np.pi:20j, 0:np.pi:10j]
+    x = radie_sfär * np.cos(u) * np.sin(v)
+    y = radie_sfär * np.sin(u) * np.sin(v)
+    z = radie_sfär * np.cos(v)
+    ax.plot_wireframe(x, y, z, color="k", alpha=0.3, label='Tumören')
+    ax.legend(fontsize=font_size)
+    plt.title(fig_title, fontsize=font_size_title)
+
+    # Visa figur
+    plt.tight_layout()
+    plt.savefig(fig_title)
+    plt.show()
+
     return energideponering_summa
 
 
@@ -158,7 +191,7 @@ if __name__ == "__main__":
     radie_sfär_innanför = 1 * 10 ** (-3)  # m
 
     fig_title_skal = 'Betasönderfall vid ytfördelning'
-    fig_title_innanför = 'Betasönderfall vid uniform fördelning'
+    fig_title_innanför = 'Betasönderfall vid homogen fördelning'
 
     print(
         '\n-----------------------------------\nDUMMY\n-----------------------------------\n')
