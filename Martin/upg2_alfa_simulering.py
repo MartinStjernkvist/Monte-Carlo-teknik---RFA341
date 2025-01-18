@@ -98,6 +98,7 @@ def run_MC_alpha(iterationer, rho_medium, radie_partikel, stopping_power_data, p
     #   -----------------------------------
     #   Visualisera resultat i figur.
     #   -----------------------------------
+    """
     fig = plt.figure(figsize=(10, 10))
     ax = fig.add_subplot(projection='3d')
     ax.scatter(x_list, y_list, z_list, c=dos_list, cmap='plasma', label='Partikel position')
@@ -122,6 +123,7 @@ def run_MC_alpha(iterationer, rho_medium, radie_partikel, stopping_power_data, p
     plt.tight_layout()
     plt.savefig(fig_title)
     plt.show()
+    """
     return energideponering_summa
 
 
@@ -150,7 +152,7 @@ if __name__ == "__main__":
     #   -----------------------------------
     #   Kör simuleringen med ingångsvärden.
     #   -----------------------------------
-    iterationer = 10 ** 2
+    iterationer = 10 ** 3
     dummy_iterationer = 10 ** 1
     max_antal_steg = 10 ** 3
 

@@ -9,13 +9,24 @@ import numpy as np
 # print(0.96 **1000)
 
 
-
 from scipy.stats import sem
 
-#define dataset
-data = [107.2, 113.2, 112.4]
+# define dataset
+# data = [107.2, 113.2, 112.4]
 
-#calculate standard error of the mean
-print(sem(data))
+data_1 = [3.95, 4.06, 4.26]
+data_2 = [8.61, 8.32, 8.61]
 
-print(np.mean(data))
+# calculate standard error of the mean
+print('standardavvikelse')
+print(sem(data_1))
+print(sem(data_2))
+
+print('medelvärde')
+print(np.mean(data_1))
+print(np.mean(data_2))
+
+
+print(4.09 / 4.07)
+
+print(8.51 / 5.22)

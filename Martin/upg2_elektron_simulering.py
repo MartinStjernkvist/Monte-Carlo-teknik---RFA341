@@ -89,6 +89,7 @@ def run_MC_elektron(iterationer, rho_medium, radie_partikel, stopping_power_data
     #   -----------------------------------
     #   Visualisera resultat i figur.
     #   -----------------------------------
+    """
     fig = plt.figure(figsize=(10, 10))
     ax = fig.add_subplot(projection='3d')
     ax.scatter(x_list, y_list, z_list, c=dos_list, cmap='plasma', label='Partikel position')
@@ -113,6 +114,7 @@ def run_MC_elektron(iterationer, rho_medium, radie_partikel, stopping_power_data
     plt.tight_layout()
     plt.savefig(fig_title)
     plt.show()
+    """
     return energideponering_summa
 
 
@@ -144,7 +146,7 @@ if __name__ == "__main__":
     iterationer = 10 ** 3
     dummy_iterationer = 3 * 10**2
 
-    energiförlust_faktor = 0.96  # Energi efter en kollision = 96% av föregående energin.
+    energiförlust_faktor = 0.97  # Energi efter en kollision = 96% av föregående energin.
 
     stopping_power_data = np.loadtxt(elektron_stopping_power_data)
     scatter_power_data = np.loadtxt(elektron_scatter_power_data)
