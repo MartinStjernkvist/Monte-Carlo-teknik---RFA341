@@ -60,37 +60,6 @@ def steg_tills_vxv(x, y, z, theta, phi, steglängd, R, foton_energi, mu_max, x_s
             # utanför matris
             vxv_sker = True
 
-    """
-    while vxv_sker == False:
-        # Sampla medelvägslängden från inverstransformerad attenueringsfunktion.
-        steglängd = medelvägslängd(mu_max)
-        # print(f'steglängd: {steglängd}')
-
-        # Gå steget till ny position från startpositionen i startriktningen.
-        # Eftersom voxlarna har diskreta positioner måste avrundning till närmaste heltal göras.
-        dx, dy, dz = steg(theta, phi, steglängd)
-        x_ny, y_ny, z_ny, x_round, y_round, z_round = förflyttning(x_start, y_start, z_start, dx, dy, dz, voxel_sidlängd)
-
-        x_start, y_start, z_start = x_ny, y_ny, z_ny
-
-        #   -----------------------------------
-        #   Om foton hamnar utanför fantommatrisen
-        #   -> kasta ut foton ur loopen.
-        #   Ekvationen förekommer nedan efter varje nytt steg tas.
-        #   -----------------------------------
-        attenuerad, utanför_fantom = bestäm_om_attenuerad(x_round, y_round, z_round, x_size, y_size, z_size,
-                                                          utanför_fantom, slicad_fantom_matris, foton_energi)
-
-        if attenuerad == 0:
-            voxelvärde = slicad_fantom_matris[x_round, y_round, z_round]
-
-            vxv_sker = bestäm_om_vxv_sker(voxelvärde, foton_energi, mu_max, df_attenueringsdata,
-                                          df_anatomidefinitioner)
-        else:
-            # utanför matris
-            vxv_sker = True
-    """
-
     # print(f'attenuerad: {attenuerad}')
     return attenuerad, x_ny, y_ny, z_ny, x_round, y_round, z_round, steglängd
 
