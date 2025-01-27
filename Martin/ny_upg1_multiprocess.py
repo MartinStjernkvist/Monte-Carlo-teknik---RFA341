@@ -18,11 +18,49 @@ from upg12_steg_transformation import transformera_koordinatsystem
 from upg12_rotation_matris import rotations_matris
 
 
-def steg_tills_vxv(x, y, z, theta, phi, foton_energi, mu_max, x_size, y_size, z_size, df_attenueringsdata,
+def steg_tills_vxv(x, y, z, theta, phi, steglängd, R, foton_energi, mu_max, x_size, y_size, z_size, df_attenueringsdata,
                    df_anatomidefinitioner, utanför_fantom):
-
-    x_start, y_start, z_start = x,y,z
+    x_start, y_start, z_start = x, y, z
     vxv_sker = False
+
+    while vxv_sker == False:
+        # Sampla medelvägslängden från inverstransformerad attenueringsfunktion.
+        steglängd_ny = medelvägslängd(mu_max)
+        # print(f'steglängd: {steglängd}')
+
+        # Gå steget till ny position från startpositionen i startriktningen.
+        # Eftersom voxlarna har diskreta positioner måste avrundning till närmaste heltal göras.
+
+        dx, dy, dz, R = transformera_koordinatsystem(steglängd, phi,
+                                                     theta,
+                                                     steglängd_ny,
+                                                     0,
+                                                     0, R)
+
+        x_ny, y_ny, z_ny, x_round, y_round, z_round = förflyttning(x_start, y_start, z_start, dx, dy, dz,
+                                                                   voxel_sidlängd)
+
+        x_start, y_start, z_start = x_ny, y_ny, z_ny
+        steglängd = steglängd_ny
+
+        #   -----------------------------------
+        #   Om foton hamnar utanför fantommatrisen
+        #   -> kasta ut foton ur loopen.
+        #   Ekvationen förekommer nedan efter varje nytt steg tas.
+        #   -----------------------------------
+        attenuerad, utanför_fantom = bestäm_om_attenuerad(x_round, y_round, z_round, x_size, y_size, z_size,
+                                                          utanför_fantom, slicad_fantom_matris, foton_energi)
+
+        if attenuerad == 0:
+            voxelvärde = slicad_fantom_matris[x_round, y_round, z_round]
+
+            vxv_sker = bestäm_om_vxv_sker(voxelvärde, foton_energi, mu_max, df_attenueringsdata,
+                                          df_anatomidefinitioner)
+        else:
+            # utanför matris
+            vxv_sker = True
+
+    """
     while vxv_sker == False:
         # Sampla medelvägslängden från inverstransformerad attenueringsfunktion.
         steglängd = medelvägslängd(mu_max)
@@ -51,6 +89,7 @@ def steg_tills_vxv(x, y, z, theta, phi, foton_energi, mu_max, x_size, y_size, z_
         else:
             # utanför matris
             vxv_sker = True
+    """
 
     # print(f'attenuerad: {attenuerad}')
     return attenuerad, x_ny, y_ny, z_ny, x_round, y_round, z_round, steglängd
@@ -101,43 +140,7 @@ def run_MC_multiprocess(args):
         mu_max = instans.mu_max()
 
         x, y, z = x_start, y_start, z_start
-
-        """
-        vxv_sker = False
-        while vxv_sker == False:
-            # Sampla medelvägslängden från inverstransformerad attenueringsfunktion.
-            steglängd = medelvägslängd(mu_max)
-            # print(f'steglängd: {steglängd}')
-
-            # Gå steget till ny position från startpositionen i startriktningen.
-            # Eftersom voxlarna har diskreta positioner måste avrundning till närmaste heltal göras.
-            dx, dy, dz = steg(theta, phi, steglängd)
-            x, y, z, x_round, y_round, z_round = förflyttning(x_start, y_start, z_start, dx, dy, dz, voxel_sidlängd)
-
-            #   -----------------------------------
-            #   Om foton hamnar utanför fantommatrisen
-            #   -> kasta ut foton ur loopen.
-            #   Ekvationen förekommer nedan efter varje nytt steg tas.
-            #   -----------------------------------
-            attenuerad, utanför_fantom = bestäm_om_attenuerad(x_round, y_round, z_round, x_size, y_size, z_size,
-                                                              utanför_fantom, slicad_fantom_matris, foton_energi)
-
-            if attenuerad == 0:
-                voxelvärde = slicad_fantom_matris[x_round, y_round, z_round]
-
-                vxv_sker = bestäm_om_vxv_sker(voxelvärde, foton_energi, mu_max, df_attenueringsdata,
-                                              df_anatomidefinitioner)
-            else:
-                # utanför matris
-                vxv_sker = True
-        """
-
-        """
-        if attenuerad == 1:
-            i += 1
-
-        else:
-        """
+        steglängd = 0
 
         #   -----------------------------------
         #   Loopa under tiden som fotonen inte attenuerats
@@ -147,7 +150,7 @@ def run_MC_multiprocess(args):
         while attenuerad == 0:
 
             attenuerad, x, y, z, x_round, y_round, z_round, steglängd = steg_tills_vxv(x, y, z,
-                                                                                       theta, phi,
+                                                                                       theta, phi, steglängd, R,
                                                                                        foton_energi,
                                                                                        mu_max,
                                                                                        x_size,
@@ -156,8 +159,6 @@ def run_MC_multiprocess(args):
                                                                                        df_attenueringsdata,
                                                                                        df_anatomidefinitioner,
                                                                                        utanför_fantom)
-
-            # print('steglängd: ', steglängd)
 
             if attenuerad == 1:
                 break
@@ -219,7 +220,7 @@ def run_MC_multiprocess(args):
                     print(
                         f'compton: {energideponering_compton:.0f} eV i voxel [{x_round, y_round, z_round}]')
 
-                steglängd_compton = medelvägslängd(mu_max)
+                steglängd_compton = 0.001
                 # Koordinattransformation, eftersom spridningsvinklarna för Comptonspridning inte kan samplas uniformt.
                 dx_compton, dy_compton, dz_compton, R = transformera_koordinatsystem(steglängd, phi,
                                                                                      theta,
@@ -243,7 +244,7 @@ def run_MC_multiprocess(args):
                 theta_rayleigh = np.arccos(-1 + 2 * np.random.rand())  # ERSÄTT MED THOMSON TVÄRSNITT
                 phi_rayleigh = 2 * pi * np.random.rand()
 
-                steglängd_rayleigh = medelvägslängd(mu_max)
+                steglängd_rayleigh = 0.001
                 # Koordinattransformation, eftersom spridningsvinklarna för Comptonspridning inte kan samplas uniformt.
                 dx_rayleigh, dy_rayleigh, dz_rayleigh, R = transformera_koordinatsystem(steglängd, phi,
                                                                                         theta,
