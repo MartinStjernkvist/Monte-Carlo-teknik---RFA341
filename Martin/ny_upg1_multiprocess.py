@@ -196,35 +196,9 @@ def run_MC_multiprocess(args):
                     # Sampla spridningsvinklar (uniformt samplade).
                     theta_foto, phi_foto = riktning_uniform()
 
-                    """
-                    vxv_sker = False
-                    while vxv_sker == False:
-                        # Sampla medelvägslängden från inverstransformerad attenueringsfunktion.
-                        steglängd_foto = medelvägslängd(mu_max)
-
-                        dx, dy, dz = steg(theta, phi, steglängd_foto)  # Ändra till transformationskod?
-                        x, y, z, x_round, y_round, z_round = förflyttning(x, y, z, dx, dy, dz, voxel_sidlängd)
-
-                        # Om foton hamnar utanför fantommatrisen -> kasta ut foton ur loopen.
-                        attenuerad, utanför_fantom = bestäm_om_attenuerad(x_round, y_round, z_round, x_size, y_size,
-                                                                          z_size, utanför_fantom,
-                                                                          slicad_fantom_matris,
-                                                                          foton_energi)
-
-                        if attenuerad == 0:
-                            voxelvärde = slicad_fantom_matris[x_round, y_round, z_round]
-
-                            vxv_sker = bestäm_om_vxv_sker(voxelvärde, foton_energi, mu_max, df_attenueringsdata,
-                                                          df_anatomidefinitioner)
-                        else:
-                            vxv_sker = True
-                    """
-
-
                     # Ingångsvärden till koordinat-transformeringen som behöver genomföras ifall växelverkan = compton eller rayleigh.
                     theta, phi = theta_foto, phi_foto
                     R = rotations_matris(phi, theta)
-                    """steglängd = steglängd_foto"""
 
             #   -----------------------------------
             #   Comptonspridning.
@@ -252,45 +226,13 @@ def run_MC_multiprocess(args):
                                                                                      steglängd_compton,
                                                                                      phi_compton,
                                                                                      theta_compton, R)
+
                 x, y, z, x_round, y_round, z_round = förflyttning(x, y, z, dx_compton, dy_compton, dz_compton,
                                                                   voxel_sidlängd)
-                """
-                vxv_sker = False
-                while vxv_sker == False:
-                    # Sampla medelvägslängden från inverstransformerad attenueringsfunktion.
-                    steglängd_compton = medelvägslängd(mu_max)
-
-                    # Koordinattransformation, eftersom spridningsvinklarna för Comptonspridning inte kan samplas uniformt.
-                    dx_compton, dy_compton, dz_compton, R = transformera_koordinatsystem(steglängd, phi,
-                                                                                         theta,
-                                                                                         steglängd_compton,
-                                                                                         phi_compton,
-                                                                                         theta_compton, R)
-
-                    # Ta ett nytt steg.
-                    x, y, z, x_round, y_round, z_round = förflyttning(x, y, z, dx_compton, dy_compton, dz_compton,
-                                                                      voxel_sidlängd)
-
-                    # Om foton hamnar utanför fantommatrisen -> kasta ut foton ur loopen.
-                    attenuerad, utanför_fantom = bestäm_om_attenuerad(x_round, y_round, z_round, x_size, y_size,
-                                                                      z_size,
-                                                                      utanför_fantom, slicad_fantom_matris,
-                                                                      foton_energi)
-
-                    if attenuerad == 0:
-                        voxelvärde = slicad_fantom_matris[x_round, y_round, z_round]
-
-                        vxv_sker = bestäm_om_vxv_sker(voxelvärde, foton_energi, mu_max, df_attenueringsdata,
-                                                      df_anatomidefinitioner)
-                    else:
-                        vxv_sker = True
-                """
-
 
                 # Ingångsvärden till koordinat-transformeringen (om nästa växelverkan är Comptonspridning eller Rayleighspridning).
                 theta, phi = theta_compton, phi_compton
                 R = rotations_matris(phi, theta)
-                """steglängd = steglängd_compton"""
 
             #   -----------------------------------
             #   Rayleighspridning.
@@ -311,45 +253,10 @@ def run_MC_multiprocess(args):
 
                 x, y, z, x_round, y_round, z_round = förflyttning(x, y, z, dx_rayleigh, dy_rayleigh, dz_rayleigh,
                                                                   voxel_sidlängd)
-                """
-                vxv_sker = False
-                while vxv_sker == False:
-                    # Sampla medelvägslängden från inverstransformerad attenueringsfunktion.
-                    steglängd_rayleigh = medelvägslängd(mu_max)
-
-                    # Koordinattransformation, eftersom spridningsvinklarna för Rayleighspridning inte kan samplas uniformt.
-                    dx_rayleigh, dy_rayleigh, dz_rayleigh, R = transformera_koordinatsystem(
-                        steglängd,
-                        phi,
-                        theta,
-                        steglängd_rayleigh,
-                        phi_rayleigh,
-                        theta_rayleigh, R)
-
-                    # Ta ett nytt steg.
-                    x, y, z, x_round, y_round, z_round = förflyttning(x, y, z, dx_rayleigh, dy_rayleigh,
-                                                                      dz_rayleigh, voxel_sidlängd)
-
-                    # Om foton hamnar utanför fantommatrisen -> kasta ut foton ur loopen.
-                    attenuerad, utanför_fantom = bestäm_om_attenuerad(x_round, y_round, z_round, x_size, y_size,
-                                                                      z_size,
-                                                                      utanför_fantom, slicad_fantom_matris,
-                                                                      foton_energi)
-
-                    if attenuerad == 0:
-                        voxelvärde = slicad_fantom_matris[x_round, y_round, z_round]
-
-                        vxv_sker = bestäm_om_vxv_sker(voxelvärde, foton_energi, mu_max, df_attenueringsdata,
-                                                      df_anatomidefinitioner)
-                    else:
-                        vxv_sker = True
-                """
-
 
                 # Ingångsvärden till koordinat-transformeringen (om nästa växelverkan är Comptonspridning eller Rayleighspridning).
                 theta, phi = theta_rayleigh, phi_rayleigh
                 R = rotations_matris(phi, theta)
-                """steglängd = steglängd_rayleigh"""
 
     # Några print statements, för att hålla reda på vad som händer när koden kör.
     print(f'max värdet av matrisen: {np.max(benmärg_matris_deponerad_energi)}')
