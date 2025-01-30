@@ -191,7 +191,7 @@ if __name__ == "__main__":
     """
 
 resultat_matris = np.load('resultat_l7_slicad.npy')
-skapa_figurer(resultat_matris)
-
-
+# skapa_figurer(resultat_matris)
+#
+#
 print('count:', np.count_nonzero(resultat_matris))
