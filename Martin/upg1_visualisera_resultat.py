@@ -190,8 +190,8 @@ if __name__ == "__main__":
     print(f'\nryggrad benmärg eV / decay: ', np.sum(resultat_5_E6) / (5 * 10 ** 6))
     """
 
-resultat_matris = np.load('resultat_vv4_slicad.npy')
-# skapa_figurer(resultat_matris)
+resultat_matris = np.load('resultat_l7_slicad.npy')
+skapa_figurer(resultat_matris)
 
 
 print('count:', np.count_nonzero(resultat_matris))
