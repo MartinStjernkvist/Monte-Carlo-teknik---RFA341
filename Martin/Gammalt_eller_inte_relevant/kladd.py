@@ -14,19 +14,25 @@ from scipy.stats import sem
 # define dataset
 # data = [107.2, 113.2, 112.4]
 
-data_1 = [3.95, 4.06, 4.26]
-data_2 = [8.61, 8.32, 8.61]
+# 1     &127,2 \\
+# 2& 123,5\\
+# 3& 127,6\\
+
+data_1 = [4.16, 4.15, 4.16]
+data_2 = [8.56, 8.63, 8.68]
 
 # calculate standard error of the mean
 print('standardavvikelse')
-print(sem(data_1))
-print(sem(data_2))
+print('yt: ', sem(data_1))
+print('homogen: ', sem(data_2))
 
 print('medelvärde')
-print(np.mean(data_1))
-print(np.mean(data_2))
+print('yt: ',np.mean(data_1))
+print('homogen: ', np.mean(data_2))
 
 
 print(4.09 / 4.07)
-
+print(4.16 / 4.07)
+print()
 print(8.51 / 5.22)
+print(8.62 / 5.22)
