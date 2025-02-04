@@ -186,7 +186,7 @@ if __name__ == "__main__":
     #   -----------------------------------
     #   Kör simuleringen med ingångsvärden.
     #   -----------------------------------
-    iterationer = 10 ** 2
+    iterationer = 10 ** 3
     dummy_iterationer = 10 ** 1
     max_antal_steg = 10 ** 3
 
