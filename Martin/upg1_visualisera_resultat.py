@@ -195,3 +195,6 @@ resultat_matris = np.load('resultat_l7_slicad.npy')
 #
 #
 print('count:', np.count_nonzero(resultat_matris))
+
+x_size, y_size, z_size = resultat_matris.shape
+print(x_size, y_size, z_size)

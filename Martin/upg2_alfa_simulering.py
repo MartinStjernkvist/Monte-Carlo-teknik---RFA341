@@ -98,6 +98,7 @@ def run_MC_alpha(iterationer, rho_medium, radie_partikel, stopping_power_data, p
     #   -----------------------------------
     #   Visualisera resultat i figur.
     #   -----------------------------------
+    """
 
     # Figur normal
     fig = plt.figure(figsize=(10, 10))
@@ -155,6 +156,7 @@ def run_MC_alpha(iterationer, rho_medium, radie_partikel, stopping_power_data, p
     plt.tight_layout()
     plt.savefig(fig_title)
     plt.show()
+    """
 
     return energideponering_summa
 

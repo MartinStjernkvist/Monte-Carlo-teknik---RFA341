@@ -94,7 +94,8 @@ def laddad_partikel_väg(energi_start, position_start, phi, theta, steglängd, r
 
     # Under tiden som partikeln fortfarande inte tagit hela sitt steg,
     # samt att partikeln inte förlorat all sin energi.
-    while steg_tagna < max_antal_steg and energi > 0:
+    """while steg_tagna < max_antal_steg and energi > 0:"""
+    while steg_tagna < max_antal_steg and energi > 1000:
 
         steg_tagna += 1
 
