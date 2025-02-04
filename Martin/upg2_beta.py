@@ -696,7 +696,7 @@ def laddad_partikel_väg_elektron(energi_start, position_start, phi_start, theta
         #   och
         #   energin är över en tröskelenergi.
         #   -----------------------------------
-        while np.sqrt(np.dot(position_vektor, position_vektor)) < radie_sfär and energi > 50:
+        while np.sqrt(np.dot(position_vektor, position_vektor)) < radie_sfär and energi > 100:
             print('')
 
             # Steglängd tas så att en viss energiförlust sker.
@@ -721,7 +721,7 @@ def laddad_partikel_väg_elektron(energi_start, position_start, phi_start, theta
             dx, dy, dz, R_ny = transformera_koordinatsystem(steglängd, phi, theta, steglängd_ny, phi_ny, theta_ny, R)
 
             x, y, z, _, _, _ = förflyttning(x, y, z, dx, dy, dz)
-            position_vektor = np.array([x, y, z])
+            position_vektor = np.array([x,y,z])
 
             #   -----------------------------------
             #   Håll reda på ifall:

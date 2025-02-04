@@ -368,6 +368,53 @@ def laddad_partikel_väg(energi_start, position_start, phi, theta, steglängd, r
     :return: Energideponeringen innanför sfären.
     """
 
+    """
+    # Initiera tomma listor för att spara datan.
+    x_list, y_list, z_list, dos_list = [], [], [], []
+
+    position_vektor = position_start
+    x, y, z = position_vektor[0], position_vektor[1], position_vektor[2]
+
+    energi = energi_start
+
+    # Dela upp steglängden i mindre steg.
+    steg_storlek = steglängd / max_antal_steg
+
+    # Håll reda på antalet steg.
+    steg_tagna = 0
+
+    # Under tiden som partikeln fortfarande inte tagit hela sitt steg,
+    # samt att partikeln inte förlorat all sin energi.
+    while steg_tagna < max_antal_steg and energi > 0:
+
+        steg_tagna += 1
+
+        # Ta ett litet steg.
+        dx, dy, dz = transformera_koordinatsystem(steg_storlek, phi, theta, steg_storlek, 0, 0)
+        x, y, z, _, _, _ = förflyttning(x, y, z, dx, dy, dz)
+        position_vektor = np.array([x, y, z])
+
+        # Håll reda på ifall partikeln befinner sig i sfären eller inte.
+        # Ekvationen för en sfär: x^2 + y^2 + z^2 = r^2
+        if np.sqrt(np.dot(position_vektor, position_vektor)) > radie_sfär:
+            # print(f'Energideponering i position ', position_vektor)
+            break
+
+        else:
+            # Beräkna energin efter steget.
+            energi_ny = energi_efter_energiförlust(energi, steg_storlek, rho_medium, stopping_power_data)
+            # print(f'ny energi: {energi * 10 ** (-6):.2f} MeV')
+
+            # Spara mätpunkter.
+            dos_list.append(energi - energi_ny)
+            x_list.append(position_vektor[0])
+            y_list.append(position_vektor[1])
+            z_list.append(position_vektor[2])
+
+            energi = energi_ny
+            continue
+
+    """
     # Initiera tomma listor för att spara datan.
     x_list, y_list, z_list, dos_list = [], [], [], []
 
@@ -392,8 +439,8 @@ def laddad_partikel_väg(energi_start, position_start, phi, theta, steglängd, r
     steg_tagna = 0
 
     # Under tiden som partikeln fortfarande inte tagit hela sitt steg,
-    # samt att partikeln inte förlorat all sin energi.
-    while steg_tagna < max_antal_steg and energi > 0:
+    # samt att energin är över tröskelenergin.
+    while steg_tagna < max_antal_steg and energi > 1000:
 
         steg_tagna += 1
 
